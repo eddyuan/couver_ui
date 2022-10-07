@@ -1,3 +1,3 @@
-library couver_ui;
+library couver_util;
 
 export 'src/utils/utils.dart';

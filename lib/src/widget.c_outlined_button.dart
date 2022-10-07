@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'enums/enum.platform_style.dart';
 import 'theme.c_button_style.dart';
+import 'utils/converts.dart';
 import 'widget.c_button_style_button.dart';
 
 /// A Material Design "Outlined Button"; essentially a [TextButton]
@@ -164,9 +165,7 @@ class COutlinedButton extends CButtonStyleButton {
     InteractiveInkFeatureFactory? splashFactory,
   }) {
     final Color? onSurface_ = onSurface ??
-        ((primary != null && !CouverUtil.isDark(primary))
-            ? Colors.white
-            : null);
+        ((primary != null && !isDark(primary)) ? Colors.white : null);
 
     final MaterialStateProperty<Color?>? foregroundColor =
         (onSurface_ == null && primary == null)

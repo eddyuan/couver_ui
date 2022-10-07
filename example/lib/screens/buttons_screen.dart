@@ -79,7 +79,10 @@ class ButtonsScreen extends StatelessWidget {
                   ),
                   CButton.input(
                     child: const Text("A input styled button"),
-                    onPressed: () => {},
+                    onPressed: () {
+                      Map datas = {};
+                      print(datas["123"].toString());
+                    },
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16),

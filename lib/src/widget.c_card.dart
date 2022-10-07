@@ -3,6 +3,7 @@ import 'package:couver_ui/src/theme.couver_theme.dart';
 import "package:flutter/material.dart";
 
 import 'enums/enum.platform_style.dart';
+import 'utils/converts.dart';
 import 'utils/utils.dart';
 import 'widget.c_ink.dart';
 
@@ -105,7 +106,7 @@ class CCard extends StatelessWidget {
     final Color cardColor = color ?? Theme.of(context).cardColor;
     final double leadingWidth = this.leadingWidth ?? 0;
 
-    final Color contrastColor = CouverUtil.contrastColorTrans(cardColor);
+    final Color contrastColor = contrastColorTrans(cardColor);
     final Color highlightColor = contrastColor;
     // splashFactory == NoSplash.splashFactory
     //     ? contrastColor

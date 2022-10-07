@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'input.c_text_form_field.dart';
+import 'utils/converts.dart';
 import 'utils/utils.dart';
 
 // import 'input.cTextFormField.dart';
@@ -35,7 +36,7 @@ class CAmountInput extends StatelessWidget {
       return 'Insufficient balance';
     } else if (amount > maxAmount) {
       doChange(amount: amount, valid: false);
-      return 'Exceed max limit of ${CouverUtil.toPrice(maxAmount)}';
+      return 'Exceed max limit of ${toPrice(maxAmount)}';
     }
     doChange(amount: amount, valid: true);
     return null;

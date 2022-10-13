@@ -85,7 +85,8 @@ class ButtonsScreen extends StatelessWidget {
                     },
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: EdgeInsets.symmetric(
+                        vertical: CouverTheme.of(context).pagePadding),
                     child: Text(
                       "Circle (Icon)",
                       style: Theme.of(context).textTheme.headline6,

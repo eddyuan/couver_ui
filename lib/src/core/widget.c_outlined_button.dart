@@ -5,60 +5,62 @@
 import 'dart:math' as math;
 import 'dart:ui' show lerpDouble;
 
+import 'package:couver_ui/src/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'enums/enum.platform_style.dart';
+import '../enums/enum.platform_style.dart';
+import '../utils/converts.dart';
 import 'theme.c_button_style.dart';
 import 'widget.c_button_style_button.dart';
 
-/// A Material Design "Text Button".
+/// A Material Design "Outlined Button"; essentially a [TextButton]
+/// with an outlined border.
 ///
-/// Use text buttons on toolbars, in dialogs, or inline with other
-/// content but offset from that content with padding so that the
-/// button's presence is obvious. Text buttons do not have visible
-/// borders and must therefore rely on their position relative to
-/// other content for context. In dialogs and cards, they should be
-/// grouped together in one of the bottom corners. Avoid using text
-/// buttons where they would blend in with other content, for example
-/// in the middle of lists.
+/// Outlined buttons are medium-emphasis buttons. They contain actions
+/// that are important, but they aren’t the primary action in an app.
 ///
-/// A text button is a label [child] displayed on a (zero elevation)
-/// [Material] widget. The label's [Text] and [Icon] widgets are
-/// displayed in the [style]'s [CButtonStyle.foregroundColor]. The
-/// button reacts to touches by filling with the [style]'s
-/// [CButtonStyle.backgroundColor].
+/// An outlined button is a label [child] displayed on a (zero
+/// elevation) [Material] widget. The label's [Text] and [Icon]
+/// widgets are displayed in the [style]'s
+/// [CButtonStyle.foregroundColor] and the outline's weight and color
+/// are defined by [CButtonStyle.side].  The button reacts to touches
+/// by filling with the [style]'s [CButtonStyle.overlayColor].
 ///
-/// The text button's default style is defined by [defaultStyleOf].
-/// The style of this text button can be overridden with its [style]
+/// The outlined button's default style is defined by [defaultStyleOf].
+/// The style of this outline button can be overridden with its [style]
 /// parameter. The style of all text buttons in a subtree can be
-/// overridden with the [TextButtonTheme] and the style of all of the
-/// text buttons in an app can be overridden with the [Theme]'s
-/// [ThemeData.textButtonTheme] property.
+/// overridden with the [OutlinedButtonTheme] and the style of all of the
+/// outlined buttons in an app can be overridden with the [Theme]'s
+/// [ThemeData.outlinedButtonTheme] property.
 ///
-/// The static [styleFrom] method is a convenient way to create a
-/// text button [CButtonStyle] from simple values.
-///
-/// If the [onPressed] and [onLongPress] callbacks are null, then this
-/// button will be disabled, it will not react to touch.
+/// Unlike [TextButton] or [ElevatedButton], outline buttons have a
+/// default [CButtonStyle.side] which defines the appearance of the
+/// outline.  Because the default `side` is non-null, it
+/// unconditionally overrides the shape's [OutlinedBorder.side]. In
+/// other words, to specify an outlined button's shape _and_ the
+/// appearance of its outline, both the [CButtonStyle.shape] and
+/// [CButtonStyle.side] properties must be specified.
 ///
 /// {@tool dartpad}
-/// This sample shows how to render a disabled CTextButton, an enabled CTextButton
-/// and lastly a CTextButton with gradient background.
+/// Here is an example of a basic [COutlinedButton].
 ///
-/// ** See code in examples/api/lib/material/text_button/text_button.0.dart **
+/// ** See code in examples/api/lib/material/outlined_button/outlined_button.0.dart **
 /// {@end-tool}
+///
+/// The static [styleFrom] method is a convenient way to create a
+/// outlined button [CButtonStyle] from simple values.
 ///
 /// See also:
 ///
-///  * [OutlinedButton], a [CTextButton] with a border outline.
-///  * [ElevatedButton], a filled button whose material elevates when pressed.
+///  * [ElevatedButton], a filled material design button with a shadow.
+///  * [TextButton], a material design button without a shadow.
 ///  * <https://material.io/design/components/buttons.html>
-class CTextButton extends CButtonStyleButton {
-  /// Create a CTextButton.
+class COutlinedButton extends CButtonStyleButton {
+  /// Create an COutlinedButton.
   ///
   /// The [autofocus] and [clipBehavior] arguments must not be null.
-  const CTextButton({
+  const COutlinedButton({
     Key? key,
     required VoidCallback? onPressed,
     VoidCallback? onLongPress,
@@ -71,9 +73,6 @@ class CTextButton extends CButtonStyleButton {
     required Widget child,
     PlatformStyle platformStyle = PlatformStyle.auto,
     bool? loading,
-    // Gradient? backgroundGradient,
-    // Gradient? foregroundGradient,
-    // Gradient? borderGradient,
   }) : super(
           key: key,
           onPressed: onPressed,
@@ -87,24 +86,19 @@ class CTextButton extends CButtonStyleButton {
           child: child,
           platformStyle: platformStyle,
           loading: loading,
-          // backgroundGradient: backgroundGradient,
-          // foregroundGradient: foregroundGradient,
-          // borderGradient: borderGradient,
         );
 
   /// Create a text button from a pair of widgets that serve as the button's
   /// [icon] and [label].
   ///
-  /// The icon and label are arranged in a row and padded by 8 logical pixels
-  /// at the ends, with an 8 pixel gap in between.
+  /// The icon and label are arranged in a row and padded by 12 logical pixels
+  /// at the start, and 16 at the end, with an 8 pixel gap in between.
   ///
   /// The [icon] and [label] arguments must not be null.
-  factory CTextButton.icon({
+  factory COutlinedButton.icon({
     Key? key,
     required VoidCallback? onPressed,
     VoidCallback? onLongPress,
-    ValueChanged<bool>? onHover,
-    ValueChanged<bool>? onFocusChange,
     CButtonStyle? style,
     FocusNode? focusNode,
     bool? autofocus,
@@ -113,12 +107,9 @@ class CTextButton extends CButtonStyleButton {
     required Widget label,
     PlatformStyle platformStyle,
     bool? loading,
-    // Gradient? backgroundGradient,
-    // Gradient? foregroundGradient,
-    // Gradient? borderGradient,
-  }) = _CTextButtonWithIcon;
+  }) = _COutlinedButtonWithIcon;
 
-  /// A static convenience method that constructs a text button
+  /// A static convenience method that constructs an outlined button
   /// [CButtonStyle] given simple values.
   ///
   /// The [primary], and [onSurface] colors are used to create a
@@ -136,21 +127,23 @@ class CTextButton extends CButtonStyleButton {
   /// create a [MaterialStateProperty] with a single value for all
   /// states.
   ///
-  /// All parameters default to null. By default this method returns
+  /// All parameters default to null, by default this method returns
   /// a [CButtonStyle] that doesn't override anything.
   ///
-  /// For example, to override the default text and icon colors for a
-  /// [CTextButton], as well as its overlay color, with all of the
-  /// standard opacity adjustments for the pressed, focused, and
-  /// hovered states, one could write:
+  /// For example, to override the default shape and outline for an
+  /// [COutlinedButton], one could write:
   ///
   /// ```dart
-  /// CTextButton(
-  ///   style: CTextButton.styleFrom(primary: Colors.green),
+  /// COutlinedButton(
+  ///   style: COutlinedButton.styleFrom(
+  ///      shape: StadiumBorder(),
+  ///      side: BorderSide(width: 2, color: Colors.green),
+  ///   ),
   /// )
   /// ```
   static CButtonStyle styleFrom({
     Gradient? gradient,
+    Color? borderColor,
     Color? primary,
     Color? onSurface,
     Color? backgroundColor,
@@ -172,28 +165,40 @@ class CTextButton extends CButtonStyleButton {
     AlignmentGeometry? alignment,
     InteractiveInkFeatureFactory? splashFactory,
   }) {
-    final MaterialStateProperty<Gradient?>? foregroundGradient =
-        gradient == null ? null : _CTextButtonDefaultGradient(gradient);
+    final Color? onSurface_ = onSurface ??
+        ((primary != null && !isDark(primary)) ? Colors.white : null);
 
     final MaterialStateProperty<Color?>? foregroundColor =
-        (onSurface == null && primary == null)
+        (onSurface_ == null && primary == null)
             ? null
-            : _CTextButtonDefaultForeground(primary, onSurface);
+            : _COutlinedButtonDefaultForeground(primary, onSurface_);
+
+    final MaterialStateProperty<Gradient?>? foregroundAndBorderGradient =
+        gradient == null ? null : _COutlinedButtonDefaultGradient(gradient);
+
+    final MaterialStateProperty<Color?>? backgroundColor_ =
+        backgroundColor == null
+            ? null
+            : _COutlinedButtonDefaultBackground(backgroundColor);
+
+    final MaterialStateProperty<BorderSide?> side_ =
+        _CElevatedButtonDefaultSide(side, borderColor ?? primary, onSurface_);
 
     final MaterialStateProperty<Color?>? overlayColor =
-        (primary == null) ? null : _CTextButtonDefaultOverlay(primary);
+        (primary == null) ? null : _COutlinedButtonDefaultOverlay(primary);
 
     final MaterialStateProperty<MouseCursor>? mouseCursor =
         (enabledMouseCursor == null && disabledMouseCursor == null)
             ? null
-            : _CTextButtonDefaultMouseCursor(
+            : _COutlinedButtonDefaultMouseCursor(
                 enabledMouseCursor!, disabledMouseCursor!);
 
     return CButtonStyle(
       textStyle: CButtonStyleButton.allOrNull<TextStyle>(textStyle),
-      backgroundColor: CButtonStyleButton.allOrNull<Color>(backgroundColor),
       foregroundColor: foregroundColor,
-      foregroundGradient: foregroundGradient,
+      foregroundGradient: foregroundAndBorderGradient,
+      borderGradient: foregroundAndBorderGradient,
+      backgroundColor: backgroundColor_,
       overlayColor: overlayColor,
       shadowColor: CButtonStyleButton.allOrNull<Color>(shadowColor),
       elevation: CButtonStyleButton.allOrNull<double>(elevation),
@@ -201,7 +206,7 @@ class CTextButton extends CButtonStyleButton {
       minimumSize: CButtonStyleButton.allOrNull<Size>(minimumSize),
       fixedSize: CButtonStyleButton.allOrNull<Size>(fixedSize),
       maximumSize: CButtonStyleButton.allOrNull<Size>(maximumSize),
-      side: CButtonStyleButton.allOrNull<BorderSide>(side),
+      side: side_, //CButtonStyleButton.allOrNull<BorderSide>(side),
       shape: CButtonStyleButton.allOrNull<OutlinedBorder>(shape),
       mouseCursor: mouseCursor,
       visualDensity: visualDensity,
@@ -215,29 +220,26 @@ class CTextButton extends CButtonStyleButton {
 
   /// Defines the button's default appearance.
   ///
+  /// With the exception of [CButtonStyle.side], which defines the
+  /// outline, and [CButtonStyle.padding], the returned style is the
+  /// same as for [TextButton].
+  ///
   /// The button [child]'s [Text] and [Icon] widgets are rendered with
   /// the [CButtonStyle]'s foreground color. The button's [InkWell] adds
   /// the style's overlay color when the button is focused, hovered
   /// or pressed. The button's background color becomes its [Material]
   /// color and is transparent by default.
   ///
-  /// All of the CButtonStyle's defaults appear below.
-  ///
-  /// In this list "Theme.foo" is shorthand for
-  /// `Theme.of(context).foo`. Color scheme values like
-  /// "onSurface(0.38)" are shorthand for
+  /// All of the CButtonStyle's defaults appear below. In this list
+  /// "Theme.foo" is shorthand for `Theme.of(context).foo`. Color
+  /// scheme values like "onSurface(0.38)" are shorthand for
   /// `onSurface.withOpacity(0.38)`. [MaterialStateProperty] valued
   /// properties that are not followed by a sublist have the same
   /// value for all states, otherwise the values are as specified for
   /// each state and "others" means all other states.
   ///
-  /// The `textScaleFactor` is the value of
-  /// `MediaQuery.of(context).textScaleFactor` and the names of the
-  /// EdgeInsets constructors and `EdgeInsetsGeometry.lerp` have been
-  /// abbreviated for readability.
-  ///
   /// The color of the [CButtonStyle.textStyle] is not used, the
-  /// [CButtonStyle.foregroundColor] color is used instead.
+  /// [CButtonStyle.foregroundColor] is used instead.
   ///
   /// * `textStyle` - Theme.textTheme.button
   /// * `backgroundColor` - transparent
@@ -250,14 +252,14 @@ class CTextButton extends CButtonStyleButton {
   /// * `shadowColor` - Theme.shadowColor
   /// * `elevation` - 0
   /// * `padding`
-  ///   * `textScaleFactor <= 1` - all(8)
-  ///   * `1 < textScaleFactor <= 2` - lerp(all(8), horizontal(8))
+  ///   * `textScaleFactor <= 1` - horizontal(16)
+  ///   * `1 < textScaleFactor <= 2` - lerp(horizontal(16), horizontal(8))
   ///   * `2 < textScaleFactor <= 3` - lerp(horizontal(8), horizontal(4))
   ///   * `3 < textScaleFactor` - horizontal(4)
   /// * `minimumSize` - Size(64, 36)
   /// * `fixedSize` - null
   /// * `maximumSize` - Size.infinite
-  /// * `side` - null
+  /// * `side` - BorderSide(width: 1, color: Theme.colorScheme.onSurface(0.12))
   /// * `shape` - RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))
   /// * `mouseCursor`
   ///   * disabled - SystemMouseCursors.forbidden
@@ -268,25 +270,13 @@ class CTextButton extends CButtonStyleButton {
   /// * `enableFeedback` - true
   /// * `alignment` - Alignment.center
   /// * `splashFactory` - InkRipple.splashFactory
-  ///
-  /// The default padding values for the [CTextButton.icon] factory are slightly different:
-  ///
-  /// * `padding`
-  ///   * `textScaleFactor <= 1` - all(8)
-  ///   * `1 < textScaleFactor <= 2 `- lerp(all(8), horizontal(4))
-  ///   * `2 < textScaleFactor` - horizontal(4)
-  ///
-  /// The default value for `side`, which defines the appearance of the button's
-  /// outline, is null. That means that the outline is defined by the button
-  /// shape's [OutlinedBorder.side]. Typically the default value of an
-  /// [OutlinedBorder]'s side is [BorderSide.none], so an outline is not drawn.
   @override
   CButtonStyle defaultStyleOf(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
 
     final EdgeInsetsGeometry scaledPadding = CButtonStyleButton.scaledPadding(
-      const EdgeInsets.all(8),
+      const EdgeInsets.symmetric(horizontal: 16),
       const EdgeInsets.symmetric(horizontal: 8),
       const EdgeInsets.symmetric(horizontal: 4),
       MediaQuery.maybeOf(context)?.textScaleFactor ?? 1,
@@ -302,6 +292,10 @@ class CTextButton extends CButtonStyleButton {
       padding: scaledPadding,
       minimumSize: const Size(64, 36),
       maximumSize: Size.infinite,
+      side: BorderSide(
+        color: colorScheme.primary.withOpacity(0.8),
+        // color: theme.colorScheme.onSurface.withOpacity(0.12),
+      ),
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(4))),
       enabledMouseCursor: SystemMouseCursors.click,
@@ -315,18 +309,51 @@ class CTextButton extends CButtonStyleButton {
     );
   }
 
-  /// Returns the [TextButtonThemeData.style] of the closest
-  /// [TextButtonTheme] ancestor.
   @override
   CButtonStyle? themeStyleOf(BuildContext context) {
-    return TextButtonTheme.of(context).style?.cButtonStyle;
+    return OutlinedButtonTheme.of(context).style?.cButtonStyle;
   }
 }
 
 @immutable
-class _CTextButtonDefaultGradient extends MaterialStateProperty<Gradient?>
+class _CElevatedButtonDefaultSide extends MaterialStateProperty<BorderSide?>
     with Diagnosticable {
-  _CTextButtonDefaultGradient(this.gradient);
+  _CElevatedButtonDefaultSide(this.side, this.primary, this.onSurface);
+
+  final BorderSide? side;
+  final Color? primary;
+  final Color? onSurface;
+
+  @override
+  BorderSide? resolve(Set<MaterialState> states) {
+    if (states.contains(MaterialState.disabled)) {
+      if (onSurface is Color) {
+        if (side == null) {
+          return BorderSide(
+            color: onSurface!.withOpacity(0.2),
+          );
+        }
+        return side?.copyWith(color: onSurface?.withOpacity(0.2));
+      }
+      return null;
+    }
+    if (primary is Color) {
+      if (side == null) {
+        return BorderSide(
+          color: primary!,
+        );
+      }
+      return side?.copyWith(color: primary!);
+    }
+
+    return side;
+  }
+}
+
+@immutable
+class _COutlinedButtonDefaultGradient extends MaterialStateProperty<Gradient?>
+    with Diagnosticable {
+  _COutlinedButtonDefaultGradient(this.gradient);
 
   final Gradient? gradient;
 
@@ -340,8 +367,9 @@ class _CTextButtonDefaultGradient extends MaterialStateProperty<Gradient?>
 }
 
 @immutable
-class _CTextButtonDefaultForeground extends MaterialStateProperty<Color?> {
-  _CTextButtonDefaultForeground(this.primary, this.onSurface);
+class _COutlinedButtonDefaultForeground extends MaterialStateProperty<Color?>
+    with Diagnosticable {
+  _COutlinedButtonDefaultForeground(this.primary, this.onSurface);
 
   final Color? primary;
   final Color? onSurface;
@@ -353,16 +381,28 @@ class _CTextButtonDefaultForeground extends MaterialStateProperty<Color?> {
     }
     return primary;
   }
+}
+
+@immutable
+class _COutlinedButtonDefaultBackground extends MaterialStateProperty<Color?>
+    with Diagnosticable {
+  _COutlinedButtonDefaultBackground(this.backgroundColor);
+
+  final Color? backgroundColor;
 
   @override
-  String toString() {
-    return '{disabled: ${onSurface?.withOpacity(0.38)}, otherwise: $primary}';
+  Color? resolve(Set<MaterialState> states) {
+    if (states.contains(MaterialState.disabled)) {
+      return null;
+    }
+    return backgroundColor;
   }
 }
 
 @immutable
-class _CTextButtonDefaultOverlay extends MaterialStateProperty<Color?> {
-  _CTextButtonDefaultOverlay(this.primary);
+class _COutlinedButtonDefaultOverlay extends MaterialStateProperty<Color?>
+    with Diagnosticable {
+  _COutlinedButtonDefaultOverlay(this.primary);
 
   final Color primary;
 
@@ -377,17 +417,12 @@ class _CTextButtonDefaultOverlay extends MaterialStateProperty<Color?> {
     }
     return null;
   }
-
-  @override
-  String toString() {
-    return '{hovered: ${primary.withOpacity(0.04)}, focused,pressed: ${primary.withOpacity(0.12)}, otherwise: null}';
-  }
 }
 
 @immutable
-class _CTextButtonDefaultMouseCursor extends MaterialStateProperty<MouseCursor>
-    with Diagnosticable {
-  _CTextButtonDefaultMouseCursor(this.enabledCursor, this.disabledCursor);
+class _COutlinedButtonDefaultMouseCursor
+    extends MaterialStateProperty<MouseCursor> with Diagnosticable {
+  _COutlinedButtonDefaultMouseCursor(this.enabledCursor, this.disabledCursor);
 
   final MouseCursor enabledCursor;
   final MouseCursor disabledCursor;
@@ -399,13 +434,11 @@ class _CTextButtonDefaultMouseCursor extends MaterialStateProperty<MouseCursor>
   }
 }
 
-class _CTextButtonWithIcon extends CTextButton {
-  _CTextButtonWithIcon({
+class _COutlinedButtonWithIcon extends COutlinedButton {
+  _COutlinedButtonWithIcon({
     Key? key,
     required VoidCallback? onPressed,
     VoidCallback? onLongPress,
-    ValueChanged<bool>? onHover,
-    ValueChanged<bool>? onFocusChange,
     CButtonStyle? style,
     FocusNode? focusNode,
     bool? autofocus,
@@ -414,43 +447,22 @@ class _CTextButtonWithIcon extends CTextButton {
     required Widget label,
     PlatformStyle platformStyle = PlatformStyle.auto,
     bool? loading,
-    // Gradient? backgroundGradient,
-    // Gradient? foregroundGradient,
-    // Gradient? borderGradient,
   }) : super(
           key: key,
           onPressed: onPressed,
           onLongPress: onLongPress,
-          onHover: onHover,
-          onFocusChange: onFocusChange,
           style: style,
           focusNode: focusNode,
           autofocus: autofocus ?? false,
           clipBehavior: clipBehavior ?? Clip.none,
-          child: _CTextButtonWithIconChild(icon: icon, label: label),
+          child: _COutlinedButtonWithIconChild(icon: icon, label: label),
           platformStyle: platformStyle,
           loading: loading,
-          // backgroundGradient: backgroundGradient,
-          // foregroundGradient: foregroundGradient,
-          // borderGradient: borderGradient,
         );
-
-  @override
-  CButtonStyle defaultStyleOf(BuildContext context) {
-    final EdgeInsetsGeometry scaledPadding = CButtonStyleButton.scaledPadding(
-      const EdgeInsets.all(8),
-      const EdgeInsets.symmetric(horizontal: 4),
-      const EdgeInsets.symmetric(horizontal: 4),
-      MediaQuery.maybeOf(context)?.textScaleFactor ?? 1,
-    );
-    return super.defaultStyleOf(context).copyWith(
-          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(scaledPadding),
-        );
-  }
 }
 
-class _CTextButtonWithIconChild extends StatelessWidget {
-  const _CTextButtonWithIconChild({
+class _COutlinedButtonWithIconChild extends StatelessWidget {
+  const _COutlinedButtonWithIconChild({
     Key? key,
     required this.label,
     required this.icon,

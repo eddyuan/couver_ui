@@ -1,10 +1,10 @@
-import 'package:couver_ui/src/theme.couver_theme.dart';
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 
+import 'theme.couver_theme.dart';
 import 'comp.c_input_border.dart';
-import 'enums/enum.c_button.dart';
-import 'utils/debonce.dart';
+import '../enums/enum.c_button.dart';
+import '../utils/debonce.dart';
 import 'widget.c_button.dart';
 import 'widget.c_icon_button.dart';
 

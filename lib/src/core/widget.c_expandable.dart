@@ -1,8 +1,7 @@
-import 'package:couver_ui/src/defaults/couver_default.dart';
-import 'package:couver_ui/src/theme.couver_theme.dart';
+import 'theme.couver_theme.dart';
 import 'package:flutter/material.dart';
 
-import 'enums/enum.c_button.dart';
+import '../enums/enum.c_button.dart';
 import 'widget.c_button.dart';
 import 'widget.c_ink.dart';
 

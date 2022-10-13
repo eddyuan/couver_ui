@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
 import 'comp.gradient_box_border.dart';
-import 'enums/enum.platform_style.dart';
+import '../enums/enum.platform_style.dart';
 import 'widget.c_ink_cupertino.dart';
 import 'widget.c_ink_material.dart';
 

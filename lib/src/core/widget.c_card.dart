@@ -1,10 +1,10 @@
 import "dart:io";
-import 'package:couver_ui/src/theme.couver_theme.dart';
+import 'theme.couver_theme.dart';
 import "package:flutter/material.dart";
 
-import 'enums/enum.platform_style.dart';
-import 'utils/converts.dart';
-import 'utils/utils.dart';
+import '../enums/enum.platform_style.dart';
+import '../utils/converts.dart';
+import '../utils/utils.dart';
 import 'widget.c_ink.dart';
 
 class CCard extends StatelessWidget {

@@ -314,6 +314,7 @@ class CButton extends StatelessWidget {
     final BtnSize targetBtnSize = size ?? BtnSize.df;
     final double targetMinHeight = minHeight ?? targetBtnSize.value;
     final double targetMinWidth = minWidth ?? targetMinHeight;
+
     final double targetFontSize = fontSize ?? targetBtnSize.textSize;
     final FontWeight targetFontWeight = fontWeight ?? targetBtnSize.fontWeight;
     final TextStyle targetTextStyle = TextStyle(

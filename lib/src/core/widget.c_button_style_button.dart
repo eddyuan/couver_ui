@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:math' as math;
+import 'dart:math';
 
 // import 'package:couver_app/utils/helpers.dart';
 import 'package:flutter/foundation.dart';
@@ -38,6 +39,7 @@ abstract class CButtonStyleButton extends StatefulWidget {
     required this.child,
     this.platformStyle = PlatformStyle.auto,
     this.loading,
+    this.shrinkWhenLoading,
   }) : super(key: key);
 
   /// Define specific platform
@@ -101,13 +103,16 @@ abstract class CButtonStyleButton extends StatefulWidget {
   /// Typically the button's label.
   final Widget? child;
 
+  /// Should the size of the button shrink when loading?
+  final bool? shrinkWhenLoading;
+
   /// Returns a non-null [CButtonStyle] that's based primarily on the [Theme]'s
   /// [ThemeData.textTheme] and [ThemeData.colorScheme].
   ///
   /// The returned style can be overridden by the [style] parameter and
   /// by the style returned by [themeStyleOf]. For example the default
   /// style of the [TextButton] subclass can be overridden with its
-  /// [TextButton.style] constructor parameter, or with a
+  /// [TextButton.platformStyle] constructor parameter, or with a
   /// [TextButtonTheme].
   ///
   /// Concrete button subclasses should return a CButtonStyle that
@@ -292,6 +297,31 @@ class _ButtonStyleState extends State<CButtonStyleButton>
     }
   }
 
+  Widget buildChildWithLoading(
+    BuildContext context, {
+    required Widget childWidget,
+    required Widget loadingWidget,
+  }) {
+    if (widget.shrinkWhenLoading ?? false) {
+      return AnimatedSize(
+        clipBehavior: Clip.none,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.ease,
+        child: widget.isLoading ? loadingWidget : childWidget,
+      );
+    }
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Opacity(
+          opacity: widget.isLoading ? 0 : 1,
+          child: childWidget,
+        ),
+        if (widget.isLoading) loadingWidget,
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final CButtonStyle? widgetStyle = widget.style;
@@ -357,6 +387,11 @@ class _ButtonStyleState extends State<CButtonStyleButton>
 
     final Size? resolvedMaximumSize =
         resolve<Size?>((CButtonStyle? style) => style?.maximumSize);
+
+    final double resolvedLoadingSize = min(
+      18,
+      ((resolvedMinimumSize?.height ?? 20) - 10),
+    );
 
     // final Color? resolvedSideColor = resolve<Color?>(
     //   (CButtonStyle? style) => MaterialStateProperty.resolveWith(
@@ -482,30 +517,6 @@ class _ButtonStyleState extends State<CButtonStyleButton>
       borderRadius = inkShape.borderRadius;
     }
 
-    // Widget _animatedSize({required Widget child}) {
-    //   if (widget.loading != null) {
-    //     return AnimatedSize(
-    //         duration: kSizeDuration, curve: Curves.ease, child: child);
-    //   }
-    //   return child;
-    // }
-
-    // Widget _gradientShader({Widget? child}) {
-    //   if (child != null) {
-    //     return resolvedForegroundGradient != null
-    //         ? ShaderMask(
-    //             blendMode: BlendMode.srcIn,
-    //             shaderCallback: (bounds) =>
-    //                 resolvedForegroundGradient.createShader(
-    //               Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-    //             ),
-    //             child: child,
-    //           )
-    //         : child;
-    //   }
-    //   return const SizedBox.shrink();
-    // }
-
     final Widget result = ConstrainedBox(
       constraints: effectiveConstraints,
       child: FadeTransition(
@@ -572,36 +583,31 @@ class _ButtonStyleState extends State<CButtonStyleButton>
                       alignment: resolvedAlignment!,
                       widthFactor: 1.0,
                       heightFactor: 1.0,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Opacity(
-                            opacity: widget.isLoading ? 0 : 1,
-                            child: resolvedForegroundGradient != null
-                                ? ShaderMask(
-                                    blendMode: BlendMode.srcIn,
-                                    shaderCallback: (bounds) =>
-                                        resolvedForegroundGradient.createShader(
-                                      Rect.fromLTWH(
-                                          0, 0, bounds.width, bounds.height),
-                                    ),
-                                    child: widget.child,
-                                  )
-                                : widget.child,
+                      child: buildChildWithLoading(
+                        context,
+                        childWidget: resolvedForegroundGradient != null
+                            ? ShaderMask(
+                                blendMode: BlendMode.srcIn,
+                                shaderCallback: (bounds) =>
+                                    resolvedForegroundGradient.createShader(
+                                  Rect.fromLTWH(
+                                      0, 0, bounds.width, bounds.height),
+                                ),
+                                child: widget.child,
+                              )
+                            : (widget.child ?? const SizedBox.shrink()),
+                        loadingWidget: SizedBox(
+                          width: resolvedLoadingSize,
+                          height: resolvedLoadingSize,
+                          child: CircularProgressIndicator.adaptive(
+                            strokeWidth:
+                                (resolvedLoadingSize / 6).ceilToDouble(),
+                            valueColor:
+                                AlwaysStoppedAnimation(resolvedForegroundColor),
+                            backgroundColor:
+                                resolvedForegroundColor?.withOpacity(0.1),
                           ),
-                          if (widget.isLoading)
-                            SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator.adaptive(
-                                strokeWidth: 3,
-                                valueColor: AlwaysStoppedAnimation(
-                                    resolvedForegroundColor),
-                                backgroundColor:
-                                    resolvedForegroundColor?.withOpacity(0.1),
-                              ),
-                            ),
-                        ],
+                        ),
                       ),
                     ),
                   ),

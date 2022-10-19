@@ -732,8 +732,7 @@ class _CTextFormFieldState extends State<CTextFormField> {
       }
       return CButton.circle(
         onPressed: clearField,
-        size: BtnSize.xs,
-        padding: EdgeInsets.zero,
+        size: null,
         child: Icon(
           Icons.close_sharp,
           color: Theme.of(context).hintColor,

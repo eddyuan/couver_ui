@@ -73,6 +73,7 @@ class COutlinedButton extends CButtonStyleButton {
     required Widget child,
     PlatformStyle platformStyle = PlatformStyle.auto,
     bool? loading,
+    bool? shrinkWhenLoading,
   }) : super(
           key: key,
           onPressed: onPressed,
@@ -86,6 +87,7 @@ class COutlinedButton extends CButtonStyleButton {
           child: child,
           platformStyle: platformStyle,
           loading: loading,
+          shrinkWhenLoading: shrinkWhenLoading,
         );
 
   /// Create a text button from a pair of widgets that serve as the button's
@@ -107,6 +109,7 @@ class COutlinedButton extends CButtonStyleButton {
     required Widget label,
     PlatformStyle platformStyle,
     bool? loading,
+    bool? shrinkWhenLoading,
   }) = _COutlinedButtonWithIcon;
 
   /// A static convenience method that constructs an outlined button
@@ -447,6 +450,7 @@ class _COutlinedButtonWithIcon extends COutlinedButton {
     required Widget label,
     PlatformStyle platformStyle = PlatformStyle.auto,
     bool? loading,
+    bool? shrinkWhenLoading,
   }) : super(
           key: key,
           onPressed: onPressed,
@@ -458,6 +462,7 @@ class _COutlinedButtonWithIcon extends COutlinedButton {
           child: _COutlinedButtonWithIconChild(icon: icon, label: label),
           platformStyle: platformStyle,
           loading: loading,
+          shrinkWhenLoading: shrinkWhenLoading,
         );
 }
 

@@ -1,3 +1,4 @@
+import 'package:couver_ui/couver_util.dart';
 import "package:flutter/material.dart";
 
 import 'theme.couver_theme.dart';
@@ -8,13 +9,21 @@ import 'widget.c_icon_button.dart';
 import 'widget.c_outlined_button.dart';
 import 'widget.c_text_button.dart';
 
+enum _ButtonType {
+  text,
+  filled,
+  outlined,
+  icon,
+  input,
+}
+
 class CButton extends StatelessWidget {
   const CButton({
     Key? key,
     this.child,
     this.padding,
     this.margin,
-    this.pressedOpacity,
+    // this.pressedOpacity,
     this.borderRadius,
     this.alignment = Alignment.center,
     this.gradient,
@@ -23,26 +32,28 @@ class CButton extends StatelessWidget {
     this.color,
     this.foregroundColor,
     this.backgroundColor,
+    this.disabledColor,
     this.text,
     this.size,
     this.minWidth,
     this.minHeight,
     this.round = true,
-    this.style = PlatformStyle.cupertino,
+    this.platformStyle = PlatformStyle.cupertino,
     this.onPressed,
     this.fontSize,
     this.fontWeight,
-    this.translucent,
-    this.borderwidth = 0,
-    this.circle = false,
-    this.filled = false,
-    this.circleSize,
-    this.sizeAnimation,
+    // this.translucent,
+    // this.borderwidth = 0,
+    // this.circle = false,
+    // this.filled = false,
+    // this.circleSize,
+    this.shrinkWhenLoading,
     this.tapTargetSize,
   })  : borderColor = null,
         splashRadius = null,
-        restrictWidth = true,
-        useInputStyle = false,
+        _type = _ButtonType.text,
+        borderwidth = 0,
+        icon = null,
         super(key: key);
 
   const CButton.filled({
@@ -50,7 +61,7 @@ class CButton extends StatelessWidget {
     this.child,
     this.padding,
     this.margin,
-    this.pressedOpacity,
+    // this.pressedOpacity,
     this.borderRadius,
     this.alignment = Alignment.center,
     this.gradient,
@@ -59,26 +70,28 @@ class CButton extends StatelessWidget {
     this.color,
     this.foregroundColor,
     this.backgroundColor,
+    this.disabledColor,
     this.text,
     this.size,
     this.minWidth,
     this.minHeight,
     this.round = true,
-    this.style = PlatformStyle.auto,
+    this.platformStyle = PlatformStyle.auto,
     this.onPressed,
     this.fontSize,
     this.fontWeight,
-    this.translucent,
-    this.borderwidth = 0,
-    this.circle = false,
-    this.filled = true,
-    this.circleSize,
-    this.sizeAnimation,
+    // this.translucent,
+    // this.borderwidth = 0,
+    // this.circle = false,
+    // this.filled = true,
+    // this.circleSize,
+    this.shrinkWhenLoading,
     this.tapTargetSize,
   })  : borderColor = null,
         splashRadius = null,
-        restrictWidth = true,
-        useInputStyle = false,
+        _type = _ButtonType.filled,
+        borderwidth = 0,
+        icon = null,
         super(key: key);
 
   const CButton.outlined({
@@ -86,7 +99,7 @@ class CButton extends StatelessWidget {
     this.child,
     this.padding,
     this.margin,
-    this.pressedOpacity,
+    // this.pressedOpacity,
     this.borderRadius,
     this.alignment = Alignment.center,
     this.gradient,
@@ -95,26 +108,27 @@ class CButton extends StatelessWidget {
     this.color,
     this.foregroundColor,
     this.backgroundColor,
+    this.disabledColor,
     this.text,
     this.size,
     this.minWidth,
     this.minHeight,
     this.round = true,
-    this.style = PlatformStyle.auto,
+    this.platformStyle = PlatformStyle.auto,
     this.onPressed,
     this.borderwidth = 1,
     this.fontSize,
     this.fontWeight,
-    this.translucent,
-    this.circle = false,
-    this.filled = false,
-    this.circleSize,
-    this.sizeAnimation,
+    // this.translucent,
+    // this.circle = false,
+    // this.filled = false,
+    // this.circleSize,
+    this.shrinkWhenLoading,
     this.tapTargetSize,
     this.borderColor,
   })  : splashRadius = null,
-        restrictWidth = true,
-        useInputStyle = false,
+        _type = _ButtonType.outlined,
+        icon = null,
         super(key: key);
 
   const CButton.circle({
@@ -122,35 +136,48 @@ class CButton extends StatelessWidget {
     this.child,
     this.padding,
     this.margin,
-    this.pressedOpacity,
-    this.borderRadius,
+    // this.pressedOpacity,
+    // this.borderRadius,
     this.alignment = Alignment.center,
     this.gradient,
     this.disabled = false,
     this.loading,
     this.color,
-    this.foregroundColor,
-    this.backgroundColor,
+    // this.foregroundColor,
+    // this.backgroundColor,
+    this.disabledColor,
     this.text,
-    this.size,
-    this.minWidth,
-    this.minHeight,
-    this.round = true,
-    this.style = PlatformStyle.auto,
+    double? size,
+    // this.size,
+    // this.minWidth,
+    // this.minHeight,
+    // this.round = true,
+    this.platformStyle = PlatformStyle.auto,
     this.onPressed,
-    this.borderwidth = 0,
-    this.fontSize,
-    this.fontWeight,
-    this.translucent,
-    this.circle = true,
-    this.filled = false,
-    this.circleSize,
-    this.sizeAnimation,
+    // this.borderwidth = 0,
+    // this.fontSize,
+    // this.fontWeight,
+    // this.translucent,
+    // this.circle = true,
+    // this.filled = false,
+    // this.circleSize,
     this.splashRadius,
-    this.restrictWidth = true,
-    this.tapTargetSize,
+    this.icon,
+    // this.tapTargetSize,
   })  : borderColor = null,
-        useInputStyle = false,
+        _type = _ButtonType.icon,
+        shrinkWhenLoading = false,
+        round = true,
+        borderwidth = 0,
+        fontSize = null,
+        fontWeight = null,
+        borderRadius = null,
+        foregroundColor = null,
+        backgroundColor = null,
+        tapTargetSize = null,
+        minWidth = size,
+        minHeight = null,
+        size = null,
         super(key: key);
 
   const CButton.input({
@@ -158,7 +185,7 @@ class CButton extends StatelessWidget {
     this.child,
     this.padding,
     this.margin,
-    this.pressedOpacity,
+    // this.pressedOpacity,
     this.borderRadius,
     this.alignment = Alignment.center,
     this.gradient,
@@ -167,28 +194,29 @@ class CButton extends StatelessWidget {
     this.color,
     this.foregroundColor,
     this.backgroundColor,
+    this.disabledColor,
     this.text,
     this.size,
     this.minWidth,
     double? minHeight,
     this.round = true,
-    this.style = PlatformStyle.auto,
+    this.platformStyle = PlatformStyle.auto,
     this.onPressed,
     this.borderwidth = 1,
     this.fontSize,
     this.fontWeight,
-    this.translucent,
-    this.circle = false,
-    this.filled = false,
-    this.circleSize,
-    this.sizeAnimation,
+    // this.translucent,
+    // this.circle = false,
+    // this.filled = false,
+    // this.circleSize,
+    this.shrinkWhenLoading,
     this.tapTargetSize,
     this.borderColor,
     bool isDense = false,
   })  : splashRadius = null,
-        restrictWidth = true,
-        useInputStyle = true,
         minHeight = minHeight ?? (isDense ? 54 : 60),
+        _type = _ButtonType.input,
+        icon = null,
         super(key: key);
 
   /// [child] will override [text]
@@ -199,10 +227,12 @@ class CButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   /// Define opacity when pressed for cupertino style
-  final double? pressedOpacity;
+  // final double? pressedOpacity;
 
   /// Default = 200 when [round] is true, 8 when [round] = false
   final double? borderRadius;
+
+  /// Alignment of the fitted text
   final AlignmentGeometry alignment;
 
   /// Background gradient for [filled], text and outline gradient for other
@@ -212,7 +242,7 @@ class CButton extends StatelessWidget {
   /// Will replace button content with a loading animation and disabled the button
   final bool? loading;
 
-  final bool? sizeAnimation;
+  final bool? shrinkWhenLoading;
 
   /// Background color for [filled], text and outline color for other
   final Color? color;
@@ -222,6 +252,9 @@ class CButton extends StatelessWidget {
 
   /// Manually override background color
   final Color? backgroundColor;
+
+  /// This will be used for disabled color
+  final Color? disabledColor;
 
   /// A simpler way to put text in a button
   final String? text;
@@ -239,7 +272,7 @@ class CButton extends StatelessWidget {
   final bool round;
 
   /// Define cupertino or material style
-  final PlatformStyle style;
+  final PlatformStyle platformStyle;
 
   /// Override the width of the outline
   final double borderwidth;
@@ -251,41 +284,44 @@ class CButton extends StatelessWidget {
   final FontWeight? fontWeight;
 
   /// Gives a solid background like ElevatedButton
-  final bool filled;
+  // final bool filled;
 
   /// Gives a translucent background
-  final double? translucent;
+  // final double? translucent;
 
   /// Make the button a circle and 8dp larger in size, similar with icon button
-  final bool circle;
+  // final bool circle;
 
   /// Set a fixed size for the circle
-  final double? circleSize;
+  // final double? circleSize;
 
   /// For icon button only
   final double? splashRadius;
-
-  /// For icon button only
-  final bool restrictWidth;
 
   final MaterialTapTargetSize? tapTargetSize;
 
   /// Gives border a different color
   final Color? borderColor;
 
-  final bool useInputStyle;
+  final IconData? icon;
 
   bool get enabled => (onPressed != null && !disabled && loading != true);
 
+  final _ButtonType _type;
+
   @override
   Widget build(BuildContext context) {
-    final BtnSize btnSize_ = size ?? BtnSize.df;
-    final double minHeight_ = minHeight ?? btnSize_.value;
-    final double minWidth_ = minWidth ?? minHeight_;
-    final double fontSize_ = fontSize ?? btnSize_.textSize;
-    final FontWeight fontWeight_ = fontWeight ?? btnSize_.fontWeight;
+    final BtnSize targetBtnSize = size ?? BtnSize.df;
+    final double targetMinHeight = minHeight ?? targetBtnSize.value;
+    final double targetMinWidth = minWidth ?? targetMinHeight;
+    final double targetFontSize = fontSize ?? targetBtnSize.textSize;
+    final FontWeight targetFontWeight = fontWeight ?? targetBtnSize.fontWeight;
+    final TextStyle targetTextStyle = TextStyle(
+      fontSize: targetFontSize,
+      fontWeight: targetFontWeight,
+    );
 
-    final RoundedRectangleBorder? shape_ = borderRadius != null
+    final RoundedRectangleBorder? targetShape = borderRadius != null
         ? RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius!),
           )
@@ -293,7 +329,7 @@ class CButton extends StatelessWidget {
             ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
             : null;
 
-    final Widget child_ = child ??
+    final Widget targetChild = child ??
         ((text?.isNotEmpty ?? false)
             ? FittedBox(
                 fit: BoxFit.scaleDown,
@@ -302,138 +338,203 @@ class CButton extends StatelessWidget {
               )
             : const SizedBox.shrink());
 
-    final VoidCallback? onPressed_ = disabled ? null : onPressed;
+    final VoidCallback? targetOnPressed = disabled ? null : onPressed;
 
-    final TextStyle textStyle_ = TextStyle(
-      fontSize: fontSize_,
-      fontWeight: fontWeight_,
-    );
+    final Size minimiumSize_ = Size(targetMinWidth, targetMinHeight);
 
-    final Size minimiumSize_ = Size(minWidth_, minHeight_);
+    final EdgeInsetsGeometry targetPadding = padding ??
+        (_type == _ButtonType.icon ? EdgeInsets.zero : targetBtnSize.padding);
 
-    final EdgeInsetsGeometry padding_ =
-        padding ?? (circle ? EdgeInsets.zero : btnSize_.padding);
-
-    final MaterialTapTargetSize tapTargetSize_ = tapTargetSize ??
-        (minHeight_ > 36
+    final MaterialTapTargetSize targetTapSize = tapTargetSize ??
+        (targetMinHeight > 36
             ? MaterialTapTargetSize.padded
             : MaterialTapTargetSize.shrinkWrap);
 
-    Widget inner_;
+    Color? targetBColor = backgroundColor;
+    Color? targetFColor = foregroundColor;
+    Color? targetDColor = disabledColor;
 
-    if (circle) {
-      double? minSize_ = minWidth ?? minHeight;
-      inner_ = CIconButton(
+    if (_type == _ButtonType.filled) {
+      targetBColor ??= color ?? gradient?.colors[0];
+    } else {
+      targetFColor ??= color ?? gradient?.colors[0];
+    }
+
+    if (targetBColor != null) {
+      final int alpha = targetBColor.alpha;
+      final bool isBDark = isDark(targetBColor);
+      if (targetFColor == null) {
+        if (isBDark) {
+          if (alpha < 99) {
+            targetFColor = targetBColor.withOpacity(1);
+          }
+        } else {
+          if (alpha < 99) {
+            targetFColor = targetBColor.withOpacity(1);
+          } else {
+            targetFColor = Theme.of(context).colorScheme.onSurface;
+          }
+        }
+      }
+      if (!isBDark && targetDColor == null) {
+        targetDColor = Colors.white;
+      }
+    }
+
+    if (targetFColor != null && targetDColor == null) {
+      final bool isFDark = isDark(targetFColor);
+      if (!isFDark) {
+        targetDColor ??= Colors.white;
+      }
+    }
+
+    final double? targetElevation =
+        ((targetBColor?.alpha ?? 255) < 255) ? 0 : null;
+
+    Widget buildIconButton(BuildContext context) {
+      final double? minSize_ = minWidth;
+      return CIconButton(
         loading: loading,
-        icon: child_,
-        onPressed: onPressed_,
-        color: color,
-        padding: padding_,
+        icon: targetChild,
+        onPressed: targetOnPressed,
+        color: targetFColor,
+        padding: targetPadding,
         constraints: minSize_ != null
             ? BoxConstraints(minWidth: minSize_, minHeight: minSize_)
             : null,
-        platformStyle: style,
+        platformStyle: platformStyle,
         splashRadius: splashRadius,
+        disabledColor: targetDColor?.withOpacity(0.7),
       );
-    } else if (filled) {
-      Color? color_ = color;
-      if (translucent != null) {
-        color_ = color?.withOpacity(translucent!);
-      }
-      inner_ = CElevatedButton(
+    }
+
+    Widget buildElevatedButton(BuildContext context) {
+      // Color? translucentColor;
+      // if (translucent != null) {
+      //   translucentColor = color?.withOpacity(translucent!);
+      // }
+      return CElevatedButton(
         loading: loading,
-        onPressed: onPressed_,
-        platformStyle: style,
+        onPressed: targetOnPressed,
+        platformStyle: platformStyle,
         style: CElevatedButton.styleFrom(
+          elevation: targetElevation,
           gradient: gradient,
-          shape: shape_,
-          padding: padding_,
+          shape: targetShape,
+          padding: targetPadding,
           minimumSize: minimiumSize_,
-          textStyle: textStyle_,
-          primary: color_ ?? color,
-          onPrimary: translucent != null ? color : null,
-          tapTargetSize: tapTargetSize_,
+          textStyle: targetTextStyle,
+          primary: targetBColor,
+          onPrimary: targetFColor,
+          onSurface: targetDColor,
+          tapTargetSize: targetTapSize,
+        ).copyWith(
+          elevation: targetElevation != null
+              ? MaterialStateProperty.all(targetElevation)
+              : null,
         ),
-        child: child_,
+        child: targetChild,
       );
-    } else if (borderwidth > 0) {
-      if (useInputStyle) {
-        inner_ = COutlinedButton(
-          loading: loading,
-          onPressed: onPressed_,
-          platformStyle: style,
-          style: COutlinedButton.styleFrom(
-            gradient: gradient,
-            borderColor: Theme.of(context).dividerColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                  CouverTheme.of(context).inputBorderRadius),
-            ),
-            padding: padding ??
-                EdgeInsets.symmetric(
-                  horizontal: CouverTheme.of(context).gutter * 3,
-                  vertical: CouverTheme.of(context).gutter * 2,
-                ),
-            minimumSize: Size(minWidth ?? minHeight ?? 58, minHeight ?? 58),
-            textStyle: Theme.of(context).textTheme.bodyText1!,
-            primary: gradient?.colors[0] ?? foregroundColor ?? color,
-            backgroundColor: backgroundColor,
-            side: BorderSide(
-              width: borderwidth,
-              color: foregroundColor ??
-                  color ??
-                  Theme.of(context).colorScheme.primary.withOpacity(0.9),
-            ),
-            tapTargetSize: tapTargetSize_,
-          ),
-          child: child_,
-        );
-      } else {
-        inner_ = COutlinedButton(
-          loading: loading,
-          onPressed: onPressed_,
-          platformStyle: style,
-          style: COutlinedButton.styleFrom(
-            gradient: gradient,
-            borderColor: borderColor,
-            shape: shape_,
-            padding: padding_,
-            minimumSize: minimiumSize_,
-            textStyle: textStyle_,
-            primary: gradient?.colors[0] ?? foregroundColor ?? color,
-            backgroundColor: backgroundColor,
-            side: BorderSide(
-              width: borderwidth,
-              color: foregroundColor ??
-                  color ??
-                  Theme.of(context).colorScheme.primary.withOpacity(0.9),
-            ),
-            tapTargetSize: tapTargetSize_,
-          ),
-          child: child_,
-        );
-      }
-    } else {
-      inner_ = CTextButton(
+    }
+
+    Widget buildOutlinedButton(BuildContext context) {
+      return COutlinedButton(
         loading: loading,
-        onPressed: onPressed_,
-        platformStyle: style,
+        onPressed: targetOnPressed,
+        platformStyle: platformStyle,
+        style: COutlinedButton.styleFrom(
+          gradient: gradient,
+          borderColor: borderColor,
+          shape: targetShape,
+          padding: targetPadding,
+          minimumSize: minimiumSize_,
+          textStyle: targetTextStyle,
+          primary: targetFColor,
+          onSurface: targetDColor,
+          backgroundColor: targetBColor,
+          side: BorderSide(
+            width: borderwidth,
+            color: foregroundColor ??
+                color ??
+                Theme.of(context).colorScheme.primary.withOpacity(0.9),
+          ),
+          tapTargetSize: targetTapSize,
+        ),
+        child: targetChild,
+      );
+    }
+
+    Widget buildInputButton(BuildContext context) {
+      return COutlinedButton(
+        loading: loading,
+        onPressed: targetOnPressed,
+        platformStyle: platformStyle,
+        style: COutlinedButton.styleFrom(
+          gradient: gradient,
+          borderColor: Theme.of(context).dividerColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+                CouverTheme.of(context).inputBorderRadius),
+          ),
+          padding: padding ??
+              EdgeInsets.symmetric(
+                horizontal: CouverTheme.of(context).gutter * 3,
+                vertical: CouverTheme.of(context).gutter * 2,
+              ),
+          minimumSize: Size(minWidth ?? minHeight ?? 58, minHeight ?? 58),
+          textStyle: Theme.of(context).textTheme.bodyText1!,
+          primary: gradient?.colors[0] ?? foregroundColor ?? color,
+          backgroundColor: backgroundColor,
+          side: BorderSide(
+            width: borderwidth,
+            color: foregroundColor ??
+                color ??
+                Theme.of(context).colorScheme.primary.withOpacity(0.9),
+          ),
+          tapTargetSize: targetTapSize,
+        ),
+        child: targetChild,
+      );
+    }
+
+    Widget buildTextButton(BuildContext context) {
+      return CTextButton(
+        loading: loading,
+        onPressed: targetOnPressed,
+        platformStyle: platformStyle,
         style: CTextButton.styleFrom(
           gradient: gradient,
-          shape: shape_,
-          padding: padding_,
+          shape: targetShape,
+          padding: targetPadding,
           minimumSize: minimiumSize_,
-          textStyle: textStyle_,
+          textStyle: targetTextStyle,
           primary: color,
-          tapTargetSize: tapTargetSize_,
+          backgroundColor: targetBColor,
+          onSurface: targetDColor,
+          tapTargetSize: targetTapSize,
         ),
-        child: child_,
+        child: targetChild,
       );
+    }
+
+    Widget buildButton(BuildContext context) {
+      switch (_type) {
+        case _ButtonType.filled:
+          return buildElevatedButton(context);
+        case _ButtonType.icon:
+          return buildIconButton(context);
+        case _ButtonType.outlined:
+          return buildOutlinedButton(context);
+        case _ButtonType.input:
+          return buildInputButton(context);
+        default:
+          return buildTextButton(context);
+      }
     }
 
     return Padding(
       padding: margin ?? EdgeInsets.zero,
-      child: inner_,
+      child: buildButton(context),
     );
   }
 }

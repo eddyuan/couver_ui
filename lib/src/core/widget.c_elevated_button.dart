@@ -66,6 +66,7 @@ class CElevatedButton extends CButtonStyleButton {
     required Widget? child,
     PlatformStyle platformStyle = PlatformStyle.auto,
     bool? loading,
+    bool? shrinkWhenLoading,
   }) : super(
           key: key,
           onPressed: onPressed,
@@ -79,6 +80,7 @@ class CElevatedButton extends CButtonStyleButton {
           child: child,
           platformStyle: platformStyle,
           loading: loading,
+          shrinkWhenLoading: shrinkWhenLoading,
         );
 
   /// Create an elevated button from a pair of widgets that serve as the button's
@@ -443,6 +445,7 @@ class _CElevatedButtonWithIcon extends CElevatedButton {
     required Widget label,
     PlatformStyle platformStyle = PlatformStyle.auto,
     bool? loading,
+    bool? shrinkWhenLoading,
   }) : super(
           key: key,
           onPressed: onPressed,
@@ -456,6 +459,7 @@ class _CElevatedButtonWithIcon extends CElevatedButton {
           child: _CElevatedButtonWithIconChild(icon: icon, label: label),
           platformStyle: platformStyle,
           loading: loading,
+          shrinkWhenLoading: shrinkWhenLoading,
         );
 
   @override

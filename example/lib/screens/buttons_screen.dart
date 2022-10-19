@@ -6,22 +6,23 @@ import 'package:flutter/material.dart';
 class ButtonDemoConfig {
   const ButtonDemoConfig({
     this.gradient,
-    this.loading = false,
     this.onPressed,
     this.text,
     this.size,
     this.disabled = false,
     this.platformStyle = PlatformStyle.auto,
     this.child,
+    this.color,
   });
   final Gradient? gradient;
-  final bool loading;
+
   final VoidCallback? onPressed;
   final String? text;
   final BtnSize? size;
   final bool disabled;
   final PlatformStyle platformStyle;
   final Widget? child;
+  final Color? color;
   String get extraText => text != null ? " ($text)" : "";
   static List<ButtonDemoConfig> build() {
     return [
@@ -32,8 +33,8 @@ class ButtonDemoConfig {
           text: "Material", platformStyle: PlatformStyle.material),
       const ButtonDemoConfig(gradient: CGradient.primary, text: "Gradient"),
       const ButtonDemoConfig(text: "Disabled", disabled: true),
-      const ButtonDemoConfig(text: "Loading", loading: true),
       ButtonDemoConfig(
+        color: Colors.lime.withOpacity(0.5),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: const [
@@ -42,124 +43,185 @@ class ButtonDemoConfig {
           ],
         ),
       ),
-      ButtonDemoConfig(text: "xl - ${BtnSize.xl.value}", size: BtnSize.xl),
-      ButtonDemoConfig(text: "lg - ${BtnSize.lg.value}", size: BtnSize.lg),
-      ButtonDemoConfig(text: "md - ${BtnSize.md.value}", size: BtnSize.md),
-      ButtonDemoConfig(text: "sm - ${BtnSize.sm.value}", size: BtnSize.sm),
-      ButtonDemoConfig(text: "xs - ${BtnSize.xs.value}", size: BtnSize.xs),
       ButtonDemoConfig(
-          text: "mini - ${BtnSize.mini.value}", size: BtnSize.mini),
+        text: "xl - ${BtnSize.xl.value}",
+        size: BtnSize.xl,
+        color: Colors.white,
+      ),
+      ButtonDemoConfig(
+        text: "lg - ${BtnSize.lg.value}",
+        size: BtnSize.lg,
+        color: Colors.white70,
+      ),
+      ButtonDemoConfig(
+        text: "md - ${BtnSize.md.value}",
+        size: BtnSize.md,
+        color: Colors.white30,
+      ),
+      ButtonDemoConfig(
+        text: "sm - ${BtnSize.sm.value}",
+        size: BtnSize.sm,
+        color: Colors.purple.withOpacity(0.7),
+      ),
+      ButtonDemoConfig(
+        text: "xs - ${BtnSize.xs.value}",
+        size: BtnSize.xs,
+        color: Colors.purple.withOpacity(0.5),
+      ),
+      ButtonDemoConfig(
+        text: "mini - ${BtnSize.mini.value}",
+        size: BtnSize.mini,
+        color: Colors.purple.withOpacity(0.2),
+      ),
     ];
   }
 }
 
-class ButtonsScreen extends StatelessWidget {
+class ButtonsScreen extends StatefulWidget {
   const ButtonsScreen({super.key});
 
   @override
+  State<ButtonsScreen> createState() => _ButtonsScreenState();
+}
+
+class _ButtonsScreenState extends State<ButtonsScreen> {
+  bool loading = false;
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade600,
       appBar: CAppBar(
         title: const Text("Buttons"),
+        actions: [
+          Switch.adaptive(
+            value: loading,
+            onChanged: (val) {
+              setState(() {
+                loading = val;
+              });
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(CTheme.padding),
-            child: SizedBox(
-              width: double.infinity,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Text(
-                      "Filled",
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(CTheme.padding),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Column(
+                    children: [
+                      CButton.input(
+                        child: const Text("A input styled button"),
+                        onPressed: () {
+                          Map datas = {};
+                          print(datas["123"].toString());
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Text(
+                          "Filled",
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: CouverTheme.of(context).pagePadding),
+                        child: Text(
+                          "Circle (Icon)",
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                      ),
+                      Wrap(
+                        children: ButtonDemoConfig.build()
+                            .map(
+                              (e) => CButton.circle(
+                                text: "Filled${e.extraText}",
+                                gradient: e.gradient,
+                                onPressed: () => {},
+                                loading: loading,
+                                size: e.size,
+                                margin: const EdgeInsets.only(bottom: 6),
+                                disabled: e.disabled,
+                                platformStyle: e.platformStyle,
+                                color: e.color,
+                                child: const Icon(Icons.read_more),
+                                // child: e.child,
+                              ),
+                            )
+                            .toList(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Text(
+                          "Filled",
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                      ),
+                      ...ButtonDemoConfig.build()
+                          .map((e) => CButton.filled(
+                                text: "Filled${e.extraText}",
+                                gradient: e.gradient,
+                                onPressed: () => {},
+                                loading: loading,
+                                size: e.size,
+                                margin: const EdgeInsets.only(bottom: 6),
+                                disabled: e.disabled,
+                                platformStyle: e.platformStyle,
+                                color: e.color,
+                                child: e.child,
+                              ))
+                          .toList(),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16, top: 32),
+                        child: Text(
+                          "Text",
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                      ),
+                      ...ButtonDemoConfig.build()
+                          .map((e) => CButton(
+                                text: "Text${e.extraText}",
+                                gradient: e.gradient,
+                                onPressed: () => {},
+                                loading: loading,
+                                size: e.size,
+                                margin: const EdgeInsets.only(bottom: 6),
+                                disabled: e.disabled,
+                                platformStyle: e.platformStyle,
+                                color: e.color,
+                                child: e.child,
+                              ))
+                          .toList(),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16, top: 32),
+                        child: Text(
+                          "Outlined",
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                      ),
+                      ...ButtonDemoConfig.build()
+                          .map((e) => CButton.outlined(
+                                text: "Outlined${e.extraText}",
+                                gradient: e.gradient,
+                                onPressed: () => {},
+                                loading: loading,
+                                size: e.size,
+                                margin: const EdgeInsets.only(bottom: 6),
+                                disabled: e.disabled,
+                                platformStyle: e.platformStyle,
+                                color: e.color,
+                                child: e.child,
+                              ))
+                          .toList(),
+                    ],
                   ),
-                  CButton.input(
-                    child: const Text("A input styled button"),
-                    onPressed: () {
-                      Map datas = {};
-                      print(datas["123"].toString());
-                    },
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: CouverTheme.of(context).pagePadding),
-                    child: Text(
-                      "Circle (Icon)",
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ),
-                  CButton.circle(
-                    onPressed: () => {},
-                    color: Colors.red,
-                    child: const Icon(Icons.read_more),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Text(
-                      "Filled",
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ),
-                  ...ButtonDemoConfig.build()
-                      .map((e) => CButton.filled(
-                            text: "Filled${e.extraText}",
-                            gradient: e.gradient,
-                            onPressed: () => {},
-                            loading: e.loading,
-                            size: e.size,
-                            margin: const EdgeInsets.only(bottom: 6),
-                            disabled: e.disabled,
-                            style: e.platformStyle,
-                            child: e.child,
-                          ))
-                      .toList(),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16, top: 32),
-                    child: Text(
-                      "Text",
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ),
-                  ...ButtonDemoConfig.build()
-                      .map((e) => CButton(
-                            text: "Text${e.extraText}",
-                            gradient: e.gradient,
-                            onPressed: () => {},
-                            loading: e.loading,
-                            size: e.size,
-                            margin: const EdgeInsets.only(bottom: 6),
-                            disabled: e.disabled,
-                            style: e.platformStyle,
-                            child: e.child,
-                          ))
-                      .toList(),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16, top: 32),
-                    child: Text(
-                      "Outlined",
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ),
-                  ...ButtonDemoConfig.build()
-                      .map((e) => CButton.outlined(
-                            text: "Outlined${e.extraText}",
-                            gradient: e.gradient,
-                            onPressed: () => {},
-                            loading: e.loading,
-                            size: e.size,
-                            margin: const EdgeInsets.only(bottom: 6),
-                            disabled: e.disabled,
-                            style: e.platformStyle,
-                            child: e.child,
-                          ))
-                      .toList(),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),

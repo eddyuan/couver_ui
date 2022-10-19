@@ -2,12 +2,56 @@ import 'package:couver_ui/couver_util.dart';
 import "package:flutter/material.dart";
 
 import 'theme.couver_theme.dart';
-import '../enums/enum.c_button.dart';
+// import '../enums/enum.c_button.dart';
 import '../enums/enum.platform_style.dart';
 import 'widget.c_elevated_button.dart';
 import 'widget.c_icon_button.dart';
 import 'widget.c_outlined_button.dart';
 import 'widget.c_text_button.dart';
+
+class BtnSize {
+  const BtnSize({
+    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    double? minWidth,
+    this.minHeight = 38,
+    this.fontSize = 16,
+    this.fontWeight = FontWeight.w500,
+  }) : minWidth = minWidth ?? minHeight;
+
+  final EdgeInsets padding;
+  final double minWidth;
+  final double minHeight;
+  final double fontSize;
+  final FontWeight fontWeight;
+
+  static BtnSize xl = const BtnSize(
+    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    minHeight: 56,
+    fontSize: 18,
+  );
+  static BtnSize lg = const BtnSize(
+    minHeight: 48,
+  );
+  static BtnSize md = const BtnSize(
+    minHeight: 44,
+  );
+  static BtnSize df = const BtnSize();
+  static BtnSize sm = const BtnSize(
+    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+    minHeight: 32,
+    fontSize: 14,
+  );
+  static BtnSize xs = const BtnSize(
+    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+    minHeight: 28,
+    fontSize: 13,
+  );
+  static BtnSize mini = const BtnSize(
+    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+    minHeight: 20,
+    fontSize: 13,
+  );
+}
 
 enum _ButtonType {
   text,
@@ -312,10 +356,10 @@ class CButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BtnSize targetBtnSize = size ?? BtnSize.df;
-    final double targetMinHeight = minHeight ?? targetBtnSize.value;
-    final double targetMinWidth = minWidth ?? targetMinHeight;
+    final double targetMinHeight = minHeight ?? targetBtnSize.minHeight;
+    final double targetMinWidth = minWidth ?? targetBtnSize.minWidth;
 
-    final double targetFontSize = fontSize ?? targetBtnSize.textSize;
+    final double targetFontSize = fontSize ?? targetBtnSize.fontSize;
     final FontWeight targetFontWeight = fontWeight ?? targetBtnSize.fontWeight;
     final TextStyle targetTextStyle = TextStyle(
       fontSize: targetFontSize,

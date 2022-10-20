@@ -2,7 +2,6 @@ import 'package:couver_ui/couver_util.dart';
 import "package:flutter/material.dart";
 
 import 'theme.couver_theme.dart';
-// import '../enums/enum.c_button.dart';
 import '../enums/enum.platform_style.dart';
 import 'widget.c_elevated_button.dart';
 import 'widget.c_icon_button.dart';
@@ -24,33 +23,65 @@ class BtnSize {
   final double fontSize;
   final FontWeight fontWeight;
 
-  static BtnSize xl = const BtnSize(
+  static const BtnSize xl = BtnSize(
     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
     minHeight: 56,
     fontSize: 18,
   );
-  static BtnSize lg = const BtnSize(
+  static const BtnSize lg = BtnSize(
     minHeight: 48,
   );
-  static BtnSize md = const BtnSize(
+  static const BtnSize md = BtnSize(
     minHeight: 44,
   );
-  static BtnSize df = const BtnSize();
-  static BtnSize sm = const BtnSize(
+  static const BtnSize df = BtnSize();
+  static const BtnSize sm = BtnSize(
     padding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
     minHeight: 32,
     fontSize: 14,
   );
-  static BtnSize xs = const BtnSize(
+  static const BtnSize xs = BtnSize(
     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
     minHeight: 28,
     fontSize: 13,
   );
-  static BtnSize mini = const BtnSize(
+  static const BtnSize mini = BtnSize(
     padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
     minHeight: 20,
     fontSize: 13,
   );
+  static const BtnSize input = BtnSize(
+    minHeight: 60,
+    fontSize: 15,
+    fontWeight: FontWeight.normal,
+  );
+  static const BtnSize inputDense = BtnSize(
+    minHeight: 54,
+    fontSize: 15,
+    fontWeight: FontWeight.normal,
+  );
+  static const BtnSize iconButton = BtnSize(
+    minHeight: kMinInteractiveDimension,
+  );
+  static const BtnSize fitContent = BtnSize(
+    minHeight: 0,
+    padding: EdgeInsets.zero,
+  );
+  BtnSize copyWith({
+    EdgeInsets? padding,
+    double? minWidth,
+    double? minHeight,
+    double? fontSize,
+    FontWeight? fontWeight,
+  }) {
+    return BtnSize(
+      padding: padding ?? this.padding,
+      minWidth: minWidth ?? minHeight ?? this.minWidth,
+      minHeight: minHeight ?? minWidth ?? this.minHeight,
+      fontSize: fontSize ?? this.fontSize,
+      fontWeight: fontWeight ?? this.fontWeight,
+    );
+  }
 }
 
 enum _ButtonType {
@@ -65,9 +96,8 @@ class CButton extends StatelessWidget {
   const CButton({
     Key? key,
     this.child,
-    this.padding,
+    // this.padding,
     this.margin,
-    // this.pressedOpacity,
     this.borderRadius,
     this.alignment = Alignment.center,
     this.gradient,
@@ -78,19 +108,10 @@ class CButton extends StatelessWidget {
     this.backgroundColor,
     this.disabledColor,
     this.text,
-    this.size,
-    this.minWidth,
-    this.minHeight,
+    this.size = BtnSize.df,
     this.round = true,
     this.platformStyle = PlatformStyle.cupertino,
     this.onPressed,
-    this.fontSize,
-    this.fontWeight,
-    // this.translucent,
-    // this.borderwidth = 0,
-    // this.circle = false,
-    // this.filled = false,
-    // this.circleSize,
     this.shrinkWhenLoading,
     this.tapTargetSize,
   })  : borderColor = null,
@@ -103,7 +124,7 @@ class CButton extends StatelessWidget {
   const CButton.filled({
     Key? key,
     this.child,
-    this.padding,
+    // this.padding,
     this.margin,
     // this.pressedOpacity,
     this.borderRadius,
@@ -116,19 +137,10 @@ class CButton extends StatelessWidget {
     this.backgroundColor,
     this.disabledColor,
     this.text,
-    this.size,
-    this.minWidth,
-    this.minHeight,
+    this.size = BtnSize.df,
     this.round = true,
     this.platformStyle = PlatformStyle.auto,
     this.onPressed,
-    this.fontSize,
-    this.fontWeight,
-    // this.translucent,
-    // this.borderwidth = 0,
-    // this.circle = false,
-    // this.filled = true,
-    // this.circleSize,
     this.shrinkWhenLoading,
     this.tapTargetSize,
   })  : borderColor = null,
@@ -141,9 +153,8 @@ class CButton extends StatelessWidget {
   const CButton.outlined({
     Key? key,
     this.child,
-    this.padding,
+    // this.padding,
     this.margin,
-    // this.pressedOpacity,
     this.borderRadius,
     this.alignment = Alignment.center,
     this.gradient,
@@ -154,19 +165,11 @@ class CButton extends StatelessWidget {
     this.backgroundColor,
     this.disabledColor,
     this.text,
-    this.size,
-    this.minWidth,
-    this.minHeight,
+    this.size = BtnSize.df,
     this.round = true,
     this.platformStyle = PlatformStyle.auto,
     this.onPressed,
     this.borderwidth = 1,
-    this.fontSize,
-    this.fontWeight,
-    // this.translucent,
-    // this.circle = false,
-    // this.filled = false,
-    // this.circleSize,
     this.shrinkWhenLoading,
     this.tapTargetSize,
     this.borderColor,
@@ -175,36 +178,21 @@ class CButton extends StatelessWidget {
         icon = null,
         super(key: key);
 
-  const CButton.circle({
+  CButton.circle({
     Key? key,
     this.child,
-    this.padding,
+    // this.padding,
     this.margin,
-    // this.pressedOpacity,
-    // this.borderRadius,
     this.alignment = Alignment.center,
     this.gradient,
     this.disabled = false,
     this.loading,
     this.color,
-    // this.foregroundColor,
-    // this.backgroundColor,
     this.disabledColor,
     this.text,
     double? size,
-    // this.size,
-    // this.minWidth,
-    // this.minHeight,
-    // this.round = true,
     this.platformStyle = PlatformStyle.auto,
     this.onPressed,
-    // this.borderwidth = 0,
-    // this.fontSize,
-    // this.fontWeight,
-    // this.translucent,
-    // this.circle = true,
-    // this.filled = false,
-    // this.circleSize,
     this.splashRadius,
     this.icon,
     // this.tapTargetSize,
@@ -213,21 +201,17 @@ class CButton extends StatelessWidget {
         shrinkWhenLoading = false,
         round = true,
         borderwidth = 0,
-        fontSize = null,
-        fontWeight = null,
         borderRadius = null,
         foregroundColor = null,
         backgroundColor = null,
         tapTargetSize = null,
-        minWidth = size,
-        minHeight = null,
-        size = null,
+        size = size != null ? BtnSize(minHeight: size) : BtnSize.iconButton,
         super(key: key);
 
   const CButton.input({
     Key? key,
     this.child,
-    this.padding,
+    // this.padding,
     this.margin,
     // this.pressedOpacity,
     this.borderRadius,
@@ -240,15 +224,15 @@ class CButton extends StatelessWidget {
     this.backgroundColor,
     this.disabledColor,
     this.text,
-    this.size,
-    this.minWidth,
+    // this.size,
+    // this.minWidth,
     double? minHeight,
     this.round = true,
     this.platformStyle = PlatformStyle.auto,
     this.onPressed,
     this.borderwidth = 1,
-    this.fontSize,
-    this.fontWeight,
+    // this.fontSize,
+    // this.fontWeight,
     // this.translucent,
     // this.circle = false,
     // this.filled = false,
@@ -258,7 +242,7 @@ class CButton extends StatelessWidget {
     this.borderColor,
     bool isDense = false,
   })  : splashRadius = null,
-        minHeight = minHeight ?? (isDense ? 54 : 60),
+        size = isDense ? BtnSize.inputDense : BtnSize.input,
         _type = _ButtonType.input,
         icon = null,
         super(key: key);
@@ -266,7 +250,7 @@ class CButton extends StatelessWidget {
   /// [child] will override [text]
   final Widget? child;
 
-  final EdgeInsetsGeometry? padding;
+  // final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
   final VoidCallback? onPressed;
 
@@ -304,13 +288,7 @@ class CButton extends StatelessWidget {
   final String? text;
 
   /// Defined the size and text size of the button
-  final BtnSize? size;
-
-  /// Manually set [minWidth], override size
-  final double? minWidth;
-
-  /// Manually set [minHeight], override size
-  final double? minHeight;
+  final BtnSize size;
 
   /// A radius will be 200 if rounded, 8 if not
   final bool round;
@@ -320,24 +298,6 @@ class CButton extends StatelessWidget {
 
   /// Override the width of the outline
   final double borderwidth;
-
-  /// Override the fontSize of the text and icon
-  final double? fontSize;
-
-  /// Override the fontWeight of the text
-  final FontWeight? fontWeight;
-
-  /// Gives a solid background like ElevatedButton
-  // final bool filled;
-
-  /// Gives a translucent background
-  // final double? translucent;
-
-  /// Make the button a circle and 8dp larger in size, similar with icon button
-  // final bool circle;
-
-  /// Set a fixed size for the circle
-  // final double? circleSize;
 
   /// For icon button only
   final double? splashRadius;
@@ -355,12 +315,12 @@ class CButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BtnSize targetBtnSize = size ?? BtnSize.df;
-    final double targetMinHeight = minHeight ?? targetBtnSize.minHeight;
-    final double targetMinWidth = minWidth ?? targetBtnSize.minWidth;
+    // final BtnSize targetBtnSize = size ;
+    final double targetMinHeight = size.minHeight;
+    final double targetMinWidth = size.minWidth;
 
-    final double targetFontSize = fontSize ?? targetBtnSize.fontSize;
-    final FontWeight targetFontWeight = fontWeight ?? targetBtnSize.fontWeight;
+    final double targetFontSize = size.fontSize;
+    final FontWeight targetFontWeight = size.fontWeight;
     final TextStyle targetTextStyle = TextStyle(
       fontSize: targetFontSize,
       fontWeight: targetFontWeight,
@@ -387,8 +347,8 @@ class CButton extends StatelessWidget {
 
     final Size minimiumSize_ = Size(targetMinWidth, targetMinHeight);
 
-    final EdgeInsetsGeometry targetPadding = padding ??
-        (_type == _ButtonType.icon ? EdgeInsets.zero : targetBtnSize.padding);
+    final EdgeInsetsGeometry targetPadding =
+        (_type == _ButtonType.icon ? EdgeInsets.zero : size.padding);
 
     final MaterialTapTargetSize targetTapSize = tapTargetSize ??
         (targetMinHeight > 36
@@ -437,7 +397,7 @@ class CButton extends StatelessWidget {
         ((targetBColor?.alpha ?? 255) < 255) ? 0 : null;
 
     Widget buildIconButton(BuildContext context) {
-      final double? minSize_ = minWidth;
+      final double? minSize_ = size.minHeight;
       return CIconButton(
         loading: loading,
         icon: targetChild,
@@ -445,7 +405,8 @@ class CButton extends StatelessWidget {
         color: targetFColor,
         padding: targetPadding,
         constraints: minSize_ != null
-            ? BoxConstraints(minWidth: minSize_, minHeight: minSize_)
+            ? BoxConstraints(
+                minWidth: targetMinWidth, minHeight: targetMinHeight)
             : null,
         platformStyle: platformStyle,
         splashRadius: splashRadius,
@@ -454,10 +415,6 @@ class CButton extends StatelessWidget {
     }
 
     Widget buildElevatedButton(BuildContext context) {
-      // Color? translucentColor;
-      // if (translucent != null) {
-      //   translucentColor = color?.withOpacity(translucent!);
-      // }
       return CElevatedButton(
         loading: loading,
         onPressed: targetOnPressed,
@@ -521,12 +478,11 @@ class CButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(
                 CouverTheme.of(context).inputBorderRadius),
           ),
-          padding: padding ??
-              EdgeInsets.symmetric(
-                horizontal: CouverTheme.of(context).gutter * 3,
-                vertical: CouverTheme.of(context).gutter * 2,
-              ),
-          minimumSize: Size(minWidth ?? minHeight ?? 58, minHeight ?? 58),
+          padding: EdgeInsets.symmetric(
+            horizontal: CouverTheme.of(context).gutter * 3,
+            vertical: CouverTheme.of(context).gutter * 2,
+          ),
+          minimumSize: Size(targetMinWidth, targetMinHeight),
           textStyle: Theme.of(context).textTheme.bodyText1!,
           primary: gradient?.colors[0] ?? foregroundColor ?? color,
           backgroundColor: backgroundColor,

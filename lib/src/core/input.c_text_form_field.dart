@@ -725,8 +725,9 @@ class _CTextFormFieldState extends State<CTextFormField> {
         return CButton(
           text: widget.clearableText,
           onPressed: clearField,
-          size: BtnSize.xs,
-          padding: EdgeInsets.zero,
+          size: BtnSize.xs.copyWith(
+            padding: EdgeInsets.zero,
+          ),
         );
       }
       return CButton.circle(

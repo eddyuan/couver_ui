@@ -116,8 +116,7 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                       CButton.input(
                         child: const Text("A input styled button"),
                         onPressed: () {
-                          Map datas = {};
-                          print(datas["123"].toString());
+                          // Map datas = {};
                         },
                       ),
                       Padding(
@@ -167,7 +166,7 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                                 gradient: e.gradient,
                                 onPressed: () => {},
                                 loading: loading,
-                                size: e.size,
+                                size: e.size ?? const BtnSize(),
                                 margin: const EdgeInsets.only(bottom: 6),
                                 disabled: e.disabled,
                                 platformStyle: e.platformStyle,
@@ -188,7 +187,7 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                                 gradient: e.gradient,
                                 onPressed: () => {},
                                 loading: loading,
-                                size: e.size,
+                                size: e.size ?? const BtnSize(),
                                 margin: const EdgeInsets.only(bottom: 6),
                                 disabled: e.disabled,
                                 platformStyle: e.platformStyle,
@@ -209,7 +208,7 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                                 gradient: e.gradient,
                                 onPressed: () => {},
                                 loading: loading,
-                                size: e.size,
+                                size: e.size ?? const BtnSize(),
                                 margin: const EdgeInsets.only(bottom: 6),
                                 disabled: e.disabled,
                                 platformStyle: e.platformStyle,

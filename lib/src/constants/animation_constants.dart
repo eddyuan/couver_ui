@@ -11,3 +11,8 @@
 //   static const Duration animationProgressDuration =
 //       Duration(milliseconds: 1200);
 // }
+
+import 'package:flutter/material.dart';
+
+const Duration kAnimationProgressDuration = Duration(milliseconds: 400);
+const Curve kAnimationProgressCurve = Curves.ease;

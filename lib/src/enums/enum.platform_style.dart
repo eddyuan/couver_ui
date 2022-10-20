@@ -10,7 +10,7 @@ extension PlatformStyleExtension on PlatformStyle {
       case PlatformStyle.material:
         return false;
       default:
-        return Platform.isIOS;
+        return Platform.isIOS || Platform.isMacOS;
     }
   }
 }

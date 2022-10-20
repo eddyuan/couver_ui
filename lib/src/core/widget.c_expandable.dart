@@ -183,11 +183,12 @@ class _CExpandableState extends State<CExpandable> {
         widget.useButton
             ? CButton(
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                minHeight: widget.buttonMinHeight,
                 borderRadius: 0,
                 onPressed: onToggle,
                 color: widget.buttonColor,
-                size: widget.buttonSize ?? BtnSize.sm,
+                size: (widget.buttonSize ?? BtnSize.sm).copyWith(
+                  minHeight: widget.buttonMinHeight,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

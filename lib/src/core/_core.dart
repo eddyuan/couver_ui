@@ -8,6 +8,10 @@ export 'input.c_text_form_field.dart';
 export 'theme.couver_theme.dart';
 export 'theme.c_button_style.dart';
 
+// Animated Widgets
+export 'flipboard/widget.c_flip_board.dart';
+export 'flipboard/widget.c_flip_numbers.dart';
+
 export 'widget.c_appbar.dart';
 export 'widget.c_back_button.dart';
 export 'widget.c_border_painter.dart';

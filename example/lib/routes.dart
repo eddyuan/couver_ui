@@ -1,9 +1,30 @@
+import 'package:example/screens/flip_boards_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/buttons_screen.dart';
 import 'screens/cards_screen.dart';
 import 'screens/home_screen.dart';
-import 'screens/progress_bar_screen.dart';
+import 'screens/progress_indicators_screen.dart';
+
+extension StringExtension on String {
+  String capitalize() {
+    if (isNotEmpty) {
+      return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
+    }
+    return this;
+  }
+
+  String toRouteName() {
+    if (isNotEmpty) {
+      return replaceAll("/", "")
+          .split("_")
+          .map((e) => e.capitalize())
+          .toList()
+          .join(" ");
+    }
+    return this;
+  }
+}
 
 class RouteButtonConfig {
   final String routeName;
@@ -11,7 +32,7 @@ class RouteButtonConfig {
   const RouteButtonConfig(this.routeName, this.displayName);
   factory RouteButtonConfig.fromRouteName(String val) => RouteButtonConfig(
         val,
-        val.replaceAll("/", ""),
+        val.toRouteName(),
       );
 }
 
@@ -20,7 +41,8 @@ class AppRoutes {
     '/': (context) => const HomeScreen(),
     '/buttons': (context) => const ButtonsScreen(),
     '/cards': (context) => const CardsScreen(),
-    '/progress_bars': (context) => const ProgressBarScreen(),
+    '/progress_indicators': (context) => const ProgressIndicatorsScreen(),
+    '/flip_boards': (context) => const FlipBoardsScreen(),
   };
 
   static List<RouteButtonConfig> get buttons =>

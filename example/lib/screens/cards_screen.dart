@@ -1,4 +1,5 @@
 import 'package:couver_ui/couver_ui.dart';
+import 'package:example/screens/screen.dart';
 import 'package:flutter/material.dart';
 
 class CardsScreen extends StatelessWidget {
@@ -6,9 +7,8 @@ class CardsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CAppBar(),
-      body: ListView(
+    return Screen(
+      child: Column(
         children: [],
       ),
     );

@@ -82,6 +82,28 @@ class BtnSize {
       fontWeight: fontWeight ?? this.fontWeight,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is BtnSize &&
+        other.padding == padding &&
+        other.minWidth == minWidth &&
+        other.minHeight == minHeight &&
+        other.fontSize == fontSize &&
+        other.fontWeight == fontWeight;
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(padding, minWidth, minHeight, fontSize, fontWeight);
+  // int get hashCode => super.hashCode;
+
 }
 
 enum _ButtonType {
@@ -377,7 +399,7 @@ class CButton extends StatelessWidget {
           if (alpha < 99) {
             targetFColor = targetBColor.withOpacity(1);
           } else {
-            targetFColor = Theme.of(context).colorScheme.onSurface;
+            targetFColor = Colors.black;
           }
         }
       }

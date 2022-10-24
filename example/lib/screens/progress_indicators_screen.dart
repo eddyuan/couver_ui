@@ -1,14 +1,16 @@
 import 'package:couver_ui/couver_ui.dart';
+import 'package:example/screens/screen.dart';
 import 'package:flutter/material.dart';
 
-class ProgressBarScreen extends StatefulWidget {
-  const ProgressBarScreen({super.key});
+class ProgressIndicatorsScreen extends StatefulWidget {
+  const ProgressIndicatorsScreen({super.key});
 
   @override
-  State<ProgressBarScreen> createState() => _ProgressBarScreenState();
+  State<ProgressIndicatorsScreen> createState() =>
+      _ProgressIndicatorsScreenState();
 }
 
-class _ProgressBarScreenState extends State<ProgressBarScreen> {
+class _ProgressIndicatorsScreenState extends State<ProgressIndicatorsScreen> {
   double _value = 0.1;
   bool indeterminate = false;
   double? get value => indeterminate ? null : _value;
@@ -29,24 +31,28 @@ class _ProgressBarScreenState extends State<ProgressBarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CAppBar(),
-      body: ListView(
+    return Screen(
+      actions: [
+        CListTile(
+          dense: true,
+          title: const Text("Add Value"),
+          subtitle: Text(value?.toStringAsFixed(5) ?? value.toString()),
+          trailing: CButton.filled(
+            onPressed: addVal,
+            child: Row(children: const [Icon(Icons.add), Text("Add")]),
+          ),
+        ),
+        CListTile(
+          dense: true,
+          title: const Text("Indeterminate"),
+          trailing: Switch.adaptive(
+            value: indeterminate,
+            onChanged: (val) => {toggleIndeterminate()},
+          ),
+        ),
+      ],
+      child: Column(
         children: [
-          CListTile(
-            title: const Text("Add Value"),
-            subtitle: Text(value?.toStringAsFixed(5) ?? value.toString()),
-            trailing: Icon(Icons.add),
-            onTap: addVal,
-          ),
-          CListTile(
-            title: const Text("Indeterminate"),
-            trailing: Switch.adaptive(
-              value: indeterminate,
-              onChanged: (val) => {},
-            ),
-            onTap: toggleIndeterminate,
-          ),
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(

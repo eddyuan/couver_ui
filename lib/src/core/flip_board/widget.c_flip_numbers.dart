@@ -23,6 +23,9 @@ class CFlipNumbers extends StatelessWidget {
     this.maxItemWidth = 50,
     this.maxItemGap = 8,
     this.keepAspectRatio = true,
+    this.animateOnChange = true,
+    this.animateOnInit = true,
+    this.invertAnimationOrder = false,
   });
 
   // Specific to numbers -------------------------------------------------------
@@ -44,7 +47,7 @@ class CFlipNumbers extends StatelessWidget {
   /// Do not use boxshadow in the [borderBuilder]
   final Widget Function(
     BuildContext context,
-    Widget child,
+    Widget? child,
     BoxConstraints itemConstrains,
   )? boardBuilder;
 
@@ -77,9 +80,15 @@ class CFlipNumbers extends StatelessWidget {
 
   final bool keepAspectRatio;
 
+  final bool animateOnChange;
+  final bool animateOnInit;
+
+  /// If true, the number on the right will finish animation first
+  final bool invertAnimationOrder;
+
   Widget _defaultBoardBuilder(
     BuildContext context,
-    Widget child,
+    Widget? child,
     BoxConstraints constraints,
   ) {
     return Container(
@@ -91,9 +100,11 @@ class CFlipNumbers extends StatelessWidget {
     );
   }
 
+  /// If value is null, board will return a null child,
+  /// so you can set different style of the board for empty value
   Widget _boardBuilder(
     BuildContext context,
-    Widget child,
+    Widget? child,
     BoxConstraints constraints,
   ) {
     return boardBuilder?.call(context, child, constraints) ??
@@ -174,18 +185,25 @@ class CFlipNumbers extends StatelessWidget {
             (i) => Padding(
               padding:
                   i > 0 ? EdgeInsets.only(left: targetGap) : EdgeInsets.zero,
-              child: CFlipBoard(
+              child: CFlipBoard.builder(
                 reflectionColor: reflectionColor,
                 shadeColor: shadeColor,
                 targetIndex: indexes[i],
                 durationPerFlip: durationPerFlip,
                 maxLoop: indexes.length - i + 6,
-                loopsOnInit: indexes.length - i - 1,
-                boardBuilder: (context, child) => ConstrainedBox(
-                  constraints: itemConstrains,
+                loopsOnInit:
+                    invertAnimationOrder ? i : (indexes.length - i - 1),
+                loopsOnChange: -1,
+                boardBuilder: (context, child) => SizedBox(
+                  width: itemConstrains.maxWidth,
+                  height: itemConstrains.maxHeight,
                   child: _boardBuilder(context, child, itemConstrains),
                 ),
-                items: numberWidgets,
+                itemBuilder: (index) => numberWidgets[index],
+                itemCount: numberWidgets.length,
+                animateOnChange: animateOnChange,
+                animateOnInit: animateOnInit,
+                // items: numberWidgets,
               ),
             ),
           ),

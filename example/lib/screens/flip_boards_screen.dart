@@ -11,11 +11,12 @@ class FlipBoardsScreen extends StatefulWidget {
 
 class _FlipBoardsScreenState extends State<FlipBoardsScreen> {
   int flipBoardIndex = 1;
+  int flipNumbersValue = 12322;
 
   @override
   Widget build(BuildContext context) {
     final items = List.generate(
-      20,
+      10,
       (index) => FittedBox(
         child: Text(
           "Item $index",
@@ -35,6 +36,16 @@ class _FlipBoardsScreenState extends State<FlipBoardsScreen> {
           const SizedBox(height: 16),
           Text("Index: $flipBoardIndex"),
           const SizedBox(height: 16),
+          Slider(
+            value: flipBoardIndex.toDouble(),
+            min: -100,
+            max: 100,
+            onChanged: (value) {
+              setState(() {
+                flipBoardIndex = value.round();
+              });
+            },
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -47,8 +58,9 @@ class _FlipBoardsScreenState extends State<FlipBoardsScreen> {
                 },
               ),
               const SizedBox(width: 16),
-              CFlipBoard(
-                items: items,
+              CFlipBoard.builder(
+                itemBuilder: (index) => items[index],
+                itemCount: items.length,
                 targetIndex: flipBoardIndex,
                 shadeColor: Colors.black26,
                 reflectionColor: Colors.white54,
@@ -59,14 +71,16 @@ class _FlipBoardsScreenState extends State<FlipBoardsScreen> {
                   decoration: BoxDecoration(
                     color: Colors.grey.shade300,
                     borderRadius: BorderRadius.circular(8),
-                    border: const GradientBoxBorder(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.blue,
-                          Colors.red,
-                        ],
-                        begin: Alignment.topCenter,
-                      ),
+                    border: GradientBoxBorder(
+                      gradient: child != null
+                          ? const LinearGradient(
+                              colors: [
+                                Colors.blue,
+                                Colors.red,
+                              ],
+                              begin: Alignment.topCenter,
+                            )
+                          : null,
                       width: 2,
                     ),
                   ),
@@ -81,11 +95,32 @@ class _FlipBoardsScreenState extends State<FlipBoardsScreen> {
                 onPressed: () {
                   setState(() {
                     flipBoardIndex++;
-                    // flipBoardIndex = (flipBoardIndex + 1) ;
                   });
                 },
               ),
             ],
+          ),
+          Slider(
+            value: flipNumbersValue.toDouble(),
+            min: 0,
+            max: 100000,
+            onChanged: (value) {
+              setState(() {
+                flipNumbersValue = value.round();
+              });
+            },
+          ),
+          CFlipNumbers(
+            digits: 5,
+            value: flipNumbersValue,
+            showZeroAtBegining: false,
+            boardBuilder: (context, child, itemConstrains) => Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: child != null ? Colors.white : Colors.transparent,
+              ),
+              child: child,
+            ),
           ),
         ],
       ),

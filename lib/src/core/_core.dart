@@ -9,8 +9,11 @@ export 'theme.couver_theme.dart';
 export 'theme.c_button_style.dart';
 
 // Animated Widgets
-export 'flipboard/widget.c_flip_board.dart';
-export 'flipboard/widget.c_flip_numbers.dart';
+export 'flip_board/widget.c_flip_board.dart';
+export 'flip_board/widget.c_flip_numbers.dart';
+
+export 'flip_card/widget.flip_card.dart';
+export 'flip_card/widget.flip_cards.dart';
 
 export 'widget.c_appbar.dart';
 export 'widget.c_back_button.dart';

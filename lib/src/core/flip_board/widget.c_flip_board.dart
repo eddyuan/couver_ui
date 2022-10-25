@@ -5,10 +5,59 @@ import "package:flutter/material.dart";
 const int _kMaxLoopMin = 100;
 const int _kMaxLoopMax = 100000;
 
-class CFlipBoard extends StatefulWidget {
-  const CFlipBoard({
+class CFlipBoard extends _CFlipBoard {
+  CFlipBoard({
+    super.key,
+    required List<Widget> items,
+    super.loopsOnInit,
+    super.loopsOnChange,
+    super.maxLoop = 100,
+    super.targetIndex,
+    super.durationPerAnimation,
+    super.durationPerFlip,
+    super.boardBuilder,
+    super.containerDecoration,
+    super.reflectionColor,
+    super.shadeColor,
+    super.dividerGap,
+    super.perspective,
+    super.curve,
+    // super.singleDirection,
+    super.animateOnInit,
+    super.animateOnChange,
+  }) : super(
+          itemCount: items.length,
+          itemBuilder: (index) => items[index],
+        );
+
+  const CFlipBoard.builder({
+    super.key,
+    required super.itemCount,
+    required super.itemBuilder,
+    super.loopsOnInit,
+    super.loopsOnChange,
+    super.maxLoop = 100,
+    super.targetIndex,
+    super.durationPerAnimation,
+    super.durationPerFlip,
+    super.boardBuilder,
+    super.containerDecoration,
+    super.reflectionColor,
+    super.shadeColor,
+    super.dividerGap,
+    super.perspective,
+    super.curve,
+    // super.singleDirection,
+    super.animateOnInit,
+    super.animateOnChange,
+  });
+}
+
+abstract class _CFlipBoard extends StatefulWidget {
+  const _CFlipBoard({
     Key? key,
-    required this.items,
+    required this.itemCount,
+    required this.itemBuilder,
     this.loopsOnInit,
     this.loopsOnChange,
     this.maxLoop = 100,
@@ -22,7 +71,9 @@ class CFlipBoard extends StatefulWidget {
     this.dividerGap = 0,
     this.perspective = 0.006,
     this.curve = Curves.easeOutQuart,
-    this.singleDirection = false,
+    // this.singleDirection = false,
+    this.animateOnInit = true,
+    this.animateOnChange = true,
   })  : _maxLoop = maxLoop < _kMaxLoopMin
             ? _kMaxLoopMin
             : maxLoop > _kMaxLoopMax
@@ -33,18 +84,22 @@ class CFlipBoard extends StatefulWidget {
                 : maxLoop > _kMaxLoopMax
                     ? _kMaxLoopMax
                     : maxLoop) *
-            items.length *
+            itemCount *
             2,
         _halfLength = (maxLoop < _kMaxLoopMin
                 ? _kMaxLoopMin
                 : maxLoop > _kMaxLoopMax
                     ? _kMaxLoopMax
                     : maxLoop) *
-            items.length,
-        _absoluteIndex = (targetIndex ?? 0) % items.length,
+            itemCount,
+        _absoluteIndex = (targetIndex ?? 0) % itemCount,
         super(key: key);
 
-  final List<Widget> items;
+  // final List<Widget> items;
+
+  final Widget Function(int index) itemBuilder;
+
+  final int itemCount;
 
   /// How many times should the animation loop when init,
   /// if null, it will follow the [targetIndex]'s value as close as possible
@@ -75,7 +130,7 @@ class CFlipBoard extends StatefulWidget {
   final Duration? durationPerFlip;
 
   /// The container for the card, size is prefered
-  final Widget Function(BuildContext context, Widget child)? boardBuilder;
+  final Widget Function(BuildContext context, Widget? child)? boardBuilder;
 
   /// For the whole container including the gap
   final Decoration containerDecoration;
@@ -97,38 +152,17 @@ class CFlipBoard extends StatefulWidget {
   /// Animation curve
   final Curve curve;
 
-  final bool singleDirection;
+  // final bool singleDirection;
 
   final int _trueLength;
   final int _halfLength;
 
   final int _absoluteIndex;
 
-  int get _validTargetIndex {
-    if (targetIndex == null) {
-      return _halfLength;
-    }
-    if (targetIndex! >= _halfLength) {
-      return (targetIndex! % _halfLength) +
-          (_halfLength - items.length) +
-          _halfLength;
-    } else if (targetIndex! <= (-_halfLength)) {
-      return (-(_halfLength - items.length)) +
-          (targetIndex! % _halfLength) +
-          _halfLength;
-    }
-    return targetIndex! + _halfLength;
-  }
+  final bool animateOnInit;
+  final bool animateOnChange;
 
-  double get _targetAnimationValue {
-    return _validTargetIndex / _trueLength;
-  }
-
-  double get _endAnimationValue {
-    return (_validTargetIndex % items.length) / _trueLength;
-  }
-
-  Widget defaultBoardBuilder(BuildContext context, Widget child) {
+  Widget defaultBoardBuilder(BuildContext context, Widget? child) {
     return Container(
       width: 40,
       height: 60,
@@ -137,16 +171,17 @@ class CFlipBoard extends StatefulWidget {
     );
   }
 
-  Widget Function(BuildContext context, Widget child) get _boardBuilder =>
+  Widget Function(BuildContext context, Widget? child) get _boardBuilder =>
       boardBuilder ?? defaultBoardBuilder;
 
   @override
-  State<CFlipBoard> createState() => _CFlipBoardState();
+  State<_CFlipBoard> createState() => _CFlipBoardState();
 }
 
 // List<Widget> flipCards = List.generate(10, (index) => Text(index.toString()));
 
-class _CFlipBoardState extends State<CFlipBoard> with TickerProviderStateMixin {
+class _CFlipBoardState extends State<_CFlipBoard>
+    with TickerProviderStateMixin {
   late final AnimationController animationCtrl;
 
   /// The current animation's index
@@ -154,14 +189,18 @@ class _CFlipBoardState extends State<CFlipBoard> with TickerProviderStateMixin {
 
   /// The current animation's index relative to middle
   double get animatingIndexMiddle =>
-      animatingIndex % widget.items.length + widget._halfLength;
+      animatingIndex % widget.itemCount + widget._halfLength;
 
-  double get animatingIndexMax =>
-      animatingIndex % widget.items.length +
-      widget._trueLength -
-      widget.items.length;
+  double get animatingIndexMax {
+    final trimAnimatingIndex = animatingIndex % widget.itemCount;
+    if (trimAnimatingIndex == 0) {
+      return widget._trueLength.toDouble();
+    } else {
+      return widget._trueLength - widget.itemCount + trimAnimatingIndex;
+    }
+  }
 
-  double get animatingIndexMin => animatingIndex % widget.items.length;
+  double get animatingIndexMin => animatingIndex % widget.itemCount;
 
   /// The result of the final index after animation
   /// this is within the length of target
@@ -191,7 +230,11 @@ class _CFlipBoardState extends State<CFlipBoard> with TickerProviderStateMixin {
         setState(() {});
       });
     // setAnimationController();
-    animateToTarget();
+    animateToTarget(
+      restart: true,
+      loops: widget.loopsOnInit,
+      animate: widget.animateOnInit,
+    );
   }
 
   @override
@@ -201,7 +244,7 @@ class _CFlipBoardState extends State<CFlipBoard> with TickerProviderStateMixin {
   }
 
   @override
-  void didUpdateWidget(covariant CFlipBoard oldWidget) {
+  void didUpdateWidget(covariant _CFlipBoard oldWidget) {
     super.didUpdateWidget(oldWidget);
     bool shouldMoveToTarget = false;
     bool shouldAnimate = false;
@@ -213,7 +256,7 @@ class _CFlipBoardState extends State<CFlipBoard> with TickerProviderStateMixin {
       }
     }
     if (oldWidget.targetIndex != widget.targetIndex) {
-      shouldAnimate = true;
+      shouldAnimate = widget.animateOnChange;
       if (oldWidget.targetIndex == null) {
         loops = widget.loopsOnInit;
       } else {
@@ -236,7 +279,8 @@ class _CFlipBoardState extends State<CFlipBoard> with TickerProviderStateMixin {
         child: Stack(
           children: [
             child,
-            if ((widget.shadeColor?.opacity ?? 0) > 0)
+            if ((widget.shadeColor?.opacity ?? 0) > 0 &&
+                widget.targetIndex != null)
               Positioned.fill(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
@@ -266,7 +310,8 @@ class _CFlipBoardState extends State<CFlipBoard> with TickerProviderStateMixin {
         child: Stack(
           children: [
             child,
-            if ((widget.reflectionColor?.opacity ?? 0) > 0)
+            if ((widget.reflectionColor?.opacity ?? 0) > 0 &&
+                widget.targetIndex != null)
               Positioned.fill(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
@@ -305,77 +350,57 @@ class _CFlipBoardState extends State<CFlipBoard> with TickerProviderStateMixin {
     int? loops,
     bool animate = true,
   }) {
-    if (widget.items.isNotEmpty) {
-      if (animate) {
+    if (widget.itemCount > 0) {
+      if (animate && widget.targetIndex != null) {
         int expectedLoop = 0;
 
-        // We need to calculate expected loop if null
+        final double indexDifference =
+            ((widget.targetIndex ?? 0) - (oldTargetIndex)).toDouble();
         if (loops != null) {
           expectedLoop = loops;
         } else {
-          // the loop we want
-          double indexDifference =
-              ((widget.targetIndex ?? 0) - (oldTargetIndex)).toDouble();
+          expectedLoop = (indexDifference / widget.itemCount).truncate();
+        }
 
-          expectedLoop = (indexDifference / widget.items.length).truncate();
-          if (indexDifference < 0) {
-            expectedLoop--;
-            if (widget._absoluteIndex == (widget.items.length - 1)) {
-              expectedLoop--;
-            }
-          } else {
-            if (widget._absoluteIndex == 0) {
-              expectedLoop++;
-            }
-          }
+        if (indexDifference < 0) {
+          expectedLoop--;
         }
 
         expectedLoop = expectedLoop
             .clamp(-widget._maxLoop + 1, widget._maxLoop - 1)
             .round();
 
-        double currentAnimVal;
         double targetAnimVal;
+        final double currentAnimVal;
         if (expectedLoop < 0) {
-          currentAnimVal = animatingIndexMax / widget._trueLength;
+          if (restart) {
+            currentAnimVal = 1;
+          } else {
+            currentAnimVal = animatingIndexMax / widget._trueLength;
+          }
           targetAnimVal = (widget._trueLength +
-                  (widget.items.length * expectedLoop) +
+                  (widget.itemCount * expectedLoop) +
                   widget._absoluteIndex) /
               widget._trueLength;
+          if (targetAnimVal > currentAnimVal) {
+            targetAnimVal -= widget.itemCount / widget._trueLength;
+          }
         } else {
-          currentAnimVal = animatingIndexMin / widget._trueLength;
+          if (restart) {
+            currentAnimVal = 0;
+          } else {
+            currentAnimVal = animatingIndexMin / widget._trueLength;
+          }
           targetAnimVal =
-              ((widget.items.length * expectedLoop) + widget._absoluteIndex) /
+              ((widget.itemCount * expectedLoop) + widget._absoluteIndex) /
                   widget._trueLength;
+          if (targetAnimVal < currentAnimVal) {
+            targetAnimVal += widget.itemCount / widget._trueLength;
+          }
         }
 
-        // final double targetAtVal =
-        //     (widget._absoluteIndex + (expectedLoop * widget.items.length)) /
-        //             widget._trueLength +
-        //         0.5;
+        animationCtrl.value = currentAnimVal;
 
-        // final double targetAtVal = widget._endAnimationValue +
-        //     ((expectedLoop * widget.items.length + widget._halfLength) /
-        //         widget._trueLength);
-
-        print('widget._absoluteIndex');
-        print(widget._absoluteIndex);
-        print('expectedLoop');
-        print(expectedLoop);
-
-        // print('targetAtVal');
-        // print(targetAtVal);
-
-        print("currentAnimVal");
-        print(currentAnimVal);
-        print("targetAnimVal");
-        print(targetAnimVal);
-
-        if (restart) {
-          animationCtrl.value = 0.5;
-        } else {
-          animationCtrl.value = currentAnimVal;
-        }
         final Duration totalDuration = getTotalDuration(
             (targetAnimVal - animationCtrl.value) * widget._trueLength);
 
@@ -386,30 +411,25 @@ class _CFlipBoardState extends State<CFlipBoard> with TickerProviderStateMixin {
         );
       } else {
         setState(() {
-          animationCtrl.value = widget._endAnimationValue;
+          animationCtrl.value =
+              (widget._absoluteIndex % widget.itemCount) / widget._trueLength;
         });
       }
     }
     oldTargetIndex = widget.targetIndex ?? 0;
   }
 
-  // late final Widget Function(BuildContext context, Widget child) boardBuilder =
-  //     widget.boardBuilder ?? defaultBoardBuilder;
-
   @override
   Widget build(BuildContext context) {
     final double targetPerspective = widget.perspective.clamp(0, 0.2);
-    final int currentIndex = (animatingIndex.truncate() % widget.items.length);
-    final int nextIndex =
-        ((animatingIndex.truncate() + 1) % widget.items.length);
+    final int currentIndex = (animatingIndex.truncate() % widget.itemCount);
+    final int nextIndex = ((animatingIndex.truncate() + 1) % widget.itemCount);
 
-    final Widget currentChild = widget.targetIndex != null
-        ? widget.items[currentIndex]
-        : const SizedBox.shrink();
+    final Widget? currentChild =
+        widget.targetIndex != null ? widget.itemBuilder(currentIndex) : null;
 
-    final Widget nextChild = widget.targetIndex != null
-        ? widget.items[nextIndex]
-        : const SizedBox.shrink();
+    final Widget? nextChild =
+        widget.targetIndex != null ? widget.itemBuilder(nextIndex) : null;
 
     final Widget wrappedCurrentChild =
         widget._boardBuilder(context, currentChild);
@@ -429,11 +449,11 @@ class _CFlipBoardState extends State<CFlipBoard> with TickerProviderStateMixin {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('A: ${animationCtrl.value.toStringAsFixed(2)}'),
                 Stack(
                   children: [
                     currentChildTop,
-                    if ((animatingIndex % 1) >= 0.5)
+                    if ((animatingIndex % 1) >= 0.5 &&
+                        widget.targetIndex != null)
                       Transform(
                         transform: Matrix4.identity()
                           ..setEntry(3, 2, targetPerspective)
@@ -447,7 +467,8 @@ class _CFlipBoardState extends State<CFlipBoard> with TickerProviderStateMixin {
                 Stack(
                   children: [
                     targetChildBottom,
-                    if ((animatingIndex % 1) < 0.5)
+                    if ((animatingIndex % 1) < 0.5 &&
+                        widget.targetIndex != null)
                       Transform(
                         transform: Matrix4.identity()
                           ..setEntry(3, 2, targetPerspective)

@@ -1,4 +1,5 @@
 import 'package:example/screens/flip_boards_screen.dart';
+import 'package:example/screens/page_view_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/buttons_screen.dart';
@@ -43,6 +44,7 @@ class AppRoutes {
     '/cards': (context) => const CardsScreen(),
     '/progress_indicators': (context) => const ProgressIndicatorsScreen(),
     '/flip_boards': (context) => const FlipBoardsScreen(),
+    '/page_view': (context) => PageViewScreen(),
   };
 
   static List<RouteButtonConfig> get buttons =>

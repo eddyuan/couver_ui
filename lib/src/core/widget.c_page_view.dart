@@ -2,6 +2,7 @@ import "dart:math" as math;
 import "package:flutter/material.dart";
 import 'package:flutter/foundation.dart'
     show precisionErrorTolerance, clampDouble;
+import 'package:flutter/rendering.dart';
 
 // import 'physics.c_snap_scroll.dart';
 
@@ -596,18 +597,22 @@ class _CPageViewState extends State<CPageView> {
     required double currentPage,
     required int index,
   }) {
+    /// curpage = 1.9
+    /// index = 2
     final indexDouble = index.toDouble();
-
+    print("currentPage");
+    print(currentPage);
     double scale;
     if (widget.inactiveScale == null || currentPage == indexDouble) {
       scale = 1;
-    } else if (currentPage >= indexDouble + 1 ||
-        currentPage <= indexDouble - 1) {
+    } else if (currentPage - 1 >= indexDouble ||
+        currentPage + 1 <= indexDouble) {
       scale = widget.inactiveScale!;
     } else if (currentPage > indexDouble) {
-      scale = 1 - (widget.inactiveScale! * (currentPage % 1));
+      print((currentPage % 1));
+      scale = 1 - ((1 - widget.inactiveScale!) * (currentPage % 1));
     } else {
-      scale = 1 - (widget.inactiveScale! * (1 - (currentPage % 1)));
+      scale = 1 - ((1 - widget.inactiveScale!) * (1 - (currentPage % 1)));
     }
     return SizedBox(
       width: containerWidth,
@@ -656,8 +661,6 @@ class _CPageViewState extends State<CPageView> {
 
   @override
   Widget build(BuildContext context) {
-    // final CPageController _controller = widget.controller ?? CPageController();
-
     final double realPaddingLeft =
         math.max(0, widget.padding.left - widget.gap);
     final double realPaddingRight =
@@ -690,51 +693,95 @@ class _CPageViewState extends State<CPageView> {
 
       // _controller.itemWidth = realItemContainerWidth;
 
-      return SizedBox(
-        width: double.infinity,
-        height: widget.itemHeight + widget.padding.vertical,
-        child: NotificationListener<ScrollNotification>(
-          onNotification: (ScrollNotification notification) {
-            if (notification.depth == 0 &&
-                notification is ScrollUpdateNotification) {
-              final CPageMetrics metrics = notification.metrics as CPageMetrics;
-              // final double pageDouble = math.max(
-              //         0.0,
-              //         metrics.pixels.clamp(metrics.minScrollExtent,
-              //             metrics.maxScrollExtent + realItemContainerWidth)) /
-              //     (realItemContainerWidth);
-              final double pageDouble = metrics.page ?? 0;
-              final int pageInt = pageDouble.round();
-              if ((pageDouble - 0.1).round() != _lastReportedPage &&
-                  pageInt != _lastReportedPage) {
-                widget.onPageChanged?.call(pageInt);
+      // final CPageController _controller = (widget.controller ??
+      //     CPageController())
+      //   ..itemWidth = realItemContainerWidth;
 
-                _lastReportedPage = pageInt;
-              }
-              // print("metrics.page");
-              // print(metrics.page);
-              if (widget.inactiveScale != null) {
-                setState(() {
-                  currentPage = pageDouble;
-                });
-              }
-            }
-            return false;
-          },
-          child: ListView.custom(
-            controller: (widget.controller ?? CPageController())
-              ..itemWidth = realItemContainerWidth,
-            primary: false,
-            clipBehavior: widget.clipBehavior,
-            padding: scrollViewPadding,
-            scrollDirection: Axis.horizontal,
-            physics: const CPageScrollPhysics(),
-            childrenDelegate: _buildChildrenDelegate(
-              containerWidth: realItemContainerWidth,
-              currentPage: currentPage,
+      return Column(
+        children: [
+          Text(currentPage.toStringAsFixed(3)),
+          SizedBox(
+            width: double.infinity,
+            height: widget.itemHeight + widget.padding.vertical,
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification notification) {
+                if (notification.depth == 0 &&
+                    notification is ScrollUpdateNotification) {
+                  final CPageMetrics metrics =
+                      notification.metrics as CPageMetrics;
+                  // final double pageDouble = math.max(
+                  //         0.0,
+                  //         metrics.pixels.clamp(metrics.minScrollExtent,
+                  //             metrics.maxScrollExtent + realItemContainerWidth)) /
+                  //     (realItemContainerWidth);
+                  final double pageDouble = metrics.page ?? 0;
+                  final int pageInt = pageDouble.round();
+                  if ((pageDouble - 0.1).round() != _lastReportedPage &&
+                      pageInt != _lastReportedPage) {
+                    widget.onPageChanged?.call(pageInt);
+
+                    _lastReportedPage = pageInt;
+                  }
+                  // print("metrics.page");
+                  // print(metrics.page);
+                  if (widget.inactiveScale != null) {
+                    setState(() {
+                      currentPage = pageDouble;
+                    });
+                  }
+                }
+                return false;
+              },
+              child: Scrollable(
+                // dragStartBehavior: widget.dragStartBehavior,
+                axisDirection: AxisDirection.right,
+                controller: (widget.controller ?? CPageController())
+                  ..itemWidth = realItemContainerWidth,
+                physics: const CPageScrollPhysics(),
+                // restorationId: widget.restorationId,
+                // scrollBehavior: widget.scrollBehavior ??
+                //     ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                viewportBuilder: (
+                  BuildContext context,
+                  ViewportOffset position,
+                ) {
+                  return Viewport(
+                    anchor: scrollViewPadding.left / constraints.maxWidth,
+                    cacheExtent: 1,
+                    cacheExtentStyle: CacheExtentStyle.viewport,
+                    axisDirection: AxisDirection.right,
+                    offset: position,
+                    clipBehavior: widget.clipBehavior,
+                    slivers: <Widget>[
+                      SliverFillViewport(
+                        viewportFraction:
+                            realItemContainerWidth / constraints.maxWidth,
+                        delegate: _buildChildrenDelegate(
+                          containerWidth: realItemContainerWidth,
+                          currentPage: currentPage,
+                        ),
+                        padEnds: false,
+                      ),
+                    ],
+                  );
+                },
+              ),
+              // child: ListView.custom(
+              //   controller: (widget.controller ?? CPageController())
+              //     ..itemWidth = realItemContainerWidth,
+              //   primary: false,
+              //   clipBehavior: widget.clipBehavior,
+              //   padding: scrollViewPadding,
+              //   scrollDirection: Axis.horizontal,
+              //   physics: const CPageScrollPhysics(),
+              //   childrenDelegate: _buildChildrenDelegate(
+              //     containerWidth: realItemContainerWidth,
+              //     currentPage: currentPage,
+              //   ),
+              // ),
             ),
           ),
-        ),
+        ],
       );
     });
   }

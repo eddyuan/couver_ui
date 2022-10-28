@@ -15,7 +15,14 @@ class _PageViewScreenState extends State<PageViewScreen> {
     return List.generate(
       20,
       (index) => Container(
-        color: CTheme.rColor(index),
+        decoration: BoxDecoration(
+          color: CTheme.rColor(index),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 12,
+            ),
+          ],
+        ),
         child: Center(
           child: Text(
             index.toString(),
@@ -88,6 +95,8 @@ class _PageViewScreenState extends State<PageViewScreen> {
             controller: controller,
             itemWidth: itemWidth,
             children: buildChildren(),
+            inactiveScale: 0.9,
+            gap: 0,
           ),
           LayoutBuilder(builder: (context, constraints) {
             return Container(

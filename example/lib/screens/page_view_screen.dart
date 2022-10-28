@@ -96,7 +96,7 @@ class _PageViewScreenState extends State<PageViewScreen> {
             itemWidth: itemWidth,
             children: buildChildren(),
             inactiveScale: 0.9,
-            gap: 0,
+            // gap: 0,
           ),
           LayoutBuilder(builder: (context, constraints) {
             return Container(

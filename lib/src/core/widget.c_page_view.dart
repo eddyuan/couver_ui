@@ -505,7 +505,7 @@ class CPageView extends StatefulWidget {
     this.addAutomaticKeepAlives = true,
     this.addRepaintBoundaries = true,
     this.addSemanticIndexes = true,
-    this.clipBehavior = Clip.none,
+    this.clipBehavior = Clip.hardEdge,
     this.inactiveScale,
   })  : itemBuilder = null,
         itemCount = children.length,
@@ -528,7 +528,7 @@ class CPageView extends StatefulWidget {
     this.addAutomaticKeepAlives = true,
     this.addRepaintBoundaries = true,
     this.addSemanticIndexes = true,
-    this.clipBehavior = Clip.none,
+    this.clipBehavior = Clip.hardEdge,
     this.inactiveScale,
   })  : children = const [],
         // childrenBuilder = null,
@@ -734,6 +734,7 @@ class _CPageViewState extends State<CPageView> {
             controller: (widget.controller ?? CPageController())
               ..itemWidth = realItemContainerWidth,
             physics: const CPageScrollPhysics(),
+            clipBehavior: widget.clipBehavior,
             // restorationId: widget.restorationId,
             // scrollBehavior: widget.scrollBehavior ??
             //     ScrollConfiguration.of(context).copyWith(scrollbars: false),

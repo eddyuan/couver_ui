@@ -76,8 +76,8 @@ class BtnSize {
   }) {
     return BtnSize(
       padding: padding ?? this.padding,
-      minWidth: minWidth ?? minHeight ?? this.minWidth,
-      minHeight: minHeight ?? minWidth ?? this.minHeight,
+      minWidth: minWidth ?? this.minWidth,
+      minHeight: minHeight ?? this.minHeight,
       fontSize: fontSize ?? this.fontSize,
       fontWeight: fontWeight ?? this.fontWeight,
     );

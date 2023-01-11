@@ -176,6 +176,7 @@ class _CExpandableState extends State<CExpandable> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (widget.expandPosition == ExpandPosition.top) _buildExpansion(),

@@ -31,5 +31,6 @@ export 'widget.c_outlined_button.dart';
 export 'widget.c_page_view.dart';
 // export 'widget.c_progress_bar.dart';
 export 'widget.c_progress_indicator.dart' hide IndicatorGapShape;
+export 'widget.c_radio_icon.dart';
 export 'widget.c_text_button.dart';
 export 'widget.gradient_text.dart';

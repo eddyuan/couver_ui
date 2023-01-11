@@ -533,7 +533,6 @@ class CButtonStyle with Diagnosticable {
 
   /// Linearly interpolate between two [CButtonStyle]s.
   static CButtonStyle? lerp(CButtonStyle? a, CButtonStyle? b, double t) {
-    assert(t != null);
     if (a == null && b == null) {
       return null;
     }

@@ -1,5 +1,6 @@
 // import 'package:couver_app/utils/helpers.dart';
 // import 'package:couver_app/widgets/widgets.dart';
+import 'package:couver_ui/src/core/widget.c_radio_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -10,7 +11,7 @@ class CListTileSkeletonOption {
     this.titleWidth = 0.4,
     this.subtitleWidth = 0.6,
     this.avatarSize = const Size(36, 36),
-    this.showAvater = true,
+    this.showAvatar = true,
     this.showTitle = true,
     this.showContent = true,
     this.avatarBorderRadius,
@@ -21,7 +22,7 @@ class CListTileSkeletonOption {
   final Size avatarSize;
   final bool showTitle;
   final bool showContent;
-  final bool showAvater;
+  final bool showAvatar;
   final BorderRadiusGeometry? avatarBorderRadius;
   final BoxShape avatarBoxShape;
 }
@@ -74,7 +75,64 @@ class CListTile extends StatelessWidget {
     this.skeletonOption = const CListTileSkeletonOption(),
     this.skeleton = false,
     this.rowAlignment = CrossAxisAlignment.center,
-  }) : super(key: key);
+  })  : isRadio = false,
+        radioSize = 20,
+        radioInactiveColor = null,
+        super(key: key);
+
+  const CListTile.radio({
+    Key? key,
+    // Radio specific options
+    this.radioSize = 20,
+    this.radioInactiveColor,
+    Color? radioColor,
+    // original
+    this.leading,
+    this.title,
+    this.subtitle,
+    this.isThreeLine = false,
+    this.dense,
+    this.style,
+    this.selectedColor,
+    this.leadingIconColor,
+    this.textColor,
+    this.contentPadding,
+    this.enabled = true,
+    this.onTap,
+    this.onLongPress,
+    this.selected = false,
+    this.tileColor,
+    this.selectedTileColor,
+    this.enableFeedback,
+    this.horizontalTitleGap,
+    this.minLeadingWidth,
+    // end original
+    this.leadingIcon,
+    this.leadingIconSize,
+    this.titleText,
+    this.subtitleText,
+    this.subtitleTextStyle,
+    this.titleBold = false,
+    this.gradient,
+    this.titleColor,
+    this.reserveLeadingSpace = false,
+    // this.launchUrl,
+    // this.fallbackCopyText,
+    this.loading = false,
+    this.loadingWidth,
+    this.minHeight,
+    this.dividerBottom = false,
+    this.dividerTop = false,
+    this.dividerThickness = 0.5,
+    this.dividerInsets = true,
+    this.skeletonOption = const CListTileSkeletonOption(),
+    this.skeleton = false,
+    this.rowAlignment = CrossAxisAlignment.center,
+  })  : isRadio = true,
+        trailing = null,
+        trailingIconColor = radioColor,
+        arrow = false,
+        super(key: key);
 
   //----------------Original datas---------------------
   /// A widget to display before the title.
@@ -303,7 +361,7 @@ class CListTile extends StatelessWidget {
   // /// The text to copy if the url can not be launched
   // final String? fallbackCopyText;
 
-  /// show a loading icon to override the trailling and disable the field
+  /// show a loading icon to override the trailing and disable the field
   final bool loading;
 
   /// width of the loading area
@@ -329,6 +387,17 @@ class CListTile extends StatelessWidget {
   final bool skeleton;
 
   final CrossAxisAlignment rowAlignment;
+
+  // Radio related options ==================================
+  final bool isRadio;
+
+  /// Size of the radio icon
+  final double radioSize;
+
+  /// Color of the radio icon, default to theme disabled color
+  final Color? radioInactiveColor;
+
+  // End Radio related options ==================================
 
   bool get _enabled => enabled && !loading && !skeleton;
 
@@ -483,7 +552,7 @@ class CListTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: rowAlignment,
           children: [
-            if (skeletonOption.showAvater)
+            if (skeletonOption.showAvatar)
               Padding(
                 padding: EdgeInsets.only(right: horizontalTitleGap_),
                 child: ConstrainedBox(
@@ -612,15 +681,15 @@ class CListTile extends StatelessWidget {
         );
       }
 
-      if (loading || trailing != null || selected) {
+      if (loading || trailing != null || selected || isRadio) {
         IconThemeData trailingIconThemeData = IconThemeData(
           color: _trailingIconColor(theme, tileTheme),
           size: 22,
         );
         TextStyle trailingTextStyle = _trailingTextStyle(theme, tileTheme);
-        late Widget trailingInner_;
+        late Widget trailingInnerWidget;
         if (loading) {
-          trailingInner_ = SizedBox(
+          trailingInnerWidget = SizedBox(
             width: loadingWidth ?? 20,
             height: 20,
             child: Center(
@@ -635,10 +704,16 @@ class CListTile extends StatelessWidget {
               ),
             ),
           );
+        } else if (isRadio) {
+          trailingInnerWidget = CRadioIcon(
+            selected: selected,
+            enabled: onTap != null,
+            size: radioSize,
+          );
         } else if (trailing != null) {
-          trailingInner_ = trailing!;
+          trailingInnerWidget = trailing!;
         } else if (selected) {
-          trailingInner_ = const Icon(Icons.check);
+          trailingInnerWidget = const Icon(Icons.check);
         }
         trailingWidget = Padding(
           padding: EdgeInsets.only(left: horizontalTitleGap_),
@@ -648,7 +723,7 @@ class CListTile extends StatelessWidget {
               duration: kThemeChangeDuration,
               child: IconTheme.merge(
                 data: trailingIconThemeData,
-                child: trailingInner_,
+                child: trailingInnerWidget,
               ),
             ),
           ),

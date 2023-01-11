@@ -220,7 +220,7 @@ class _CLinearProgressIndicatorPainter extends CustomPainter {
     if (steps != null && steps! > 0) {
       final double targetGap = gap ?? size.height;
       final Path cutOutPath = Path();
-      for (int i = 0; i < steps!; i++) {
+      for (int i = 0; i < (steps! - 1); i++) {
         cutOutPath.addRect(
             Offset(size.width / steps! * (i + 1) - (targetGap / 2), 0) &
                 Size(targetGap, size.height));

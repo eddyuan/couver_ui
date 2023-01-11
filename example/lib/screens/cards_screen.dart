@@ -7,9 +7,78 @@ class CardsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final children = [
+      const Card(
+        child: Text('Flutter card'),
+        elevation: 6,
+      ),
+      CCard(
+        onTap: () {},
+        padding: const EdgeInsets.all(16),
+        child: const Text('Material'),
+      ),
+      CCard(
+        inkOnTop: false,
+        onTap: () {},
+        padding: const EdgeInsets.all(16),
+        child: const Text('inkOnTop:false'),
+      ),
+      CCard(
+        platformStyle: PlatformStyle.cupertino,
+        onTap: () {},
+        padding: const EdgeInsets.all(16),
+        child: const Text('cupertino'),
+        decorationImage: DecorationImage(
+          image: NetworkImage(
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png',
+          ),
+        ),
+      ),
+      CCard(
+        platformStyle: PlatformStyle.cupertino,
+        cupertinoOption: const CInkCupertinoOption(
+            cupertinoInkStyle: CupertinoInkStyle.shade),
+        onTap: () {},
+        padding: const EdgeInsets.all(16),
+        child: const Text('cupertino shade'),
+        decorationImage: DecorationImage(
+          image: NetworkImage(
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png',
+          ),
+        ),
+      ),
+      CCard(
+        platformStyle: PlatformStyle.cupertino,
+        cupertinoOption: const CInkCupertinoOption(
+            cupertinoInkStyle: CupertinoInkStyle.scale),
+        onTap: () {},
+        padding: const EdgeInsets.all(16),
+        child: const Text('cupertino scale'),
+        decorationImage: DecorationImage(
+          image: NetworkImage(
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png',
+          ),
+        ),
+      ),
+    ]
+        .map(
+          (e) => Padding(
+            padding: const EdgeInsets.all(8),
+            child: e,
+          ),
+        )
+        .toList();
     return Screen(
       child: Column(
-        children: [],
+        children: [
+          Column(
+            children: children,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: children,
+          ),
+        ],
       ),
     );
   }

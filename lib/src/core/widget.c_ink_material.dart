@@ -61,43 +61,47 @@ class CInkMaterial extends StatelessWidget {
   Widget build(BuildContext context) {
     // if (child != null) {
     if (materialOption.inkOnTop) {
-      return Stack(
-        children: [
-          Container(
-            clipBehavior: clipBehavior,
-            decoration: decoration,
-            child: Center(
-              child: child ?? const SizedBox.shrink(),
-            ),
-          ),
-          Positioned.fill(
-            child: IgnorePointer(
-              ignoring: !_enabled,
-              child: Material(
-                type: MaterialType.transparency,
-                borderRadius: borderRadius,
-                child: InkWell(
+      return Container(
+        clipBehavior: clipBehavior,
+        decoration: decoration,
+        child: Stack(
+          children: [
+            child ?? const SizedBox.shrink(),
+            Positioned.fill(
+              child: IgnorePointer(
+                ignoring: !_enabled,
+                child: Material(
+                  type: MaterialType.transparency,
                   borderRadius: borderRadius,
-                  onTapDown: onTapDown,
-                  onTapCancel: onTapCancel,
-                  onTap: onTap,
-                  onDoubleTap: onDoubleTap,
-                  onLongPress: onLongPress,
-                  highlightColor: materialOption.highlightColor ??
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
-                  splashColor: materialOption.splashColor ??
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
-                  splashFactory: materialOption.splashFactory ??
-                      CouverTheme.of(context).splashFactory,
-                  focusColor: materialOption.focusColor,
-                  radius: materialOption.splashRadius,
-                  enableFeedback: true,
-                  // child: child!,
+                  child: InkWell(
+                    borderRadius: borderRadius,
+                    onTapDown: onTapDown,
+                    onTapCancel: onTapCancel,
+                    onTap: onTap,
+                    onDoubleTap: onDoubleTap,
+                    onLongPress: onLongPress,
+                    highlightColor: materialOption.highlightColor ??
+                        Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.1),
+                    splashColor: materialOption.splashColor ??
+                        Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.1),
+                    splashFactory: materialOption.splashFactory ??
+                        CouverTheme.of(context).splashFactory,
+                    focusColor: materialOption.focusColor,
+                    radius: materialOption.splashRadius,
+                    enableFeedback: true,
+                    // child: child!,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       );
     }
     return Container(

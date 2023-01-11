@@ -96,15 +96,20 @@ class CCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final CardTheme cardTheme = CardTheme.of(context);
+    final CardTheme defaults = Theme.of(context).useMaterial3
+        ? _CardDefaultsM3(context)
+        : _CardDefaultsM2(context);
+
     final int targetElevation = elevation ?? (hasAction ? 4 : 0);
-    final Color leadingColor =
-        this.leadingColor ?? Theme.of(context).dividerColor;
+    final Color targetLeadingColor =
+        leadingColor ?? Theme.of(context).dividerColor;
     final InteractiveInkFeatureFactory splashFactory = this.splashFactory ??
         (Platform.isIOS
             ? NoSplash.splashFactory
             : CouverTheme.of(context).splashFactory);
     final Color cardColor = color ?? Theme.of(context).cardColor;
-    final double leadingWidth = this.leadingWidth ?? 0;
+    final double targetLeadingWidth = leadingWidth ?? 0;
 
     final Color contrastColor = contrastColorTrans(cardColor);
     final Color highlightColor = contrastColor;
@@ -112,15 +117,20 @@ class CCard extends StatelessWidget {
     //     ? contrastColor
     //     : contrastColor; // Colors.transparent;
 
-    final Color shadowColor =
-        this.shadowColor ?? Theme.of(context).colorScheme.shadow;
+    final Color? targetShadowColor =
+        shadowColor ?? cardTheme.shadowColor ?? defaults.shadowColor;
+
+    final Color? finalShadowColor = targetShadowColor?.alpha == 0xFF
+        ? targetShadowColor?.withOpacity(0.1)
+        : targetShadowColor;
+
     final List<BoxShadow>? targetBoxShadow = boxShadow ??
-        (targetElevation > 0
+        (targetElevation > 0 && finalShadowColor != null
             ? [
                 BoxShadow(
-                  color: shadowColor,
+                  color: finalShadowColor,
                   blurRadius: targetElevation * 3,
-                  offset: const Offset(0, 4),
+                  offset: Offset(0, targetElevation.toDouble()),
                 ),
               ]
             : null);
@@ -128,15 +138,15 @@ class CCard extends StatelessWidget {
     Widget innerContent;
 
     // Widget _innerContent() {
-    if (leadingWidth > 0) {
+    if (targetLeadingWidth > 0) {
       innerContent = IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
-              width: leadingWidth,
+              width: targetLeadingWidth,
               decoration: BoxDecoration(
-                color: leadingColor,
+                color: targetLeadingColor,
                 gradient: leadingGradient,
               ),
             ),
@@ -185,4 +195,49 @@ class CCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _CardDefaultsM3 extends CardTheme {
+  const _CardDefaultsM3(this.context)
+      : super(
+          clipBehavior: Clip.none,
+          elevation: 1.0,
+          margin: const EdgeInsets.all(4.0),
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12.0),
+                  topRight: Radius.circular(12.0),
+                  bottomLeft: Radius.circular(12.0),
+                  bottomRight: Radius.circular(12.0))),
+        );
+
+  final BuildContext context;
+
+  @override
+  Color? get color => Theme.of(context).colorScheme.surface;
+
+  @override
+  Color? get shadowColor => Theme.of(context).colorScheme.shadow;
+
+  @override
+  Color? get surfaceTintColor => Theme.of(context).colorScheme.surfaceTint;
+}
+
+class _CardDefaultsM2 extends CardTheme {
+  const _CardDefaultsM2(this.context)
+      : super(
+            clipBehavior: Clip.none,
+            elevation: 1.0,
+            margin: const EdgeInsets.all(4.0),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(4.0)),
+            ));
+
+  final BuildContext context;
+
+  @override
+  Color? get color => Theme.of(context).cardColor;
+
+  @override
+  Color? get shadowColor => Theme.of(context).shadowColor;
 }

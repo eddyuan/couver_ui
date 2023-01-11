@@ -17,7 +17,7 @@ class _PageViewScreenState extends State<PageViewScreen> {
       (index) => Container(
         decoration: BoxDecoration(
           color: CTheme.rColor(index),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               blurRadius: 12,
             ),
@@ -26,7 +26,7 @@ class _PageViewScreenState extends State<PageViewScreen> {
         child: Center(
           child: Text(
             index.toString(),
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
             ),
           ),
@@ -59,7 +59,7 @@ class _PageViewScreenState extends State<PageViewScreen> {
                 text: "-",
                 onPressed: () {
                   controller.previousPage(
-                    duration: Duration(milliseconds: 200),
+                    duration: const Duration(milliseconds: 200),
                     curve: Curves.ease,
                   );
                 },
@@ -68,7 +68,7 @@ class _PageViewScreenState extends State<PageViewScreen> {
                 text: "+",
                 onPressed: () {
                   controller.nextPage(
-                    duration: Duration(milliseconds: 200),
+                    duration: const Duration(milliseconds: 200),
                     curve: Curves.ease,
                   );
                 },
@@ -94,29 +94,29 @@ class _PageViewScreenState extends State<PageViewScreen> {
           CPageView(
             controller: controller,
             itemWidth: itemWidth,
-            children: buildChildren(),
             inactiveScale: 0.9,
+            children: buildChildren(),
             // gap: 0,
           ),
           LayoutBuilder(builder: (context, constraints) {
-            return Container(
+            return SizedBox(
               height: 200,
               child: ListView.separated(
                 padding: const EdgeInsets.all(24.0),
                 itemBuilder: (context, index) =>
                     SizedBox(width: itemWidth, child: buildChildren()[index]),
-                separatorBuilder: (context, index) => SizedBox(
+                separatorBuilder: (context, index) => const SizedBox(
                   width: 10,
                 ),
                 itemCount: 10,
                 scrollDirection: Axis.horizontal,
                 controller: PageController(
                     viewportFraction: (itemWidth + 10) / constraints.maxWidth),
-                physics: PageScrollPhysics(),
+                physics: const PageScrollPhysics(),
               ),
             );
           }),
-          Container(
+          SizedBox(
             height: 200,
             child: PageView(
               pageSnapping: true,
@@ -126,7 +126,7 @@ class _PageViewScreenState extends State<PageViewScreen> {
               children: buildChildren(),
             ),
           ),
-          Container(
+          SizedBox(
             height: 200,
             child: Padding(
               padding: const EdgeInsets.all(24.0),

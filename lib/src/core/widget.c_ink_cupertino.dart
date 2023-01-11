@@ -153,7 +153,6 @@ class _CInkCupertinoState extends State<CInkCupertino>
   }
 
   void _animate() {
-    print("animated");
     // _animationController.reset();
     if (_buttonHeldDown) {
       // if (kPressDuration == Duration.zero) {
@@ -183,10 +182,12 @@ class _CInkCupertinoState extends State<CInkCupertino>
 
   @override
   Widget build(BuildContext context) {
+    final Clip clipBehavior =
+        widget.decoration == null ? Clip.none : widget.clipBehavior;
+
     if (widget.child is Widget) {
       final Widget child_ = Container(
-        clipBehavior:
-            widget.decoration == null ? Clip.none : widget.clipBehavior,
+        clipBehavior: clipBehavior,
         decoration: widget.decoration,
         child: widget.child,
       );
@@ -206,32 +207,27 @@ class _CInkCupertinoState extends State<CInkCupertino>
           );
           break;
         default:
-          animationWrapper = LayoutBuilder(
-            builder: (context, constraint) {
-              return Stack(
-                children: [
-                  SizedBox(
-                    width: constraint.maxWidth,
-                    child: child_,
-                  ),
-                  // Center(child: child_),
-                  // if (_enabled)
-                  Positioned.fill(
-                    child: IgnorePointer(
-                      child: FadeTransition(
-                        opacity: _opacityAnimation,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: widget.borderRadius,
-                            color: _tapShadeColor(Theme.of(context)),
-                          ),
+          animationWrapper = Container(
+            clipBehavior: clipBehavior,
+            decoration: widget.decoration,
+            child: Stack(
+              children: [
+                widget.child ?? const SizedBox.shrink(),
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: FadeTransition(
+                      opacity: _opacityAnimation,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: widget.borderRadius,
+                          color: _tapShadeColor(Theme.of(context)),
                         ),
                       ),
                     ),
                   ),
-                ],
-              );
-            },
+                ),
+              ],
+            ),
           );
       }
       return InkWell(
@@ -248,8 +244,6 @@ class _CInkCupertinoState extends State<CInkCupertino>
         splashFactory: NoSplash.splashFactory,
         child: animationWrapper,
       );
-      // }
-      // return widget.child!;
     }
     return const SizedBox.shrink();
   }

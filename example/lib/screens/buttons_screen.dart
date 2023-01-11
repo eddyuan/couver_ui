@@ -94,7 +94,7 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
       actions: [
         CListTile(
           dense: true,
-          title: Text("Loading"),
+          title: const Text("Loading"),
           tileColor: Theme.of(context).colorScheme.surface,
           trailing: Switch.adaptive(
             value: loading,
@@ -114,9 +114,7 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
             children: [
               CButton.input(
                 child: const Text("A input styled button"),
-                onPressed: () {
-                  // Map datas = {};
-                },
+                onPressed: () {},
               ),
               Padding(
                 padding: EdgeInsets.symmetric(

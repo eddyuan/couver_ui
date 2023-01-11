@@ -36,6 +36,7 @@ class CCard extends StatelessWidget {
     this.clipBehavior = Clip.hardEdge,
     this.cupertinoOption,
     this.materialOption,
+    this.childAlign = Alignment.center,
   }) : super(key: key);
 
   final Widget? child;
@@ -90,6 +91,8 @@ class CCard extends StatelessWidget {
 
   /// Option for Material Styles. Material will show splash
   final CInkMaterialOption? materialOption;
+
+  final AlignmentGeometry childAlign;
 
   bool get hasAction =>
       onTap != null || onDoubleTap != null || onLongPress != null;
@@ -191,7 +194,7 @@ class CCard extends StatelessWidget {
         gradient: gradient,
         decorationImage: decorationImage,
         clipBehavior: clipBehavior,
-        child: innerContent,
+        child: Align(alignment: childAlign, child: innerContent),
       ),
     );
   }

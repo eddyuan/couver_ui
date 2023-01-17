@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 
-String? tStringOrNull(dynamic value) {
+String? tStringOrNull(dynamic value, {bool allowEmpty = true}) {
   String? targetValue;
   try {
     if (value == null) {
@@ -23,7 +23,8 @@ String? tStringOrNull(dynamic value) {
   } catch (e) {
     targetValue = null;
   }
-  if (targetValue?.isEmpty ?? true) {
+
+  if (!allowEmpty && targetValue != null && targetValue.trim().isEmpty) {
     return null;
   }
   return targetValue;

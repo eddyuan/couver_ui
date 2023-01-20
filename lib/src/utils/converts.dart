@@ -30,15 +30,22 @@ String? tStringOrNull(dynamic value, {bool allowEmpty = true}) {
   return targetValue;
 }
 
-String tString(dynamic value, {String defaultValue = ""}) {
-  return tStringOrNull(value) ?? defaultValue;
+String tString(
+  dynamic value, {
+  bool allowEmpty = true,
+  String defaultValue = "",
+}) {
+  return tStringOrNull(value, allowEmpty: allowEmpty) ?? defaultValue;
 }
 
 bool tBool(
   dynamic value, {
 
   /// return true if greater than this number
-  num numberThreshhold = 0,
+  num numberThreshold = 0,
+
+  /// return this number if not specified
+  bool defaultValue = false,
 }) {
   bool? targetValue;
 
@@ -49,7 +56,7 @@ bool tBool(
       targetValue = true;
     }
   } else if ((value is int || value is double)) {
-    if (value > numberThreshhold) {
+    if (value > numberThreshold) {
       targetValue = true;
     }
   }

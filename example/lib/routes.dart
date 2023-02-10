@@ -1,4 +1,5 @@
 import 'package:example/screens/flip_boards_screen.dart';
+import 'package:example/screens/input_screen.dart';
 import 'package:example/screens/list_tiles_screen.dart';
 import 'package:example/screens/page_view_screen.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,7 @@ class AppRoutes {
     '/flip_boards': (context) => const FlipBoardsScreen(),
     '/page_view': (context) => const PageViewScreen(),
     '/list_tile': (context) => const ListTileScreen(),
+    '/input': (context) => const InputScreen(),
   };
 
   static List<RouteButtonConfig> get buttons =>

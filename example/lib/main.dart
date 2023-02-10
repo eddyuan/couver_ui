@@ -1,3 +1,4 @@
+import 'package:couver_ui/couver_ui.dart';
 import 'package:example/routes.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
   ThemeMode themeMode = ThemeMode.system;
+  bool useMaterial3 = true;
 
   void changeTheme(ThemeMode themeMode) {
     setState(() {
@@ -24,15 +26,37 @@ class MyAppState extends State<MyApp> {
     });
   }
 
+  void toggleMaterial() {
+    setState(() {
+      useMaterial3 = !useMaterial3;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Couver UI Demo',
-      theme: ThemeData(),
-      darkTheme: ThemeData.dark(),
+      theme: ThemeData(
+        useMaterial3: useMaterial3,
+      ),
+      darkTheme: ThemeData.dark(
+        useMaterial3: useMaterial3,
+      ),
       themeMode: themeMode,
       initialRoute: "/",
       routes: AppRoutes.routes,
+      builder: (context, child) => CouverTheme(
+        theme: CouverThemeData(
+          gutter: 4,
+          pagePadding: 20,
+        ),
+        child: GestureDetector(
+          onTap: () {
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
+          child: child,
+        ),
+      ),
     );
   }
 }

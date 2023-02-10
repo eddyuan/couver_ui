@@ -22,6 +22,7 @@ class Screen extends StatelessWidget {
     final String? pageName =
         this.pageName ?? ModalRoute.of(context)?.settings.name?.toRouteName();
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final bool isMaterial3 = Theme.of(context).useMaterial3;
     return Scaffold(
       appBar: CAppBar(
         title: pageName != null ? Text(pageName) : null,
@@ -34,6 +35,17 @@ class Screen extends StatelessWidget {
               } else {
                 MyApp.of(context).changeTheme(ThemeMode.dark);
               }
+            },
+          ),
+          CButton.circle(
+            child: Text(isMaterial3 ? 'M2' : 'M3'),
+            onPressed: () {
+              MyApp.of(context).toggleMaterial();
+              // if (isDark) {
+              //   MyApp.of(context).changeTheme(ThemeMode.light);
+              // } else {
+              //   MyApp.of(context).changeTheme(ThemeMode.dark);
+              // }
             },
           ),
         ],

@@ -7,6 +7,14 @@ import '../utils/debonce.dart';
 import 'widget.c_button.dart';
 import 'widget.c_icon_button.dart';
 
+extension InputBorderExt on InputBorder {
+  InputBorder copyColor(Color color) {
+    return copyWith(
+      borderSide: borderSide.copyWith(color: color),
+    );
+  }
+}
+
 class AlwaysDisabledFocusNode extends FocusNode {
   @override
   bool get hasFocus => false;
@@ -554,6 +562,11 @@ class _CTextFormFieldState extends State<CTextFormField> {
   /// Must be enable to show the button
   bool get _canShowSuffixButton => (widget.enabled ?? true) && !widget.readOnly;
 
+  /// Is true enabled?
+  bool get trueEnabled => widget.enabled != false && widget.loading != true;
+
+  bool get isEnabled => widget.enabled != false;
+
   AutovalidateMode? _autovalidateMode;
 
   late final FocusNode _focusNode = widget.focusNode ?? FocusNode();
@@ -695,9 +708,7 @@ class _CTextFormFieldState extends State<CTextFormField> {
     if (widget.suffixIcon != null) {
       return widget.suffixIcon;
     }
-    if (widget.mustClickEdit &&
-        !_focusNode.hasFocus &&
-        widget.enabled != false) {
+    if (widget.mustClickEdit && !_focusNode.hasFocus && isEnabled) {
       return Padding(
         padding: const EdgeInsets.only(right: 4),
         child: CIconButton(
@@ -847,6 +858,8 @@ class _CTextFormFieldState extends State<CTextFormField> {
         labelText += ' (Optional)';
       }
     }
+    final CouverThemeData cTheme = CouverTheme.of(context);
+
     return InputDecoration(
       icon: widget.icon,
       iconColor: widget.iconColor,
@@ -884,22 +897,22 @@ class _CTextFormFieldState extends State<CTextFormField> {
       counter: widget.counter,
       counterText: getCounterText(),
       counterStyle: widget.counterStyle,
-      filled: widget.filled,
-      fillColor: widget.fillColor,
+      filled: widget.filled ??
+          (!isEnabled && cTheme.colors.inputDisableFillColor != null),
+      fillColor: widget.fillColor ??
+          (!isEnabled ? cTheme.colors.inputDisableFillColor : null),
       focusColor: widget.focusColor,
       focusedBorder: widget.focusedBorder, // _focusedBorder,
       hoverColor: widget.hoverColor,
       errorBorder: widget.errorBorder,
-      disabledBorder: widget.disabledBorder,
+      // disabledBorder: widget.disabledBorder,
+      disabledBorder: widget.disabledBorder ??
+          _border(context).copyColor(cTheme.colors.inputDisableBorderColor),
       // enabledBorder: widget.enabledBorder,
       enabledBorder: widget.enabledBorder ??
-          _border(context).copyWith(
-            borderSide: _border(context)
-                .borderSide
-                .copyWith(color: Theme.of(context).dividerColor),
-          ),
+          _border(context).copyColor(cTheme.colors.inputEnabledBorderColor),
       border: _border(context),
-      enabled: (widget.enabled ?? true) && !widget.loading,
+      enabled: isEnabled,
       semanticCounterText: widget.semanticCounterText,
       alignLabelWithHint: widget.alignLabelWithHint,
       constraints: widget.constraints,
@@ -920,7 +933,7 @@ class _CTextFormFieldState extends State<CTextFormField> {
     return Theme(
       data: Theme.of(context).copyWith(
         colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.lightGreen,
+          primarySwatch: CouverTheme.of(context).colors.inputFocusBorderColor,
           brightness: Theme.of(context).brightness,
         ),
       ),
@@ -938,7 +951,7 @@ class _CTextFormFieldState extends State<CTextFormField> {
           textAlign: widget.textAlign,
           textAlignVertical: widget.textAlignVertical,
           autofocus: widget.autofocus,
-          readOnly: widget.readOnly,
+          readOnly: widget.readOnly || widget.loading,
           toolbarOptions: widget.toolbarOptions,
           showCursor: widget.showCursor,
           obscuringCharacter: obscuringCharacter,
@@ -959,7 +972,7 @@ class _CTextFormFieldState extends State<CTextFormField> {
           onSaved: widget.onSaved,
           validator: widget.validator,
           inputFormatters: widget.inputFormatters,
-          enabled: widget.enabled,
+          enabled: isEnabled,
           cursorWidth: widget.cursorWidth,
           cursorHeight: widget.cursorHeight,
           cursorRadius: widget.cursorRadius,

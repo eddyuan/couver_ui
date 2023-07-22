@@ -102,8 +102,6 @@ class BtnSize {
   @override
   int get hashCode =>
       Object.hash(padding, minWidth, minHeight, fontSize, fontWeight);
-  // int get hashCode => super.hashCode;
-
 }
 
 enum _ButtonType {
@@ -139,7 +137,7 @@ class CButton extends StatelessWidget {
   })  : borderColor = null,
         splashRadius = null,
         _type = _ButtonType.text,
-        borderwidth = 0,
+        borderWidth = 0,
         icon = null,
         super(key: key);
 
@@ -168,7 +166,7 @@ class CButton extends StatelessWidget {
   })  : borderColor = null,
         splashRadius = null,
         _type = _ButtonType.filled,
-        borderwidth = 0,
+        borderWidth = 0,
         icon = null,
         super(key: key);
 
@@ -191,7 +189,7 @@ class CButton extends StatelessWidget {
     this.round = true,
     this.platformStyle = PlatformStyle.auto,
     this.onPressed,
-    this.borderwidth = 1,
+    this.borderWidth = 1,
     this.shrinkWhenLoading,
     this.tapTargetSize,
     this.borderColor,
@@ -222,7 +220,7 @@ class CButton extends StatelessWidget {
         _type = _ButtonType.icon,
         shrinkWhenLoading = false,
         round = true,
-        borderwidth = 0,
+        borderWidth = 0,
         borderRadius = null,
         foregroundColor = null,
         backgroundColor = null,
@@ -252,7 +250,7 @@ class CButton extends StatelessWidget {
     this.round = true,
     this.platformStyle = PlatformStyle.auto,
     this.onPressed,
-    this.borderwidth = 1,
+    this.borderWidth = 1,
     // this.fontSize,
     // this.fontWeight,
     // this.translucent,
@@ -297,7 +295,7 @@ class CButton extends StatelessWidget {
   /// Background color for [filled], text and outline color for other
   final Color? color;
 
-  /// Manually override foreground color (outltine and text color)
+  /// Manually override foreground color (outline and text color)
   final Color? foregroundColor;
 
   /// Manually override background color
@@ -319,7 +317,7 @@ class CButton extends StatelessWidget {
   final PlatformStyle platformStyle;
 
   /// Override the width of the outline
-  final double borderwidth;
+  final double borderWidth;
 
   /// For icon button only
   final double? splashRadius;
@@ -367,7 +365,7 @@ class CButton extends StatelessWidget {
 
     final VoidCallback? targetOnPressed = disabled ? null : onPressed;
 
-    final Size minimiumSize_ = Size(targetMinWidth, targetMinHeight);
+    final Size minimumSize_ = Size(targetMinWidth, targetMinHeight);
 
     final EdgeInsetsGeometry targetPadding =
         (_type == _ButtonType.icon ? EdgeInsets.zero : size.padding);
@@ -446,7 +444,7 @@ class CButton extends StatelessWidget {
           gradient: gradient,
           shape: targetShape,
           padding: targetPadding,
-          minimumSize: minimiumSize_,
+          minimumSize: minimumSize_,
           textStyle: targetTextStyle,
           primary: targetBColor,
           onPrimary: targetFColor,
@@ -471,13 +469,13 @@ class CButton extends StatelessWidget {
           borderColor: borderColor,
           shape: targetShape,
           padding: targetPadding,
-          minimumSize: minimiumSize_,
+          minimumSize: minimumSize_,
           textStyle: targetTextStyle,
           primary: targetFColor,
           onSurface: targetDColor,
           backgroundColor: targetBColor,
           side: BorderSide(
-            width: borderwidth,
+            width: borderWidth,
             color: foregroundColor ??
                 color ??
                 Theme.of(context).colorScheme.primary.withOpacity(0.9),
@@ -505,11 +503,11 @@ class CButton extends StatelessWidget {
             vertical: CouverTheme.of(context).gutter * 2,
           ),
           minimumSize: Size(targetMinWidth, targetMinHeight),
-          textStyle: Theme.of(context).textTheme.bodyText1!,
+          textStyle: Theme.of(context).textTheme.bodyLarge!,
           primary: gradient?.colors[0] ?? foregroundColor ?? color,
           backgroundColor: backgroundColor,
           side: BorderSide(
-            width: borderwidth,
+            width: borderWidth,
             color: foregroundColor ??
                 color ??
                 Theme.of(context).colorScheme.primary.withOpacity(0.9),
@@ -529,7 +527,7 @@ class CButton extends StatelessWidget {
           gradient: gradient,
           shape: targetShape,
           padding: targetPadding,
-          minimumSize: minimiumSize_,
+          minimumSize: minimumSize_,
           textStyle: targetTextStyle,
           primary: color,
           backgroundColor: targetBColor,

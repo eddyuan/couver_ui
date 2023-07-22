@@ -18,7 +18,7 @@ class CFlipNumbers extends StatelessWidget {
     this.containerDecoration = const BoxDecoration(),
     this.dividerGap = 0,
     this.perspective = 0.006,
-    this.showZeroAtBegining = true,
+    this.showZeroAtBeginning = true,
     this.maxItemHeight = 60,
     this.maxItemWidth = 50,
     this.maxItemGap = 8,
@@ -32,7 +32,7 @@ class CFlipNumbers extends StatelessWidget {
   final int digits;
   final int? value;
 
-  /// The alighment for the row
+  /// The alignment for the row
   final MainAxisAlignment mainAxisAlignment;
 
   final MainAxisSize mainAxisSize;
@@ -44,7 +44,7 @@ class CFlipNumbers extends StatelessWidget {
   /// Use if want the duration to depend on each flip
   final Duration? durationPerFlip;
 
-  /// Do not use boxshadow in the [borderBuilder]
+  /// Do not use boxShadow in the [borderBuilder]
   final Widget Function(
     BuildContext context,
     Widget? child,
@@ -63,11 +63,11 @@ class CFlipNumbers extends StatelessWidget {
   /// Space between top and bottom portion
   final double dividerGap;
 
-  /// The perspectiv for the board
+  /// The perspective for the board
   final double perspective;
 
   /// Show 0s at front of the numbers?
-  final bool showZeroAtBegining;
+  final bool showZeroAtBeginning;
 
   /// This is the desired height of a number, it will shrink according to available space and aspectratio
   final double maxItemHeight;
@@ -142,7 +142,7 @@ class CFlipNumbers extends StatelessWidget {
       if (takenInt >= 0) {
         return int.parse(valStr[takenInt]);
       } else {
-        return showZeroAtBegining ? 0 : null;
+        return showZeroAtBeginning ? 0 : null;
       }
     });
 

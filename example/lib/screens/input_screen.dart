@@ -3,8 +3,6 @@
 import 'package:couver_ui/couver_ui.dart';
 import 'package:example/screens/screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 class InputScreen extends StatelessWidget {
   const InputScreen({super.key});

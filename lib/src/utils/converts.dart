@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:intl/intl.dart';
-import 'package:jiffy/jiffy.dart';
+// import 'package:jiffy/jiffy.dart';
 
 String? tStringOrNull(dynamic value, {bool allowEmpty = true}) {
   String? targetValue;
@@ -40,7 +40,6 @@ String tString(
 
 bool tBool(
   dynamic value, {
-
   /// return true if greater than this number
   num numberThreshold = 0,
 
@@ -178,6 +177,7 @@ String toPrice(
 
   /// 1 if is dollar, 100 if is cent
   double divider = 100,
+  bool removeTrailingZeros = false,
 }) {
   if (cents != null) {
     dynamic val = cents;
@@ -194,6 +194,13 @@ String toPrice(
       } else if (showPlus && val >= 0) {
         result = "+$result";
       }
+      if (removeTrailingZeros) {
+        if (result == '0') return '0';
+        if (result.endsWith('.00')) {
+          return result.substring(0, result.length - 3);
+        }
+        if (result.endsWith('0')) return result.substring(0, result.length - 1);
+      }
       return result;
     }
   }
@@ -202,17 +209,37 @@ String toPrice(
 
 String tUrl(val) {
   final String str = tString(val);
-  return isURL(str) ? str : "";
+  if (str.toLowerCase().startsWith('http')) {
+    return str;
+  }
+  return "";
+}
+
+String? tUrlOrNull(val) {
+  final String str = tString(val);
+  if (str.toLowerCase().startsWith('http')) {
+    return str;
+  }
+  return null;
 }
 
 String? tDateString(val) {
-  if (val is int) {
-    return Jiffy(DateTime.fromMillisecondsSinceEpoch(val * 1000))
-        .format("yyyy-MM-dd");
+  DateTime? d;
+  if (val is int || val is double) {
+    final int intVal = val is int ? val : val.round();
+    if (intVal < 100000000000) {
+      d = DateTime.fromMillisecondsSinceEpoch(intVal * 1000);
+    } else {
+      d = DateTime.fromMillisecondsSinceEpoch(intVal);
+    }
+  } else if (val is String) {
+    d = DateTime.parse(val);
+  } else if (val is DateTime) {
+    d = val;
   }
 
-  if (val is String || val is DateTime) {
-    return Jiffy(val).format("yyyy-MM-dd");
+  if (d is DateTime) {
+    return DateFormat('yyyy-MM-dd').format(d);
   }
 
   return null;
@@ -223,6 +250,15 @@ List<T> tList<T>(val) {
     return val.map((item) => item as T).toList();
   }
 
+  if (val is String) {
+    try {
+      var decodedJSON = json.decode(val);
+      if (decodedJSON is List<T>) {
+        return decodedJSON;
+      }
+    } catch (e) {}
+  }
+
   return [];
 }
 
@@ -231,7 +267,7 @@ List<String> tListString(val) {
 }
 
 DateTime? tTime(dynamic val) {
-  if (val is int) {
+  if (val is int || val is double) {
     if (val < 100000000000) {
       return DateTime.fromMillisecondsSinceEpoch(val * 1000);
     } else {
@@ -242,7 +278,7 @@ DateTime? tTime(dynamic val) {
     return val;
   }
   if (val is String) {
-    return Jiffy(val).dateTime;
+    return DateTime.parse(val);
   }
   return null;
 }
@@ -250,11 +286,9 @@ DateTime? tTime(dynamic val) {
 int? tDaysFromNow(val) {
   final DateTime? targetTime = tTime(val);
   if (targetTime is DateTime) {
-    return Jiffy(targetTime)
-        .endOf(Units.DAY)
-        .dateTime
-        .difference(DateTime.now())
-        .inDays;
+    final endOfTargetTimeDay = DateTime(targetTime.year, targetTime.month,
+        targetTime.day, 23, 59, 59, 999, 999);
+    return endOfTargetTimeDay.difference(DateTime.now()).inDays;
   }
   return null;
 }

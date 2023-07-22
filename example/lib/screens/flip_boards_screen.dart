@@ -113,7 +113,7 @@ class _FlipBoardsScreenState extends State<FlipBoardsScreen> {
           CFlipNumbers(
             digits: 5,
             value: flipNumbersValue,
-            showZeroAtBegining: false,
+            showZeroAtBeginning: false,
             boardBuilder: (context, child, itemConstrains) => Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),

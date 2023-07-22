@@ -95,6 +95,7 @@ class CPageMetrics extends FixedScrollMetrics {
     required super.viewportDimension,
     required super.axisDirection,
     required this.itemWidth,
+    required super.devicePixelRatio,
   });
 
   @override
@@ -105,6 +106,7 @@ class CPageMetrics extends FixedScrollMetrics {
     double? viewportDimension,
     AxisDirection? axisDirection,
     double? itemWidth,
+    double? devicePixelRatio,
   }) {
     return CPageMetrics(
       minScrollExtent: minScrollExtent ??
@@ -116,6 +118,7 @@ class CPageMetrics extends FixedScrollMetrics {
           (hasViewportDimension ? this.viewportDimension : null),
       axisDirection: axisDirection ?? this.axisDirection,
       itemWidth: itemWidth ?? this.itemWidth,
+      devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio,
     );
   }
 
@@ -263,7 +266,7 @@ class _CPagePosition extends ScrollPositionWithSingleContext
 
   @override
   void saveScrollOffset() {
-    PageStorage.of(context.storageContext)?.writeState(context.storageContext,
+    PageStorage.of(context.storageContext).writeState(context.storageContext,
         _cachedPage ?? getPageFromPixels(pixels, viewportDimension));
   }
 
@@ -271,7 +274,7 @@ class _CPagePosition extends ScrollPositionWithSingleContext
   void restoreScrollOffset() {
     if (!hasPixels) {
       final double? value = PageStorage.of(context.storageContext)
-          ?.readState(context.storageContext) as double?;
+          .readState(context.storageContext) as double?;
       if (value != null) {
         _pageToUseOnStartup = value;
       }
@@ -355,18 +358,19 @@ class _CPagePosition extends ScrollPositionWithSingleContext
     double? viewportDimension,
     AxisDirection? axisDirection,
     double? itemWidth,
+    double? devicePixelRatio,
   }) {
     return CPageMetrics(
-      minScrollExtent: minScrollExtent ??
-          (hasContentDimensions ? this.minScrollExtent : null),
-      maxScrollExtent: maxScrollExtent ??
-          (hasContentDimensions ? this.maxScrollExtent : null),
-      pixels: pixels ?? (hasPixels ? this.pixels : null),
-      viewportDimension: viewportDimension ??
-          (hasViewportDimension ? this.viewportDimension : null),
-      axisDirection: axisDirection ?? this.axisDirection,
-      itemWidth: itemWidth ?? this.itemWidth,
-    );
+        minScrollExtent: minScrollExtent ??
+            (hasContentDimensions ? this.minScrollExtent : null),
+        maxScrollExtent: maxScrollExtent ??
+            (hasContentDimensions ? this.maxScrollExtent : null),
+        pixels: pixels ?? (hasPixels ? this.pixels : null),
+        viewportDimension: viewportDimension ??
+            (hasViewportDimension ? this.viewportDimension : null),
+        axisDirection: axisDirection ?? this.axisDirection,
+        itemWidth: itemWidth ?? this.itemWidth,
+        devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio);
   }
 }
 

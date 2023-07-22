@@ -314,7 +314,7 @@ class _CIconButtonState extends State<CIconButton>
     with TickerProviderStateMixin {
   // Cupertino animation =======================================================
 
-  static const Duration kFadeOutDuration = Duration(milliseconds: 40);
+  // static const Duration kFadeOutDuration = Duration(milliseconds: 40);
   static const Duration kFadeInDuration = Duration(milliseconds: 600);
   final Tween<double> _cupertinoOpacityTween = Tween<double>(begin: 1.0);
 

@@ -112,6 +112,8 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
           width: double.infinity,
           child: Column(
             children: [
+              ElevatedButton(onPressed: () {}, child: Text("Original El")),
+              TextButton(onPressed: () {}, child: Text("Original Text")),
               CButton.input(
                 child: const Text("A input styled button"),
                 onPressed: () {},

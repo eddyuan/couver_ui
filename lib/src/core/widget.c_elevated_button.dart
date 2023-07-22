@@ -54,34 +54,20 @@ class CElevatedButton extends CButtonStyleButton {
   ///
   /// The [autofocus] and [clipBehavior] arguments must not be null.
   const CElevatedButton({
-    Key? key,
-    required VoidCallback? onPressed,
-    VoidCallback? onLongPress,
-    ValueChanged<bool>? onHover,
-    ValueChanged<bool>? onFocusChange,
-    CButtonStyle? style,
-    FocusNode? focusNode,
-    bool autofocus = false,
-    Clip clipBehavior = Clip.none,
-    required Widget? child,
-    PlatformStyle platformStyle = PlatformStyle.auto,
-    bool? loading,
-    bool? shrinkWhenLoading,
-  }) : super(
-          key: key,
-          onPressed: onPressed,
-          onLongPress: onLongPress,
-          onHover: onHover,
-          onFocusChange: onFocusChange,
-          style: style,
-          focusNode: focusNode,
-          autofocus: autofocus,
-          clipBehavior: clipBehavior,
-          child: child,
-          platformStyle: platformStyle,
-          loading: loading,
-          shrinkWhenLoading: shrinkWhenLoading,
-        );
+    super.key,
+    required super.onPressed,
+    super.onLongPress,
+    super.onHover,
+    super.onFocusChange,
+    super.style,
+    super.focusNode,
+    super.autofocus = false,
+    super.clipBehavior = Clip.none,
+    required super.child,
+    super.platformStyle = PlatformStyle.auto,
+    super.loading,
+    super.shrinkWhenLoading,
+  });
 
   /// Create an elevated button from a pair of widgets that serve as the button's
   /// [icon] and [label].
@@ -303,7 +289,7 @@ class CElevatedButton extends CButtonStyleButton {
       onSurface: colorScheme.onSurface,
       shadowColor: theme.shadowColor,
       elevation: 2,
-      textStyle: theme.textTheme.button,
+      textStyle: theme.textTheme.labelLarge,
       padding: scaledPadding,
       minimumSize: const Size(64, 36),
       maximumSize: Size.infinite,

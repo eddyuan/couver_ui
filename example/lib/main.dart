@@ -46,7 +46,7 @@ class MyAppState extends State<MyApp> {
       initialRoute: "/",
       routes: AppRoutes.routes,
       builder: (context, child) => CouverTheme(
-        theme: CouverThemeData(
+        theme: const CouverThemeData(
           gutter: 4,
           pagePadding: 20,
         ),

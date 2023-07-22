@@ -46,7 +46,6 @@ class CTextFormField extends StatefulWidget {
     this.textAlignVertical,
     this.autofocus = false,
     this.readOnly = false,
-    this.toolbarOptions,
     this.showCursor,
     this.obscuringCharacter,
     this.obscureText = false,
@@ -169,7 +168,6 @@ class CTextFormField extends StatefulWidget {
     this.textAlignVertical,
     this.autofocus = false,
     this.readOnly = false,
-    this.toolbarOptions,
     this.showCursor,
     this.obscuringCharacter,
     this.obscureText = false,
@@ -300,7 +298,6 @@ class CTextFormField extends StatefulWidget {
   final TextAlignVertical? textAlignVertical;
   final bool autofocus;
   final bool readOnly;
-  final ToolbarOptions? toolbarOptions;
   final bool? showCursor;
   final String? obscuringCharacter;
   final bool obscureText;
@@ -788,21 +785,6 @@ class _CTextFormFieldState extends State<CTextFormField> {
     );
   }
 
-  // InputBorder get _focusedBorder {
-  //   if (_border == InputBorder.none) {
-  //     return InputBorder.none;
-  //   }
-  //   if (_border.borderSide.width == 0) {
-  //     return _border;
-  //   }
-  //   return _border.copyWith(
-  //     borderSide: const BorderSide(
-  //       color: CTheme.focusedInputBorderColor,
-  //       width: 2,
-  //     ),
-  //   );
-  // }
-
   TextInputType? getKeyboardType() {
     if (widget.keyboardType != null) {
       return widget.keyboardType;
@@ -897,8 +879,7 @@ class _CTextFormFieldState extends State<CTextFormField> {
       counter: widget.counter,
       counterText: getCounterText(),
       counterStyle: widget.counterStyle,
-      filled: widget.filled ??
-          (!isEnabled && cTheme.colors.inputDisableFillColor != null),
+      filled: widget.filled ?? !isEnabled,
       fillColor: widget.fillColor ??
           (!isEnabled ? cTheme.colors.inputDisableFillColor : null),
       focusColor: widget.focusColor,
@@ -941,7 +922,7 @@ class _CTextFormFieldState extends State<CTextFormField> {
         padding: widget.margin ?? EdgeInsets.zero,
         child: TextFormField(
           controller: _controller,
-          focusNode: _focusNode, // _focusNode, //widget.focusNode,
+          focusNode: _focusNode,
           keyboardType: getKeyboardType(),
           textCapitalization: widget.textCapitalization,
           textInputAction: widget.textInputAction,
@@ -952,7 +933,6 @@ class _CTextFormFieldState extends State<CTextFormField> {
           textAlignVertical: widget.textAlignVertical,
           autofocus: widget.autofocus,
           readOnly: widget.readOnly || widget.loading,
-          toolbarOptions: widget.toolbarOptions,
           showCursor: widget.showCursor,
           obscuringCharacter: obscuringCharacter,
           obscureText: widget.obscureText || (widget.password && !passwordV),

@@ -27,7 +27,7 @@ abstract class CButtonStyleButton extends StatefulWidget {
   /// Abstract const constructor. This constructor enables subclasses to provide
   /// const constructors so that they can be used in const expressions.
   const CButtonStyleButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.onLongPress,
     required this.onHover,
@@ -36,11 +36,12 @@ abstract class CButtonStyleButton extends StatefulWidget {
     required this.focusNode,
     required this.autofocus,
     required this.clipBehavior,
+    this.statesController,
     required this.child,
     this.platformStyle = PlatformStyle.auto,
     this.loading,
     this.shrinkWhenLoading,
-  }) : super(key: key);
+  });
 
   /// Define specific platform
   final PlatformStyle platformStyle;
@@ -99,6 +100,9 @@ abstract class CButtonStyleButton extends StatefulWidget {
 
   /// {@macro flutter.widgets.Focus.autofocus}
   final bool autofocus;
+
+  /// {@macro flutter.material.inkwell.statesController}
+  final MaterialStatesController? statesController;
 
   /// Typically the button's label.
   final Widget? child;
@@ -165,7 +169,7 @@ abstract class CButtonStyleButton extends StatefulWidget {
   ///
   /// A convenience method for subclasses.
   static MaterialStateProperty<T>? allOrNull<T>(T? value) =>
-      value == null ? null : MaterialStateProperty.all<T>(value);
+      value == null ? null : MaterialStatePropertyAll<T>(value);
 
   /// Returns an interpolated value based on the [textScaleFactor] parameter:
   ///
@@ -203,10 +207,27 @@ abstract class CButtonStyleButton extends StatefulWidget {
 ///  * [ElevatedButton], a filled button whose material elevates when pressed.
 ///  * [OutlinedButton], similar to [TextButton], but with an outline.
 class _ButtonStyleState extends State<CButtonStyleButton>
-    with MaterialStateMixin, TickerProviderStateMixin {
+    with TickerProviderStateMixin {
   AnimationController? _controller;
   double? _elevation;
   Color? _backgroundColor;
+  MaterialStatesController? internalStatesController;
+
+  void handleStatesControllerChange() {
+    // Force a rebuild to resolve MaterialStateProperty properties
+    setState(() {});
+  }
+
+  MaterialStatesController get statesController =>
+      widget.statesController ?? internalStatesController!;
+
+  void initStatesController() {
+    if (widget.statesController == null) {
+      internalStatesController = MaterialStatesController();
+    }
+    statesController.update(MaterialState.disabled, !widget.enabled);
+    statesController.addListener(handleStatesControllerChange);
+  }
 
   // static const Duration kSizeDuration = Duration(milliseconds: 200);
   // static const Duration kOpacityDuration = Duration(milliseconds: 2000);
@@ -271,30 +292,48 @@ class _ButtonStyleState extends State<CButtonStyleButton>
   @override
   void initState() {
     super.initState();
-    setMaterialState(MaterialState.disabled, !widget.enabled);
+    initStatesController();
     if (widget.platformStyle.isIos) {
       _initCupertinoAnimation();
     }
   }
 
   @override
-  void dispose() {
-    _controller?.dispose();
-    _cupertinoAnimationController?.dispose();
-    super.dispose();
-  }
-
-  @override
   void didUpdateWidget(CButtonStyleButton oldWidget) {
     super.didUpdateWidget(oldWidget);
-    setMaterialState(MaterialState.disabled, !widget.enabled);
+    // setMaterialState(MaterialState.disabled, !widget.enabled);
     // If the button is disabled while a press gesture is currently ongoing,
     // InkWell makes a call to handleHighlightChanged. This causes an exception
     // because it calls setState in the middle of a build. To preempt this, we
     // manually update pressed to false when this situation occurs.
-    if (isDisabled && isPressed) {
-      removeMaterialState(MaterialState.pressed);
+    // if (isDisabled && isPressed) {
+    //   removeMaterialState(MaterialState.pressed);
+    // }
+
+    if (widget.statesController != oldWidget.statesController) {
+      oldWidget.statesController?.removeListener(handleStatesControllerChange);
+      if (widget.statesController != null) {
+        internalStatesController?.dispose();
+        internalStatesController = null;
+      }
+      initStatesController();
     }
+    if (widget.enabled != oldWidget.enabled) {
+      statesController.update(MaterialState.disabled, !widget.enabled);
+      if (!widget.enabled) {
+        // The button may have been disabled while a press gesture is currently underway.
+        statesController.update(MaterialState.pressed, false);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    statesController.removeListener(handleStatesControllerChange);
+    internalStatesController?.dispose();
+    _controller?.dispose();
+    _cupertinoAnimationController?.dispose();
+    super.dispose();
   }
 
   Widget buildChildWithLoading(
@@ -338,7 +377,8 @@ class _ButtonStyleState extends State<CButtonStyleButton>
     T? resolve<T>(
         MaterialStateProperty<T>? Function(CButtonStyle? style) getProperty) {
       return effectiveValue(
-        (CButtonStyle? style) => getProperty(style)?.resolve(materialStates),
+        (CButtonStyle? style) =>
+            getProperty(style)?.resolve(statesController.value),
       );
     }
 
@@ -528,7 +568,6 @@ class _ButtonStyleState extends State<CButtonStyleButton>
           shape: inkShape.copyWith(side: BorderSide.none),
           color: resolvedBackgroundColor,
           shadowColor: resolvedShadowColor,
-          // surfaceTintColor: Colors.red,
           type: resolvedBackgroundColor == null
               ? MaterialType.transparency
               : MaterialType.button,
@@ -545,26 +584,14 @@ class _ButtonStyleState extends State<CButtonStyleButton>
               child: InkWell(
                 onTap: widget.enabled ? widget.onPressed : null,
                 onLongPress: widget.enabled ? widget.onLongPress : null,
-                onHighlightChanged: updateMaterialState(
-                  MaterialState.pressed,
-                  onChanged:
-                      widget.platformStyle.isIos ? _doCupertinoAnimate : null,
-                ),
-                onHover: widget.enabled
-                    ? updateMaterialState(
-                        MaterialState.hovered,
-                        onChanged: widget.onHover,
-                      )
-                    : null,
+                onHighlightChanged:
+                    widget.platformStyle.isIos ? _doCupertinoAnimate : null,
+                onHover: widget.onHover,
                 mouseCursor: resolvedMouseCursor,
                 enableFeedback: resolvedEnableFeedback,
                 focusNode: widget.focusNode,
-                // canRequestFocus: widget.enabled,
-                canRequestFocus: false, // widget.enabled,
-                onFocusChange: updateMaterialState(
-                  MaterialState.focused,
-                  onChanged: widget.onFocusChange,
-                ),
+                canRequestFocus: widget.enabled,
+                onFocusChange: widget.onFocusChange,
                 autofocus: widget.autofocus,
                 splashFactory: widget.platformStyle.isIos
                     ? NoSplash.splashFactory
@@ -665,10 +692,9 @@ class _MouseCursor extends MaterialStateMouseCursor {
 /// "tap target", but not its material or its ink splashes.
 class _InputPadding extends SingleChildRenderObjectWidget {
   const _InputPadding({
-    Key? key,
-    Widget? child,
+    super.child,
     required this.minSize,
-  }) : super(key: key, child: child);
+  });
 
   final Size minSize;
 
@@ -727,9 +753,10 @@ class _RenderInputPadding extends RenderShiftedBox {
     return 0.0;
   }
 
-  Size _computeSize(
-      {required BoxConstraints constraints,
-      required ChildLayouter layoutChild}) {
+  Size _computeSize({
+    required BoxConstraints constraints,
+    required ChildLayouter layoutChild,
+  }) {
     if (child != null) {
       final Size childSize = layoutChild(child!, constraints);
       final double height = math.max(childSize.width, minSize.width);

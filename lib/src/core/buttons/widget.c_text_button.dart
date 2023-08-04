@@ -8,7 +8,8 @@ import 'dart:ui' show lerpDouble;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../enums/enum.platform_style.dart';
+import '../../enums/enum.platform_style.dart';
+import 'helper.c_button_color.dart';
 import 'theme.c_button_style.dart';
 import 'widget.c_button_style_button.dart';
 
@@ -59,40 +60,19 @@ class CTextButton extends CButtonStyleButton {
   ///
   /// The [autofocus] and [clipBehavior] arguments must not be null.
   const CTextButton({
-    Key? key,
-    required VoidCallback? onPressed,
-    VoidCallback? onLongPress,
-    ValueChanged<bool>? onHover,
-    ValueChanged<bool>? onFocusChange,
-    CButtonStyle? style,
-    FocusNode? focusNode,
-    bool autofocus = false,
-    Clip clipBehavior = Clip.none,
-    required Widget child,
-    PlatformStyle platformStyle = PlatformStyle.auto,
-    bool? loading,
-    bool? shrinkWhenLoading,
-    // Gradient? backgroundGradient,
-    // Gradient? foregroundGradient,
-    // Gradient? borderGradient,
-  }) : super(
-          key: key,
-          onPressed: onPressed,
-          onLongPress: onLongPress,
-          onHover: onHover,
-          onFocusChange: onFocusChange,
-          style: style,
-          focusNode: focusNode,
-          autofocus: autofocus,
-          clipBehavior: clipBehavior,
-          child: child,
-          platformStyle: platformStyle,
-          loading: loading,
-          shrinkWhenLoading: shrinkWhenLoading,
-          // backgroundGradient: backgroundGradient,
-          // foregroundGradient: foregroundGradient,
-          // borderGradient: borderGradient,
-        );
+    super.key,
+    required super.onPressed,
+    super.onLongPress,
+    super.onHover,
+    super.onFocusChange,
+    super.style,
+    super.focusNode,
+    super.autofocus = false,
+    super.clipBehavior = Clip.none,
+    super.statesController,
+    required Widget super.child,
+    super.loading,
+  });
 
   /// Create a text button from a pair of widgets that serve as the button's
   /// [icon] and [label].
@@ -111,14 +91,10 @@ class CTextButton extends CButtonStyleButton {
     FocusNode? focusNode,
     bool? autofocus,
     Clip? clipBehavior,
+    MaterialStatesController? statesController,
     required Widget icon,
     required Widget label,
-    PlatformStyle platformStyle,
     bool? loading,
-    bool? shrinkWhenLoading,
-    // Gradient? backgroundGradient,
-    // Gradient? foregroundGradient,
-    // Gradient? borderGradient,
   }) = _CTextButtonWithIcon;
 
   /// A static convenience method that constructs a text button
@@ -153,11 +129,14 @@ class CTextButton extends CButtonStyleButton {
   /// )
   /// ```
   static CButtonStyle styleFrom({
-    Gradient? gradient,
-    Color? primary,
-    Color? onSurface,
+    Color? foregroundColor,
     Color? backgroundColor,
+    Color? disabledForegroundColor,
+    Color? disabledBackgroundColor,
     Color? shadowColor,
+    Color? surfaceTintColor,
+    Color? iconColor,
+    Color? disabledIconColor,
     double? elevation,
     TextStyle? textStyle,
     EdgeInsetsGeometry? padding,
@@ -174,37 +153,78 @@ class CTextButton extends CButtonStyleButton {
     bool? enableFeedback,
     AlignmentGeometry? alignment,
     InteractiveInkFeatureFactory? splashFactory,
+    // Extra params
+    Gradient? backgroundGradient,
+    Gradient? foregroundGradient,
+    Gradient? borderGradient,
+    PlatformStyle? platformStyle,
+    bool? shrinkWhenLoading,
+    bool? animateElevation,
   }) {
-    final MaterialStateProperty<Gradient?>? foregroundGradient =
-        gradient == null ? null : _CTextButtonDefaultGradient(gradient);
+    final MaterialStateProperty<Color?>? backgroundColorProp =
+        CButtonColor.buildBackgroundState(
+      backgroundColor,
+      disabledBackgroundColor,
+      backgroundGradient,
+    );
 
-    final MaterialStateProperty<Color?>? foregroundColor =
-        (onSurface == null && primary == null)
-            ? null
-            : _CTextButtonDefaultForeground(primary, onSurface);
+    final MaterialStateProperty<Color?>? foregroundColorProp =
+        CButtonColor.buildForegroundState(
+      foregroundColor,
+      disabledForegroundColor,
+      foregroundGradient,
+      backgroundColor,
+      backgroundGradient,
+    );
+
+    final MaterialStateProperty<BorderSide?>? sideProp =
+        CButtonColor.buildBorderState(side, null, borderGradient);
 
     final MaterialStateProperty<Color?>? overlayColor =
-        (primary == null) ? null : _CTextButtonDefaultOverlay(primary);
+        CButtonColor.buildOverlayState(foregroundColor, foregroundGradient,
+            backgroundColor, backgroundGradient);
 
-    final MaterialStateProperty<MouseCursor>? mouseCursor =
-        (enabledMouseCursor == null && disabledMouseCursor == null)
-            ? null
-            : _CTextButtonDefaultMouseCursor(
-                enabledMouseCursor!, disabledMouseCursor!);
+    final MaterialStateProperty<Color?>? iconColorProp =
+        CButtonColor.buildForegroundState(
+      iconColor ?? foregroundColor,
+      disabledIconColor ?? disabledForegroundColor,
+      foregroundGradient,
+      backgroundColor,
+      backgroundGradient,
+    );
+    // (iconColor == null && disabledIconColor == null)
+    //     ? null
+    //     : disabledIconColor == null
+    //         ? ButtonStyleButton.allOrNull<Color?>(iconColor)
+    //         : _CTextButtonDefaultIconColor(iconColor, disabledIconColor);
+
+    final MaterialStateProperty<MouseCursor?>? mouseCursor =
+        CButtonColor.buildMouseCursorState(
+            enabledMouseCursor, disabledMouseCursor);
+
+    final MaterialStateProperty<Gradient?>? backgroundGradientProp =
+        CButtonColor.buildGradientState(backgroundGradient);
+
+    final MaterialStateProperty<Gradient?>? foregroundGradientProp =
+        CButtonColor.buildGradientState(foregroundGradient);
+
+    final MaterialStateProperty<Gradient?>? borderGradientProp =
+        CButtonColor.buildGradientState(borderGradient);
 
     return CButtonStyle(
       textStyle: CButtonStyleButton.allOrNull<TextStyle>(textStyle),
-      backgroundColor: CButtonStyleButton.allOrNull<Color>(backgroundColor),
-      foregroundColor: foregroundColor,
-      foregroundGradient: foregroundGradient,
+      foregroundColor: foregroundColorProp,
+      backgroundColor: backgroundColorProp,
       overlayColor: overlayColor,
       shadowColor: CButtonStyleButton.allOrNull<Color>(shadowColor),
+      surfaceTintColor: CButtonStyleButton.allOrNull<Color>(surfaceTintColor),
+      iconColor: iconColorProp,
       elevation: CButtonStyleButton.allOrNull<double>(elevation),
       padding: CButtonStyleButton.allOrNull<EdgeInsetsGeometry>(padding),
       minimumSize: CButtonStyleButton.allOrNull<Size>(minimumSize),
       fixedSize: CButtonStyleButton.allOrNull<Size>(fixedSize),
       maximumSize: CButtonStyleButton.allOrNull<Size>(maximumSize),
-      side: CButtonStyleButton.allOrNull<BorderSide>(side),
+      side: sideProp,
       shape: CButtonStyleButton.allOrNull<OutlinedBorder>(shape),
       mouseCursor: mouseCursor,
       visualDensity: visualDensity,
@@ -213,6 +233,12 @@ class CTextButton extends CButtonStyleButton {
       enableFeedback: enableFeedback,
       alignment: alignment,
       splashFactory: splashFactory,
+      // Extra params
+      backgroundGradient: backgroundGradientProp,
+      foregroundGradient: foregroundGradientProp,
+      borderGradient: borderGradientProp,
+      platformStyle: platformStyle ?? PlatformStyle.auto,
+      shrinkWhenLoading: shrinkWhenLoading ?? false,
     );
   }
 
@@ -288,34 +314,30 @@ class CTextButton extends CButtonStyleButton {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
 
-    final EdgeInsetsGeometry scaledPadding = CButtonStyleButton.scaledPadding(
-      const EdgeInsets.all(8),
-      const EdgeInsets.symmetric(horizontal: 8),
-      const EdgeInsets.symmetric(horizontal: 4),
-      MediaQuery.maybeOf(context)?.textScaleFactor ?? 1,
-    );
-
-    return styleFrom(
-      primary: colorScheme.primary,
-      onSurface: colorScheme.onSurface,
-      backgroundColor: Colors.transparent,
-      shadowColor: theme.shadowColor,
-      elevation: 0,
-      textStyle: theme.textTheme.button,
-      padding: scaledPadding,
-      minimumSize: const Size(64, 36),
-      maximumSize: Size.infinite,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(4))),
-      enabledMouseCursor: SystemMouseCursors.click,
-      disabledMouseCursor: SystemMouseCursors.forbidden,
-      visualDensity: theme.visualDensity,
-      tapTargetSize: theme.materialTapTargetSize,
-      animationDuration: kThemeChangeDuration,
-      enableFeedback: true,
-      alignment: Alignment.center,
-      splashFactory: InkRipple.splashFactory,
-    );
+    return Theme.of(context).useMaterial3
+        ? _CTextButtonDefaultsM3(context)
+        : styleFrom(
+            foregroundColor: colorScheme.primary,
+            disabledForegroundColor: colorScheme.onSurface.withOpacity(0.38),
+            backgroundColor: Colors.transparent,
+            disabledBackgroundColor: Colors.transparent,
+            shadowColor: theme.shadowColor,
+            elevation: 0,
+            textStyle: theme.textTheme.labelLarge,
+            padding: _scaledPadding(context),
+            minimumSize: const Size(64, 36),
+            maximumSize: Size.infinite,
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(4))),
+            enabledMouseCursor: SystemMouseCursors.click,
+            disabledMouseCursor: SystemMouseCursors.basic,
+            visualDensity: theme.visualDensity,
+            tapTargetSize: theme.materialTapTargetSize,
+            animationDuration: kThemeChangeDuration,
+            enableFeedback: true,
+            alignment: Alignment.center,
+            splashFactory: InkRipple.splashFactory,
+          );
   }
 
   /// Returns the [TextButtonThemeData.style] of the closest
@@ -326,140 +348,61 @@ class CTextButton extends CButtonStyleButton {
   }
 }
 
-@immutable
-class _CTextButtonDefaultGradient extends MaterialStateProperty<Gradient?>
-    with Diagnosticable {
-  _CTextButtonDefaultGradient(this.gradient);
-
-  final Gradient? gradient;
-
-  @override
-  Gradient? resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.disabled)) {
-      return null;
-    }
-    return gradient;
-  }
-}
-
-@immutable
-class _CTextButtonDefaultForeground extends MaterialStateProperty<Color?> {
-  _CTextButtonDefaultForeground(this.primary, this.onSurface);
-
-  final Color? primary;
-  final Color? onSurface;
-
-  @override
-  Color? resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.disabled)) {
-      return onSurface?.withOpacity(0.38);
-    }
-    return primary;
-  }
-
-  @override
-  String toString() {
-    return '{disabled: ${onSurface?.withOpacity(0.38)}, otherwise: $primary}';
-  }
-}
-
-@immutable
-class _CTextButtonDefaultOverlay extends MaterialStateProperty<Color?> {
-  _CTextButtonDefaultOverlay(this.primary);
-
-  final Color primary;
-
-  @override
-  Color? resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.hovered)) {
-      return primary.withOpacity(0.04);
-    }
-    if (states.contains(MaterialState.focused) ||
-        states.contains(MaterialState.pressed)) {
-      return primary.withOpacity(0.12);
-    }
-    return null;
-  }
-
-  @override
-  String toString() {
-    return '{hovered: ${primary.withOpacity(0.04)}, focused,pressed: ${primary.withOpacity(0.12)}, otherwise: null}';
-  }
-}
-
-@immutable
-class _CTextButtonDefaultMouseCursor extends MaterialStateProperty<MouseCursor>
-    with Diagnosticable {
-  _CTextButtonDefaultMouseCursor(this.enabledCursor, this.disabledCursor);
-
-  final MouseCursor enabledCursor;
-  final MouseCursor disabledCursor;
-
-  @override
-  MouseCursor resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.disabled)) return disabledCursor;
-    return enabledCursor;
-  }
+EdgeInsetsGeometry _scaledPadding(BuildContext context) {
+  final bool useMaterial3 = Theme.of(context).useMaterial3;
+  return ButtonStyleButton.scaledPadding(
+    useMaterial3
+        ? const EdgeInsets.symmetric(horizontal: 12, vertical: 8)
+        : const EdgeInsets.all(8),
+    const EdgeInsets.symmetric(horizontal: 8),
+    const EdgeInsets.symmetric(horizontal: 4),
+    MediaQuery.textScaleFactorOf(context),
+  );
 }
 
 class _CTextButtonWithIcon extends CTextButton {
   _CTextButtonWithIcon({
-    Key? key,
-    required VoidCallback? onPressed,
-    VoidCallback? onLongPress,
-    ValueChanged<bool>? onHover,
-    ValueChanged<bool>? onFocusChange,
-    CButtonStyle? style,
-    FocusNode? focusNode,
+    super.key,
+    required super.onPressed,
+    super.onLongPress,
+    super.onHover,
+    super.onFocusChange,
+    super.style,
+    super.focusNode,
     bool? autofocus,
     Clip? clipBehavior,
+    super.statesController,
     required Widget icon,
     required Widget label,
-    PlatformStyle platformStyle = PlatformStyle.auto,
-    bool? loading,
-    bool? shrinkWhenLoading,
-    // Gradient? backgroundGradient,
-    // Gradient? foregroundGradient,
-    // Gradient? borderGradient,
+    super.loading,
   }) : super(
-          key: key,
-          onPressed: onPressed,
-          onLongPress: onLongPress,
-          onHover: onHover,
-          onFocusChange: onFocusChange,
-          style: style,
-          focusNode: focusNode,
           autofocus: autofocus ?? false,
           clipBehavior: clipBehavior ?? Clip.none,
           child: _CTextButtonWithIconChild(icon: icon, label: label),
-          platformStyle: platformStyle,
-          loading: loading,
-          shrinkWhenLoading: shrinkWhenLoading,
-          // backgroundGradient: backgroundGradient,
-          // foregroundGradient: foregroundGradient,
-          // borderGradient: borderGradient,
         );
 
   @override
   CButtonStyle defaultStyleOf(BuildContext context) {
-    final EdgeInsetsGeometry scaledPadding = CButtonStyleButton.scaledPadding(
-      const EdgeInsets.all(8),
+    final bool useMaterial3 = Theme.of(context).useMaterial3;
+    final EdgeInsetsGeometry scaledPadding = ButtonStyleButton.scaledPadding(
+      useMaterial3
+          ? const EdgeInsetsDirectional.fromSTEB(12, 8, 16, 8)
+          : const EdgeInsets.all(8),
       const EdgeInsets.symmetric(horizontal: 4),
       const EdgeInsets.symmetric(horizontal: 4),
-      MediaQuery.maybeOf(context)?.textScaleFactor ?? 1,
+      MediaQuery.textScaleFactorOf(context),
     );
     return super.defaultStyleOf(context).copyWith(
-          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(scaledPadding),
+          padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(scaledPadding),
         );
   }
 }
 
 class _CTextButtonWithIconChild extends StatelessWidget {
   const _CTextButtonWithIconChild({
-    Key? key,
     required this.label,
     required this.icon,
-  }) : super(key: key);
+  });
 
   final Widget label;
   final Widget icon;
@@ -474,4 +417,101 @@ class _CTextButtonWithIconChild extends StatelessWidget {
       children: <Widget>[icon, SizedBox(width: gap), Flexible(child: label)],
     );
   }
+}
+
+class _CTextButtonDefaultsM3 extends CButtonStyle {
+  _CTextButtonDefaultsM3(this.context)
+      : super(
+          animationDuration: kThemeChangeDuration,
+          enableFeedback: true,
+          alignment: Alignment.center,
+        );
+
+  final BuildContext context;
+  late final ColorScheme _colors = Theme.of(context).colorScheme;
+
+  @override
+  MaterialStateProperty<TextStyle?> get textStyle =>
+      MaterialStatePropertyAll<TextStyle?>(
+          Theme.of(context).textTheme.labelLarge);
+
+  @override
+  MaterialStateProperty<Color?>? get backgroundColor =>
+      const MaterialStatePropertyAll<Color>(Colors.transparent);
+
+  @override
+  MaterialStateProperty<Color?>? get foregroundColor =>
+      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return _colors.onSurface.withOpacity(0.38);
+        }
+        return _colors.primary;
+      });
+
+  @override
+  MaterialStateProperty<Color?>? get overlayColor =>
+      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+        if (states.contains(MaterialState.hovered)) {
+          return _colors.primary.withOpacity(0.08);
+        }
+        if (states.contains(MaterialState.focused)) {
+          return _colors.primary.withOpacity(0.12);
+        }
+        if (states.contains(MaterialState.pressed)) {
+          return _colors.primary.withOpacity(0.12);
+        }
+        return null;
+      });
+
+  @override
+  MaterialStateProperty<Color>? get shadowColor =>
+      const MaterialStatePropertyAll<Color>(Colors.transparent);
+
+  @override
+  MaterialStateProperty<Color>? get surfaceTintColor =>
+      const MaterialStatePropertyAll<Color>(Colors.transparent);
+
+  @override
+  MaterialStateProperty<double>? get elevation =>
+      const MaterialStatePropertyAll<double>(0.0);
+
+  @override
+  MaterialStateProperty<EdgeInsetsGeometry>? get padding =>
+      MaterialStatePropertyAll<EdgeInsetsGeometry>(_scaledPadding(context));
+
+  @override
+  MaterialStateProperty<Size>? get minimumSize =>
+      const MaterialStatePropertyAll<Size>(Size(64.0, 40.0));
+
+  // No default fixedSize
+
+  @override
+  MaterialStateProperty<Size>? get maximumSize =>
+      const MaterialStatePropertyAll<Size>(Size.infinite);
+
+  // No default side
+
+  @override
+  MaterialStateProperty<OutlinedBorder>? get shape =>
+      const MaterialStatePropertyAll<OutlinedBorder>(StadiumBorder());
+
+  @override
+  MaterialStateProperty<MouseCursor?>? get mouseCursor =>
+      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return SystemMouseCursors.basic;
+        }
+        return SystemMouseCursors.click;
+      });
+
+  @override
+  VisualDensity? get visualDensity => Theme.of(context).visualDensity;
+
+  @override
+  MaterialTapTargetSize? get tapTargetSize =>
+      Theme.of(context).materialTapTargetSize;
+
+  @override
+  InteractiveInkFeatureFactory? get splashFactory =>
+      Theme.of(context).splashFactory;
 }

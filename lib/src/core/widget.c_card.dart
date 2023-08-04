@@ -6,6 +6,7 @@ import '../enums/enum.platform_style.dart';
 import '../utils/converts.dart';
 import '../utils/utils.dart';
 import 'widget.c_ink.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class CCard extends StatelessWidget {
   const CCard({
@@ -108,7 +109,7 @@ class CCard extends StatelessWidget {
     final Color targetLeadingColor =
         leadingColor ?? Theme.of(context).dividerColor;
     final InteractiveInkFeatureFactory splashFactory = this.splashFactory ??
-        (Platform.isIOS
+        (!kIsWeb && Platform.isIOS
             ? NoSplash.splashFactory
             : CouverTheme.of(context).splashFactory);
     final Color cardColor = color ?? Theme.of(context).cardColor;

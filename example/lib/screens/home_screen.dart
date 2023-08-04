@@ -14,16 +14,21 @@ class HomeScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: AppRoutes.buttons
-              .map(
-                (e) => CButton.filled(
-                  text: e.displayName,
-                  onPressed: () {
-                    Navigator.pushNamed(context, e.routeName);
-                  },
-                ),
-              )
-              .toList(),
+          children: [
+            ...AppRoutes.buttons
+                .map(
+                  (e) => CButton.filled(
+                    text: e.displayName,
+                    onPressed: () {
+                      Navigator.pushNamed(context, e.routeName);
+                    },
+                  ),
+                )
+                .toList(),
+            Text(
+              Theme.of(context).platform.toString(),
+            ),
+          ],
         ),
       ),
     );

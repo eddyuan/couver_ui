@@ -7,7 +7,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 // import 'utils.dart';
-import 'widget.c_icon_button.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'buttons/widget.c_icon_button.dart';
 
 // /// A "back" icon that's appropriate for the current [TargetPlatform].
 // ///
@@ -103,7 +104,7 @@ class CBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterialLocalizations(context));
     String? heroTag_ = heroTag;
-    if (Platform.isIOS && heroTag != null && heroTag!.isEmpty) {
+    if (!kIsWeb && Platform.isIOS && heroTag != null && heroTag!.isEmpty) {
       heroTag_ = 'BackButtonHeroTag';
     }
     Widget result = CIconButton(

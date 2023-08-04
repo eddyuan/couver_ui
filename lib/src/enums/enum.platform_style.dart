@@ -1,15 +1,21 @@
 import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
-enum PlatformStyle { cupertino, material, auto }
+enum PlatformStyle {
+  cupertino,
+  material,
+  auto;
 
-extension PlatformStyleExtension on PlatformStyle {
   bool get isIos {
     switch (this) {
-      case PlatformStyle.cupertino:
+      case cupertino:
         return true;
-      case PlatformStyle.material:
+      case material:
         return false;
       default:
+        if (kIsWeb) {
+          return false;
+        }
         return Platform.isIOS || Platform.isMacOS;
     }
   }

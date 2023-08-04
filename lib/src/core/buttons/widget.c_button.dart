@@ -1,8 +1,8 @@
 import 'package:couver_ui/couver_util.dart';
 import "package:flutter/material.dart";
 
-import 'theme.couver_theme.dart';
-import '../enums/enum.platform_style.dart';
+import '../theme.couver_theme.dart';
+import '../../enums/enum.platform_style.dart';
 import 'widget.c_elevated_button.dart';
 import 'widget.c_icon_button.dart';
 import 'widget.c_outlined_button.dart';
@@ -338,7 +338,6 @@ class CButton extends StatelessWidget {
     // final BtnSize targetBtnSize = size ;
     final double targetMinHeight = size.minHeight;
     final double targetMinWidth = size.minWidth;
-
     final double targetFontSize = size.fontSize;
     final FontWeight targetFontWeight = size.fontWeight;
     final TextStyle targetTextStyle = TextStyle(
@@ -346,7 +345,7 @@ class CButton extends StatelessWidget {
       fontWeight: targetFontWeight,
     );
 
-    final RoundedRectangleBorder? targetShape = borderRadius != null
+    final OutlinedBorder? targetShape = borderRadius != null
         ? RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius!),
           )
@@ -365,7 +364,7 @@ class CButton extends StatelessWidget {
 
     final VoidCallback? targetOnPressed = disabled ? null : onPressed;
 
-    final Size minimumSize_ = Size(targetMinWidth, targetMinHeight);
+    final Size targetMinSize = Size(targetMinWidth, targetMinHeight);
 
     final EdgeInsetsGeometry targetPadding =
         (_type == _ButtonType.icon ? EdgeInsets.zero : size.padding);
@@ -417,18 +416,29 @@ class CButton extends StatelessWidget {
         ((targetBColor?.alpha ?? 255) < 255) ? 0 : null;
 
     Widget buildIconButton(BuildContext context) {
-      final double? minSize_ = size.minHeight;
       return CIconButton(
         loading: loading,
         icon: targetChild,
         onPressed: targetOnPressed,
         color: targetFColor,
         padding: targetPadding,
-        constraints: minSize_ != null
-            ? BoxConstraints(
-                minWidth: targetMinWidth, minHeight: targetMinHeight)
-            : null,
-        platformStyle: platformStyle,
+        constraints: BoxConstraints(
+          minWidth: targetMinWidth,
+          minHeight: targetMinHeight,
+        ),
+        style: CIconButton.styleFrom(
+          elevation: targetElevation,
+          foregroundGradient: gradient,
+          shape: targetShape,
+          padding: targetPadding,
+          minimumSize: targetMinSize,
+          // textStyle: targetTextStyle,
+          // backgroundColor: targetBColor,
+          foregroundColor: targetFColor,
+          // disabledBackgroundColor: targetDColor,
+          tapTargetSize: targetTapSize,
+          platformStyle: platformStyle,
+        ),
         splashRadius: splashRadius,
         disabledColor: targetDColor?.withOpacity(0.7),
       );
@@ -438,18 +448,18 @@ class CButton extends StatelessWidget {
       return CElevatedButton(
         loading: loading,
         onPressed: targetOnPressed,
-        platformStyle: platformStyle,
         style: CElevatedButton.styleFrom(
           elevation: targetElevation,
-          gradient: gradient,
+          backgroundGradient: gradient,
           shape: targetShape,
           padding: targetPadding,
-          minimumSize: minimumSize_,
+          minimumSize: targetMinSize,
           textStyle: targetTextStyle,
-          primary: targetBColor,
-          onPrimary: targetFColor,
-          onSurface: targetDColor,
+          backgroundColor: targetBColor,
+          foregroundColor: targetFColor,
+          // disabledBackgroundColor: targetDColor,
           tapTargetSize: targetTapSize,
+          platformStyle: platformStyle,
         ).copyWith(
           elevation: targetElevation != null
               ? MaterialStateProperty.all(targetElevation)
@@ -463,16 +473,16 @@ class CButton extends StatelessWidget {
       return COutlinedButton(
         loading: loading,
         onPressed: targetOnPressed,
-        platformStyle: platformStyle,
         style: COutlinedButton.styleFrom(
-          gradient: gradient,
-          borderColor: borderColor,
+          borderGradient: gradient,
+          foregroundGradient: gradient,
+          // borderColor: borderColor,
           shape: targetShape,
           padding: targetPadding,
-          minimumSize: minimumSize_,
+          minimumSize: targetMinSize,
           textStyle: targetTextStyle,
-          primary: targetFColor,
-          onSurface: targetDColor,
+          foregroundColor: targetFColor,
+          // disabledBackgroundColor: targetDColor,
           backgroundColor: targetBColor,
           side: BorderSide(
             width: borderWidth,
@@ -481,6 +491,7 @@ class CButton extends StatelessWidget {
                 Theme.of(context).colorScheme.primary.withOpacity(0.9),
           ),
           tapTargetSize: targetTapSize,
+          platformStyle: platformStyle,
         ),
         child: targetChild,
       );
@@ -490,13 +501,13 @@ class CButton extends StatelessWidget {
       return COutlinedButton(
         loading: loading,
         onPressed: targetOnPressed,
-        platformStyle: platformStyle,
         style: COutlinedButton.styleFrom(
-          gradient: gradient,
-          borderColor: Theme.of(context).dividerColor,
+          foregroundGradient: gradient,
+          borderGradient: gradient,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
-                CouverTheme.of(context).inputBorderRadius),
+              CouverTheme.of(context).inputBorderRadius,
+            ),
           ),
           padding: EdgeInsets.symmetric(
             horizontal: CouverTheme.of(context).gutter * 3,
@@ -504,15 +515,14 @@ class CButton extends StatelessWidget {
           ),
           minimumSize: Size(targetMinWidth, targetMinHeight),
           textStyle: Theme.of(context).textTheme.bodyLarge!,
-          primary: gradient?.colors[0] ?? foregroundColor ?? color,
+          foregroundColor: gradient?.colors[0] ?? foregroundColor ?? color,
           backgroundColor: backgroundColor,
           side: BorderSide(
             width: borderWidth,
-            color: foregroundColor ??
-                color ??
-                Theme.of(context).colorScheme.primary.withOpacity(0.9),
+            color: Theme.of(context).dividerColor,
           ),
           tapTargetSize: targetTapSize,
+          platformStyle: platformStyle,
         ),
         child: targetChild,
       );
@@ -522,17 +532,17 @@ class CButton extends StatelessWidget {
       return CTextButton(
         loading: loading,
         onPressed: targetOnPressed,
-        platformStyle: platformStyle,
         style: CTextButton.styleFrom(
-          gradient: gradient,
+          foregroundGradient: gradient,
           shape: targetShape,
           padding: targetPadding,
-          minimumSize: minimumSize_,
+          minimumSize: targetMinSize,
           textStyle: targetTextStyle,
-          primary: color,
+          foregroundColor: color,
           backgroundColor: targetBColor,
-          onSurface: targetDColor,
+          disabledForegroundColor: targetDColor,
           tapTargetSize: targetTapSize,
+          platformStyle: platformStyle,
         ),
         child: targetChild,
       );

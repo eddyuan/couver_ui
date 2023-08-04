@@ -6,13 +6,13 @@ import 'dart:math' as math;
 import 'dart:math';
 
 // import 'package:couver_app/utils/helpers.dart';
+import 'package:couver_ui/src/core/painter/ext.shape_border.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '../enums/enum.platform_style.dart';
+import '../../enums/enum.platform_style.dart';
 import 'theme.c_button_style.dart';
-import 'widget.c_border_painter.dart';
 
 /// The base [StatefulWidget] class for buttons whose style is defined by a [CButtonStyle] object.
 ///
@@ -23,136 +23,53 @@ import 'widget.c_border_painter.dart';
 ///  * [TextButton], a simple CButtonStyleButton without a shadow.
 ///  * [ElevatedButton], a filled CButtonStyleButton whose material elevates when pressed.
 ///  * [OutlinedButton], similar to [TextButton], but with an outline.
-abstract class CButtonStyleButton extends StatefulWidget {
+///
+
+abstract class CButtonStyleButton extends ButtonStyleButton {
   /// Abstract const constructor. This constructor enables subclasses to provide
   /// const constructors so that they can be used in const expressions.
   const CButtonStyleButton({
     super.key,
-    required this.onPressed,
-    required this.onLongPress,
-    required this.onHover,
-    required this.onFocusChange,
-    required this.style,
-    required this.focusNode,
-    required this.autofocus,
-    required this.clipBehavior,
-    this.statesController,
-    required this.child,
-    this.platformStyle = PlatformStyle.auto,
+    required super.onPressed,
+    required super.onLongPress,
+    required super.onHover,
+    required super.onFocusChange,
+    CButtonStyle? style,
+    required super.focusNode,
+    required super.autofocus,
+    required super.clipBehavior,
+    super.statesController,
+    required super.child,
     this.loading,
-    this.shrinkWhenLoading,
-  });
+  })  : _cStyle = style,
+        super(style: style);
 
-  /// Define specific platform
-  final PlatformStyle platformStyle;
+  final CButtonStyle? _cStyle;
+
+  @override
+  CButtonStyle? get style => _cStyle;
 
   /// Show a loading
   final bool? loading;
 
-  /// Called when the button is tapped or otherwise activated.
-  ///
-  /// If this callback and [onLongPress] are null, then the button will be disabled.
-  ///
-  /// See also:
-  ///
-  ///  * [enabled], which is true if the button is enabled.
-  final VoidCallback? onPressed;
+  PlatformStyle get platformStyle => style?.platformStyle ?? PlatformStyle.auto;
+  bool get shrinkWhenLoading => style?.shrinkWhenLoading ?? false;
 
-  /// Called when the button is long-pressed.
-  ///
-  /// If this callback and [onPressed] are null, then the button will be disabled.
-  ///
-  /// See also:
-  ///
-  ///  * [enabled], which is true if the button is enabled.
-  final VoidCallback? onLongPress;
-
-  /// Called when a pointer enters or exits the button response area.
-  ///
-  /// The value passed to the callback is true if a pointer has entered this
-  /// part of the material and false if a pointer has exited this part of the
-  /// material.
-  final ValueChanged<bool>? onHover;
-
-  /// Handler called when the focus changes.
-  ///
-  /// Called with true if this widget's node gains focus, and false if it loses
-  /// focus.
-  final ValueChanged<bool>? onFocusChange;
-
-  /// Customizes this button's appearance.
-  ///
-  /// Non-null properties of this style override the corresponding
-  /// properties in [themeStyleOf] and [defaultStyleOf]. [MaterialStateProperty]s
-  /// that resolve to non-null values will similarly override the corresponding
-  /// [MaterialStateProperty]s in [themeStyleOf] and [defaultStyleOf].
-  ///
-  /// Null by default.
-  final CButtonStyle? style;
-
-  /// {@macro flutter.material.Material.clipBehavior}
-  ///
-  /// Defaults to [Clip.none], and must not be null.
-  final Clip clipBehavior;
-
-  /// {@macro flutter.widgets.Focus.focusNode}
-  final FocusNode? focusNode;
-
-  /// {@macro flutter.widgets.Focus.autofocus}
-  final bool autofocus;
-
-  /// {@macro flutter.material.inkwell.statesController}
-  final MaterialStatesController? statesController;
-
-  /// Typically the button's label.
-  final Widget? child;
-
-  /// Should the size of the button shrink when loading?
-  final bool? shrinkWhenLoading;
-
-  /// Returns a non-null [CButtonStyle] that's based primarily on the [Theme]'s
-  /// [ThemeData.textTheme] and [ThemeData.colorScheme].
-  ///
-  /// The returned style can be overridden by the [style] parameter and
-  /// by the style returned by [themeStyleOf]. For example the default
-  /// style of the [TextButton] subclass can be overridden with its
-  /// [TextButton.platformStyle] constructor parameter, or with a
-  /// [TextButtonTheme].
-  ///
-  /// Concrete button subclasses should return a CButtonStyle that
-  /// has no null properties, and where all of the [MaterialStateProperty]
-  /// properties resolve to non-null values.
-  ///
-  /// See also:
-  ///
-  ///  * [themeStyleOf], Returns the CButtonStyle of this button's component theme.
+  @override
   @protected
   CButtonStyle defaultStyleOf(BuildContext context);
 
-  /// Returns the CButtonStyle that belongs to the button's component theme.
-  ///
-  /// The returned style can be overridden by the [style] parameter.
-  ///
-  /// Concrete button subclasses should return the CButtonStyle for the
-  /// nearest subclass-specific inherited theme, and if no such theme
-  /// exists, then the same value from the overall [Theme].
-  ///
-  /// See also:
-  ///
-  ///  * [defaultStyleOf], Returns the default [CButtonStyle] for this button.
+  @override
   @protected
   CButtonStyle? themeStyleOf(BuildContext context);
 
   bool get isLoading => loading ?? false;
 
-  /// Whether the button is enabled or disabled.
-  ///
-  /// Buttons are disabled by default. To enable a button, set its [onPressed]
-  /// or [onLongPress] properties to a non-null value.
+  @override
   bool get enabled => !isLoading && (onPressed != null || onLongPress != null);
 
   @override
-  State<CButtonStyleButton> createState() => _ButtonStyleState();
+  State<CButtonStyleButton> createState() => _CButtonStyleState();
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -206,11 +123,11 @@ abstract class CButtonStyleButton extends StatefulWidget {
 ///  * [TextButton], a simple button without a shadow.
 ///  * [ElevatedButton], a filled button whose material elevates when pressed.
 ///  * [OutlinedButton], similar to [TextButton], but with an outline.
-class _ButtonStyleState extends State<CButtonStyleButton>
+class _CButtonStyleState extends State<CButtonStyleButton>
     with TickerProviderStateMixin {
-  AnimationController? _controller;
-  double? _elevation;
-  Color? _backgroundColor;
+  AnimationController? controller;
+  double? elevation;
+  Color? backgroundColor;
   MaterialStatesController? internalStatesController;
 
   void handleStatesControllerChange() {
@@ -227,15 +144,15 @@ class _ButtonStyleState extends State<CButtonStyleButton>
     }
     statesController.update(MaterialState.disabled, !widget.enabled);
     statesController.addListener(handleStatesControllerChange);
+    if (widget.platformStyle.isIos) {
+      _initCupertinoAnimation();
+    }
   }
-
-  // static const Duration kSizeDuration = Duration(milliseconds: 200);
-  // static const Duration kOpacityDuration = Duration(milliseconds: 2000);
 
   // Cupertino animation =======================================================
 
   // static const Duration kFadeOutDuration = Duration.zero;
-  static const Duration kFadeInDuration = Duration(milliseconds: 600);
+  final Duration _cupertinoFadeInDuration = const Duration(milliseconds: 600);
   final Tween<double> _cupertinoOpacityTween = Tween<double>(begin: 1.0);
 
   AnimationController? _cupertinoAnimationController;
@@ -258,20 +175,8 @@ class _ButtonStyleState extends State<CButtonStyleButton>
         _cupertinoAnimationController!.value = 1.0;
       } else {
         _cupertinoAnimationController!.animateTo(0.0,
-            duration: kFadeInDuration, curve: Curves.decelerate);
+            duration: _cupertinoFadeInDuration, curve: Curves.decelerate);
       }
-      // if (_cupertinoAnimationController!.isAnimating) return;
-      // final bool wasHeldDown = _cupertinoButtonHeldDown;
-      // final TickerFuture ticker = _cupertinoButtonHeldDown
-      //     ? _cupertinoAnimationController!.animateTo(1.0,
-      //         duration: kFadeOutDuration, curve: Curves.decelerate)
-      //     : _cupertinoAnimationController!
-      //         .animateTo(0.0, duration: kFadeInDuration, curve: Curves.decelerate);
-      // ticker.then<void>((void value) {
-      //   if (mounted && wasHeldDown != _cupertinoButtonHeldDown) {
-      //     _cupertinoAnimate();
-      //   }
-      // });
     }
   }
 
@@ -293,23 +198,11 @@ class _ButtonStyleState extends State<CButtonStyleButton>
   void initState() {
     super.initState();
     initStatesController();
-    if (widget.platformStyle.isIos) {
-      _initCupertinoAnimation();
-    }
   }
 
   @override
   void didUpdateWidget(CButtonStyleButton oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // setMaterialState(MaterialState.disabled, !widget.enabled);
-    // If the button is disabled while a press gesture is currently ongoing,
-    // InkWell makes a call to handleHighlightChanged. This causes an exception
-    // because it calls setState in the middle of a build. To preempt this, we
-    // manually update pressed to false when this situation occurs.
-    // if (isDisabled && isPressed) {
-    //   removeMaterialState(MaterialState.pressed);
-    // }
-
     if (widget.statesController != oldWidget.statesController) {
       oldWidget.statesController?.removeListener(handleStatesControllerChange);
       if (widget.statesController != null) {
@@ -331,7 +224,7 @@ class _ButtonStyleState extends State<CButtonStyleButton>
   void dispose() {
     statesController.removeListener(handleStatesControllerChange);
     internalStatesController?.dispose();
-    _controller?.dispose();
+    controller?.dispose();
     _cupertinoAnimationController?.dispose();
     super.dispose();
   }
@@ -341,7 +234,7 @@ class _ButtonStyleState extends State<CButtonStyleButton>
     required Widget childWidget,
     required Widget loadingWidget,
   }) {
-    if (widget.shrinkWhenLoading ?? false) {
+    if (widget.shrinkWhenLoading) {
       return AnimatedSize(
         clipBehavior: Clip.none,
         duration: const Duration(milliseconds: 200),
@@ -382,39 +275,33 @@ class _ButtonStyleState extends State<CButtonStyleButton>
       );
     }
 
-    // T? resolveActive<T>(
-    //     MaterialStateProperty<T>? Function(CButtonStyle? style) getProperty) {
-    //   return effectiveValue(
-    //     (CButtonStyle? style) => getProperty(style)?.resolve(<MaterialState>{}),
-    //   );
-    // }
-
     final double? resolvedElevation =
         resolve<double?>((CButtonStyle? style) => style?.elevation);
 
     final TextStyle? resolvedTextStyle =
         resolve<TextStyle?>((CButtonStyle? style) => style?.textStyle);
 
-    Color? resolvedBackgroundColor =
-        resolve<Color?>((CButtonStyle? style) => style?.backgroundColor);
+    // Extras
+    final Gradient? resolvedBackgroundGradient =
+        resolve<Gradient?>((CButtonStyle? style) => style?.backgroundGradient);
+    final Gradient? resolvedForegroundGradient =
+        resolve<Gradient?>((CButtonStyle? style) => style?.foregroundGradient);
+    final Gradient? resolvedBorderGradient =
+        resolve<Gradient?>((CButtonStyle? style) => style?.borderGradient);
+    // End extras
 
-    final Gradient? resolvedBackgroundGradient = resolve<Gradient?>(
-      (CButtonStyle? style) => style?.backgroundGradient,
-    );
-
-    final Gradient? resolvedForegroundGradient = resolve<Gradient?>(
-      (CButtonStyle? style) => style?.foregroundGradient,
-    );
-
-    final Gradient? resolvedBorderGradient = resolve<Gradient?>(
-      (CButtonStyle? style) => style?.borderGradient,
-    );
+    Color? resolvedBackgroundColor = resolvedBackgroundGradient != null
+        ? Colors.transparent
+        : resolve<Color?>((CButtonStyle? style) => style?.backgroundColor);
 
     final Color? resolvedForegroundColor =
         resolve<Color?>((CButtonStyle? style) => style?.foregroundColor);
 
     final Color? resolvedShadowColor =
         resolve<Color?>((CButtonStyle? style) => style?.shadowColor);
+
+    final Color? resolvedSurfaceTintColor =
+        resolve<Color?>((ButtonStyle? style) => style?.surfaceTintColor);
 
     final EdgeInsetsGeometry? resolvedPadding =
         resolve<EdgeInsetsGeometry?>((CButtonStyle? style) => style?.padding);
@@ -428,32 +315,30 @@ class _ButtonStyleState extends State<CButtonStyleButton>
     final Size? resolvedMaximumSize =
         resolve<Size?>((CButtonStyle? style) => style?.maximumSize);
 
-    final double resolvedLoadingSize = min(
-      18,
-      ((resolvedMinimumSize?.height ?? 20) - 10),
-    );
+    // final double resolvedLoadingSize = min(
+    //     18,
+    //     ((resolvedMinimumSize?.height ?? resolvedFixedSize?.hashCode ?? 20) -
+    //         10));
 
-    // final Color? resolvedSideColor = resolve<Color?>(
-    //   (CButtonStyle? style) => MaterialStateProperty.resolveWith(
-    //     (states) {
-    //       if (states.contains(MaterialState.disabled)) {
-    //         return resolvedForegroundColor?.withOpacity(0.1);
-    //       }
-    //       return resolvedForegroundColor?.withOpacity(0.8);
-    //     },
-    //   ),
-    // );
+    final Color? resolvedIconColor =
+        resolve<Color?>((ButtonStyle? style) => style?.iconColor);
 
-    // final BorderSide? resolvedSide =
-    //     resolve<BorderSide?>((CButtonStyle? style) => style?.side)
-    //         ?.copyWith(color: resolvedSideColor);
+    final double resolvedIconSize =
+        resolve<double?>((ButtonStyle? style) => style?.iconSize) ??
+            min(
+                18,
+                ((resolvedMinimumSize?.height ??
+                        resolvedFixedSize?.hashCode ??
+                        20) -
+                    10));
+
     final BorderSide? resolvedSide =
         resolve<BorderSide?>((CButtonStyle? style) => style?.side);
 
     final OutlinedBorder? resolvedShape =
         resolve<OutlinedBorder?>((CButtonStyle? style) => style?.shape);
 
-    final MaterialStateMouseCursor resolvedMouseCursor = _MouseCursor(
+    final MaterialStateMouseCursor mouseCursor = _MouseCursor(
       (Set<MaterialState> states) => effectiveValue(
           (CButtonStyle? style) => style?.mouseCursor?.resolve(states)),
     );
@@ -518,16 +403,16 @@ class _ButtonStyleState extends State<CButtonStyleButton>
     // animates its elevation but not its color. SKIA renders non-zero
     // elevations as a shadow colored fill behind the Material's background.
     if (resolvedAnimationDuration! > Duration.zero &&
-        _elevation != null &&
-        _backgroundColor != null &&
-        _elevation != resolvedElevation &&
-        _backgroundColor!.value != resolvedBackgroundColor!.value &&
-        _backgroundColor!.opacity == 1 &&
+        elevation != null &&
+        backgroundColor != null &&
+        elevation != resolvedElevation &&
+        backgroundColor!.value != resolvedBackgroundColor!.value &&
+        backgroundColor!.opacity == 1 &&
         resolvedBackgroundColor.opacity < 1 &&
         resolvedElevation == 0) {
-      if (_controller?.duration != resolvedAnimationDuration) {
-        _controller?.dispose();
-        _controller = AnimationController(
+      if (controller?.duration != resolvedAnimationDuration) {
+        controller?.dispose();
+        controller = AnimationController(
           duration: resolvedAnimationDuration,
           vsync: this,
         )..addStatusListener((AnimationStatus status) {
@@ -538,23 +423,27 @@ class _ButtonStyleState extends State<CButtonStyleButton>
       }
 
       // Defer changing the background color.
-      resolvedBackgroundColor = _backgroundColor;
-      _controller!.value = 0;
-      _controller!.forward();
+      resolvedBackgroundColor = backgroundColor;
+      controller!.value = 0;
+      controller!.forward();
     }
-    _elevation = resolvedElevation;
-    _backgroundColor = resolvedBackgroundColor;
+    elevation = resolvedElevation;
+    backgroundColor = resolvedBackgroundColor;
 
-    TextStyle? textStyle =
-        resolvedTextStyle?.copyWith(color: resolvedForegroundColor);
+    // OutlinedBorder inkShape = resolvedShape!;
 
-    OutlinedBorder inkShape = resolvedShape!;
+    final OutlinedBorder shapeWithBorder =
+        resolvedShape!.copyWith(side: resolvedSide);
 
-    OutlinedBorder shape = inkShape.copyWith(side: resolvedSide);
+    final ShapeBorder shapeWithGradientBorder =
+        shapeWithBorder.copyWithGradient(resolvedBorderGradient);
 
     BorderRadiusGeometry? borderRadius;
-    if (inkShape is RoundedRectangleBorder) {
-      borderRadius = inkShape.borderRadius;
+    if (resolvedShape is RoundedRectangleBorder) {
+      borderRadius = resolvedShape.borderRadius;
+    } else if (resolvedShape is StadiumBorder ||
+        resolvedShape is CircleBorder) {
+      borderRadius = const BorderRadius.all(Radius.circular(9999));
     }
 
     final Widget result = ConstrainedBox(
@@ -564,76 +453,84 @@ class _ButtonStyleState extends State<CButtonStyleButton>
             const AlwaysStoppedAnimation<double>(1),
         child: Material(
           elevation: resolvedElevation!,
-          textStyle: textStyle,
-          shape: inkShape.copyWith(side: BorderSide.none),
+          textStyle:
+              resolvedTextStyle?.copyWith(color: resolvedForegroundColor),
+          shape: shapeWithGradientBorder,
           color: resolvedBackgroundColor,
           shadowColor: resolvedShadowColor,
+          surfaceTintColor: resolvedSurfaceTintColor,
           type: resolvedBackgroundColor == null
               ? MaterialType.transparency
               : MaterialType.button,
           animationDuration: resolvedAnimationDuration,
-          clipBehavior: Clip.hardEdge, // widget.clipBehavior,
-          child: CBorderPainter(
-            shape: shape,
-            gradient: resolvedBorderGradient ?? resolvedForegroundGradient,
-            child: Ink(
-              decoration: BoxDecoration(
-                gradient: resolvedBackgroundGradient,
-                borderRadius: borderRadius,
-              ),
-              child: InkWell(
-                onTap: widget.enabled ? widget.onPressed : null,
-                onLongPress: widget.enabled ? widget.onLongPress : null,
-                onHighlightChanged:
-                    widget.platformStyle.isIos ? _doCupertinoAnimate : null,
-                onHover: widget.onHover,
-                mouseCursor: resolvedMouseCursor,
-                enableFeedback: resolvedEnableFeedback,
-                focusNode: widget.focusNode,
-                canRequestFocus: widget.enabled,
-                onFocusChange: widget.onFocusChange,
-                autofocus: widget.autofocus,
-                splashFactory: widget.platformStyle.isIos
-                    ? NoSplash.splashFactory
-                    : resolvedSplashFactory,
-                overlayColor: widget.platformStyle.isIos
-                    ? MaterialStateProperty.all(Colors.transparent)
-                    : overlayColor,
-                // highlightColor: Colors.transparent,
-                // highlightColor: Colors.transparent,
-                customBorder: inkShape,
-                child: IconTheme.merge(
-                  data: IconThemeData(color: resolvedForegroundColor),
-                  child: Padding(
-                    padding: padding,
-                    child: Align(
-                      alignment: resolvedAlignment!,
-                      widthFactor: 1.0,
-                      heightFactor: 1.0,
-                      child: buildChildWithLoading(
-                        context,
-                        childWidget: resolvedForegroundGradient != null
-                            ? ShaderMask(
-                                blendMode: BlendMode.srcIn,
-                                shaderCallback: (bounds) =>
-                                    resolvedForegroundGradient.createShader(
-                                  Rect.fromLTWH(
-                                      0, 0, bounds.width, bounds.height),
+          clipBehavior: widget.clipBehavior,
+          // clipBehavior:
+          //     borderRadius == null ? Clip.antiAlias : widget.clipBehavior,
+          child: Ink(
+            decoration: resolvedBackgroundGradient != null
+                ? BoxDecoration(
+                    gradient: resolvedBackgroundGradient,
+                    borderRadius: borderRadius,
+                  )
+                : null,
+            child: InkWell(
+              onTap: widget.enabled ? widget.onPressed : null,
+              onLongPress: widget.enabled ? widget.onLongPress : null,
+              onHighlightChanged:
+                  widget.platformStyle.isIos ? _doCupertinoAnimate : null,
+              onHover: widget.onHover,
+              mouseCursor: mouseCursor,
+              enableFeedback: resolvedEnableFeedback,
+              focusNode: widget.focusNode,
+              canRequestFocus: widget.enabled,
+              onFocusChange: widget.onFocusChange,
+              autofocus: widget.autofocus,
+              splashFactory: widget.platformStyle.isIos
+                  ? NoSplash.splashFactory
+                  : resolvedSplashFactory,
+              overlayColor: widget.platformStyle.isIos
+                  ? MaterialStateProperty.all(Colors.transparent)
+                  : overlayColor,
+              highlightColor: Colors.transparent,
+              customBorder: shapeWithBorder,
+              statesController: statesController,
+              child: IconTheme.merge(
+                data: IconThemeData(
+                  color: resolvedIconColor ?? resolvedForegroundColor,
+                  size: resolvedIconSize,
+                ),
+                child: Padding(
+                  padding: padding,
+                  child: Align(
+                    alignment: resolvedAlignment!,
+                    widthFactor: 1.0,
+                    heightFactor: 1.0,
+                    child: buildChildWithLoading(
+                      context,
+                      childWidget: resolvedForegroundGradient != null
+                          ? ShaderMask(
+                              blendMode: BlendMode.srcIn,
+                              shaderCallback: (bounds) =>
+                                  resolvedForegroundGradient.createShader(
+                                Rect.fromLTWH(
+                                  0,
+                                  0,
+                                  bounds.width,
+                                  bounds.height,
                                 ),
-                                child: widget.child,
-                              )
-                            : (widget.child ?? const SizedBox.shrink()),
-                        loadingWidget: SizedBox(
-                          width: resolvedLoadingSize,
-                          height: resolvedLoadingSize,
-                          child: CircularProgressIndicator.adaptive(
-                            strokeWidth:
-                                (resolvedLoadingSize / 6).ceilToDouble(),
-                            valueColor:
-                                AlwaysStoppedAnimation(resolvedForegroundColor),
-                            backgroundColor:
-                                resolvedForegroundColor?.withOpacity(0.1),
-                          ),
+                              ),
+                              child: widget.child,
+                            )
+                          : (widget.child ?? const SizedBox.shrink()),
+                      loadingWidget: SizedBox(
+                        width: resolvedIconSize,
+                        height: resolvedIconSize,
+                        child: CircularProgressIndicator.adaptive(
+                          strokeWidth: (resolvedIconSize / 6).ceilToDouble(),
+                          valueColor:
+                              AlwaysStoppedAnimation(resolvedForegroundColor),
+                          backgroundColor:
+                              resolvedForegroundColor?.withOpacity(0.1),
                         ),
                       ),
                     ),

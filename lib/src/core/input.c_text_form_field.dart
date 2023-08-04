@@ -4,8 +4,8 @@ import "package:flutter/services.dart";
 import 'theme.couver_theme.dart';
 import 'comp.c_input_border.dart';
 import '../utils/debonce.dart';
-import 'widget.c_button.dart';
-import 'widget.c_icon_button.dart';
+import 'buttons/widget.c_button.dart';
+import 'buttons/widget.c_icon_button.dart';
 
 extension InputBorderExt on InputBorder {
   InputBorder copyColor(Color color) {

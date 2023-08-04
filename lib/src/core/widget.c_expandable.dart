@@ -1,7 +1,7 @@
 import 'theme.couver_theme.dart';
 import 'package:flutter/material.dart';
 
-import 'widget.c_button.dart';
+import 'buttons/widget.c_button.dart';
 import 'widget.c_ink.dart';
 
 class CExpandableImageHeader extends StatelessWidget {

@@ -7,7 +7,8 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../enums/enum.platform_style.dart';
+import '../../enums/enum.platform_style.dart';
+import 'helper.c_button_color.dart';
 import 'theme.c_button_style.dart';
 import 'widget.c_button_style_button.dart';
 
@@ -63,10 +64,9 @@ class CElevatedButton extends CButtonStyleButton {
     super.focusNode,
     super.autofocus = false,
     super.clipBehavior = Clip.none,
+    super.statesController,
     required super.child,
-    super.platformStyle = PlatformStyle.auto,
     super.loading,
-    super.shrinkWhenLoading,
   });
 
   /// Create an elevated button from a pair of widgets that serve as the button's
@@ -86,9 +86,9 @@ class CElevatedButton extends CButtonStyleButton {
     FocusNode? focusNode,
     bool? autofocus,
     Clip? clipBehavior,
+    MaterialStatesController? statesController,
     required Widget icon,
     required Widget label,
-    PlatformStyle platformStyle,
     bool? loading,
   }) = _CElevatedButtonWithIcon;
 
@@ -130,11 +130,12 @@ class CElevatedButton extends CButtonStyleButton {
   /// )
   /// ```
   static CButtonStyle styleFrom({
-    Color? primary,
-    Color? onPrimary,
-    Color? onSurface,
+    Color? foregroundColor,
+    Color? backgroundColor,
+    Color? disabledForegroundColor,
+    Color? disabledBackgroundColor,
     Color? shadowColor,
-    Gradient? gradient,
+    Color? surfaceTintColor,
     double? elevation,
     TextStyle? textStyle,
     EdgeInsetsGeometry? padding,
@@ -151,44 +152,67 @@ class CElevatedButton extends CButtonStyleButton {
     bool? enableFeedback,
     AlignmentGeometry? alignment,
     InteractiveInkFeatureFactory? splashFactory,
+    // Extra params
+    Gradient? backgroundGradient,
+    Gradient? foregroundGradient,
+    Gradient? borderGradient,
+    PlatformStyle? platformStyle,
+    bool? shrinkWhenLoading,
+    bool? animateElevation,
   }) {
-    final MaterialStateProperty<Color?>? backgroundColor =
-        (onSurface == null && primary == null)
-            ? null
-            : _CElevatedButtonDefaultBackground(primary, onSurface);
+    final MaterialStateProperty<Color?>? backgroundColorProp =
+        CButtonColor.buildBackgroundState(
+      backgroundColor,
+      disabledBackgroundColor,
+      backgroundGradient,
+    );
 
-    final MaterialStateProperty<Gradient?>? backgroundGradient =
-        (gradient == null) ? null : _CElevatedButtonDefaultGradient(gradient);
+    final MaterialStateProperty<Color?>? foregroundColorProp =
+        CButtonColor.buildForegroundState(
+      foregroundColor,
+      disabledForegroundColor,
+      foregroundGradient,
+      backgroundColor,
+      backgroundGradient,
+    );
 
-    final MaterialStateProperty<Color?>? foregroundColor =
-        (onSurface == null && onPrimary == null)
-            ? null
-            : _CElevatedButtonDefaultForeground(onPrimary, onSurface);
     final MaterialStateProperty<Color?>? overlayColor =
-        (onPrimary == null) ? null : _CElevatedButtonDefaultOverlay(onPrimary);
+        CButtonColor.buildOverlayState(foregroundColor, foregroundGradient,
+            backgroundColor, backgroundGradient);
+
     final MaterialStateProperty<double>? elevationValue = (elevation == null)
         ? null
-        : _CElevatedButtonDefaultElevation(elevation);
+        : (animateElevation == null && elevation <= 0)
+            ? const MaterialStatePropertyAll(0)
+            : _CElevatedButtonDefaultElevation(elevation);
+
     final MaterialStateProperty<MouseCursor?>? mouseCursor =
-        (enabledMouseCursor == null && disabledMouseCursor == null)
-            ? null
-            : _CElevatedButtonDefaultMouseCursor(
-                enabledMouseCursor, disabledMouseCursor);
+        CButtonColor.buildMouseCursorState(
+            enabledMouseCursor, disabledMouseCursor);
+
+    final MaterialStateProperty<Gradient?>? backgroundGradientProp =
+        CButtonColor.buildGradientState(backgroundGradient);
+
+    final MaterialStateProperty<Gradient?>? foregroundGradientProp =
+        CButtonColor.buildGradientState(foregroundGradient);
+
+    final MaterialStateProperty<Gradient?>? borderGradientProp =
+        CButtonColor.buildGradientState(borderGradient);
 
     return CButtonStyle(
-      textStyle: MaterialStateProperty.all<TextStyle?>(textStyle),
-      backgroundColor: backgroundColor,
-      backgroundGradient: backgroundGradient,
-      foregroundColor: foregroundColor,
+      textStyle: MaterialStatePropertyAll<TextStyle?>(textStyle),
+      backgroundColor: backgroundColorProp,
+      foregroundColor: foregroundColorProp,
       overlayColor: overlayColor,
-      shadowColor: ButtonStyleButton.allOrNull<Color>(shadowColor),
+      shadowColor: CButtonStyleButton.allOrNull<Color>(shadowColor),
+      surfaceTintColor: CButtonStyleButton.allOrNull<Color>(surfaceTintColor),
       elevation: elevationValue,
-      padding: ButtonStyleButton.allOrNull<EdgeInsetsGeometry>(padding),
-      minimumSize: ButtonStyleButton.allOrNull<Size>(minimumSize),
-      fixedSize: ButtonStyleButton.allOrNull<Size>(fixedSize),
-      maximumSize: ButtonStyleButton.allOrNull<Size>(maximumSize),
-      side: ButtonStyleButton.allOrNull<BorderSide>(side),
-      shape: ButtonStyleButton.allOrNull<OutlinedBorder>(shape),
+      padding: CButtonStyleButton.allOrNull<EdgeInsetsGeometry>(padding),
+      minimumSize: CButtonStyleButton.allOrNull<Size>(minimumSize),
+      fixedSize: CButtonStyleButton.allOrNull<Size>(fixedSize),
+      maximumSize: CButtonStyleButton.allOrNull<Size>(maximumSize),
+      side: CButtonStyleButton.allOrNull<BorderSide>(side),
+      shape: CButtonStyleButton.allOrNull<OutlinedBorder>(shape),
       mouseCursor: mouseCursor,
       visualDensity: visualDensity,
       tapTargetSize: tapTargetSize,
@@ -196,6 +220,12 @@ class CElevatedButton extends CButtonStyleButton {
       enableFeedback: enableFeedback,
       alignment: alignment,
       splashFactory: splashFactory,
+      // Extra params
+      backgroundGradient: backgroundGradientProp,
+      foregroundGradient: foregroundGradientProp,
+      borderGradient: borderGradientProp,
+      platformStyle: platformStyle ?? PlatformStyle.auto,
+      shrinkWhenLoading: shrinkWhenLoading ?? false,
     );
   }
 
@@ -276,34 +306,37 @@ class CElevatedButton extends CButtonStyleButton {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
 
-    final EdgeInsetsGeometry scaledPadding = ButtonStyleButton.scaledPadding(
-      const EdgeInsets.symmetric(horizontal: 16),
-      const EdgeInsets.symmetric(horizontal: 8),
-      const EdgeInsets.symmetric(horizontal: 4),
-      MediaQuery.maybeOf(context)?.textScaleFactor ?? 1,
-    );
+    // final EdgeInsetsGeometry scaledPadding = ButtonStyleButton.scaledPadding(
+    //   const EdgeInsets.symmetric(horizontal: 16),
+    //   const EdgeInsets.symmetric(horizontal: 8),
+    //   const EdgeInsets.symmetric(horizontal: 4),
+    //   MediaQuery.maybeOf(context)?.textScaleFactor ?? 1,
+    // );
 
-    return styleFrom(
-      primary: colorScheme.primary,
-      onPrimary: colorScheme.onPrimary,
-      onSurface: colorScheme.onSurface,
-      shadowColor: theme.shadowColor,
-      elevation: 2,
-      textStyle: theme.textTheme.labelLarge,
-      padding: scaledPadding,
-      minimumSize: const Size(64, 36),
-      maximumSize: Size.infinite,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(4))),
-      enabledMouseCursor: SystemMouseCursors.click,
-      disabledMouseCursor: SystemMouseCursors.forbidden,
-      visualDensity: theme.visualDensity,
-      tapTargetSize: theme.materialTapTargetSize,
-      animationDuration: kThemeChangeDuration,
-      enableFeedback: true,
-      alignment: Alignment.center,
-      splashFactory: InkRipple.splashFactory,
-    );
+    return Theme.of(context).useMaterial3
+        ? _CElevatedButtonDefaultsM3(context)
+        : styleFrom(
+            backgroundColor: colorScheme.primary,
+            foregroundColor: colorScheme.onPrimary,
+            disabledBackgroundColor: colorScheme.onSurface.withOpacity(0.12),
+            disabledForegroundColor: colorScheme.onSurface.withOpacity(0.38),
+            shadowColor: theme.shadowColor,
+            elevation: 2,
+            textStyle: theme.textTheme.labelLarge,
+            padding: _scaledPadding(context),
+            minimumSize: const Size(64, 36),
+            maximumSize: Size.infinite,
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(4))),
+            enabledMouseCursor: SystemMouseCursors.click,
+            disabledMouseCursor: SystemMouseCursors.basic,
+            visualDensity: theme.visualDensity,
+            tapTargetSize: theme.materialTapTargetSize,
+            animationDuration: kThemeChangeDuration,
+            enableFeedback: true,
+            alignment: Alignment.center,
+            splashFactory: InkRipple.splashFactory,
+          );
   }
 
   /// Returns the [ElevatedButtonThemeData.style] of the closest
@@ -312,6 +345,17 @@ class CElevatedButton extends CButtonStyleButton {
   CButtonStyle? themeStyleOf(BuildContext context) {
     return ElevatedButtonTheme.of(context).style?.cButtonStyle;
   }
+}
+
+EdgeInsetsGeometry _scaledPadding(BuildContext context) {
+  final bool useMaterial3 = Theme.of(context).useMaterial3;
+  final double padding1x = useMaterial3 ? 24.0 : 16.0;
+  return CButtonStyleButton.scaledPadding(
+    EdgeInsets.symmetric(horizontal: padding1x),
+    EdgeInsets.symmetric(horizontal: padding1x / 2),
+    EdgeInsets.symmetric(horizontal: padding1x / 2 / 2),
+    MediaQuery.textScaleFactorOf(context),
+  );
 }
 
 @immutable
@@ -331,54 +375,37 @@ class _CElevatedButtonDefaultGradient extends MaterialStateProperty<Gradient?>
 }
 
 @immutable
-class _CElevatedButtonDefaultBackground extends MaterialStateProperty<Color?>
+class _CElevatedButtonDefaultColor extends MaterialStateProperty<Color?>
     with Diagnosticable {
-  _CElevatedButtonDefaultBackground(this.primary, this.onSurface);
+  _CElevatedButtonDefaultColor(this.color, this.disabled);
 
-  final Color? primary;
-  final Color? onSurface;
+  final Color? color;
+  final Color? disabled;
 
   @override
   Color? resolve(Set<MaterialState> states) {
     if (states.contains(MaterialState.disabled)) {
-      return onSurface?.withOpacity(0.12);
+      return disabled;
     }
-    return primary;
-  }
-}
-
-@immutable
-class _CElevatedButtonDefaultForeground extends MaterialStateProperty<Color?>
-    with Diagnosticable {
-  _CElevatedButtonDefaultForeground(this.onPrimary, this.onSurface);
-
-  final Color? onPrimary;
-  final Color? onSurface;
-
-  @override
-  Color? resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.disabled)) {
-      return onSurface?.withOpacity(0.38);
-    }
-    return onPrimary;
+    return color;
   }
 }
 
 @immutable
 class _CElevatedButtonDefaultOverlay extends MaterialStateProperty<Color?>
     with Diagnosticable {
-  _CElevatedButtonDefaultOverlay(this.onPrimary);
+  _CElevatedButtonDefaultOverlay(this.overlay);
 
-  final Color onPrimary;
+  final Color overlay;
 
   @override
   Color? resolve(Set<MaterialState> states) {
     if (states.contains(MaterialState.hovered)) {
-      return onPrimary.withOpacity(0.08);
+      return overlay.withOpacity(0.08);
     }
     if (states.contains(MaterialState.focused) ||
         states.contains(MaterialState.pressed)) {
-      return onPrimary.withOpacity(0.24);
+      return overlay.withOpacity(0.24);
     }
     return null;
   }
@@ -393,10 +420,18 @@ class _CElevatedButtonDefaultElevation extends MaterialStateProperty<double>
 
   @override
   double resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.disabled)) return 0;
-    if (states.contains(MaterialState.hovered)) return elevation + 2;
-    if (states.contains(MaterialState.focused)) return elevation + 2;
-    if (states.contains(MaterialState.pressed)) return elevation + 6;
+    if (states.contains(MaterialState.disabled)) {
+      return 0;
+    }
+    if (states.contains(MaterialState.hovered)) {
+      return elevation + 2;
+    }
+    if (states.contains(MaterialState.focused)) {
+      return elevation + 2;
+    }
+    if (states.contains(MaterialState.pressed)) {
+      return elevation + 6;
+    }
     return elevation;
   }
 }
@@ -411,70 +446,66 @@ class _CElevatedButtonDefaultMouseCursor
 
   @override
   MouseCursor? resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.disabled)) return disabledCursor;
+    if (states.contains(MaterialState.disabled)) {
+      return disabledCursor;
+    }
     return enabledCursor;
   }
 }
 
 class _CElevatedButtonWithIcon extends CElevatedButton {
   _CElevatedButtonWithIcon({
-    Key? key,
-    required VoidCallback? onPressed,
-    VoidCallback? onLongPress,
-    ValueChanged<bool>? onHover,
-    ValueChanged<bool>? onFocusChange,
-    CButtonStyle? style,
-    FocusNode? focusNode,
+    super.key,
+    required super.onPressed,
+    super.onLongPress,
+    super.onHover,
+    super.onFocusChange,
+    super.style,
+    super.focusNode,
     bool? autofocus,
     Clip? clipBehavior,
+    super.statesController,
     required Widget icon,
     required Widget label,
-    PlatformStyle platformStyle = PlatformStyle.auto,
-    bool? loading,
-    bool? shrinkWhenLoading,
+    super.loading,
   }) : super(
-          key: key,
-          onPressed: onPressed,
-          onLongPress: onLongPress,
-          onHover: onHover,
-          onFocusChange: onFocusChange,
-          style: style,
-          focusNode: focusNode,
           autofocus: autofocus ?? false,
           clipBehavior: clipBehavior ?? Clip.none,
           child: _CElevatedButtonWithIconChild(icon: icon, label: label),
-          platformStyle: platformStyle,
-          loading: loading,
-          shrinkWhenLoading: shrinkWhenLoading,
         );
 
   @override
   CButtonStyle defaultStyleOf(BuildContext context) {
-    final EdgeInsetsGeometry scaledPadding = ButtonStyleButton.scaledPadding(
-      const EdgeInsetsDirectional.fromSTEB(12, 0, 16, 0),
-      const EdgeInsets.symmetric(horizontal: 8),
-      const EdgeInsetsDirectional.fromSTEB(8, 0, 4, 0),
-      MediaQuery.maybeOf(context)?.textScaleFactor ?? 1,
-    );
+    final bool useMaterial3 = Theme.of(context).useMaterial3;
+    final EdgeInsetsGeometry scaledPadding = useMaterial3
+        ? CButtonStyleButton.scaledPadding(
+            const EdgeInsetsDirectional.fromSTEB(16, 0, 24, 0),
+            const EdgeInsetsDirectional.fromSTEB(8, 0, 12, 0),
+            const EdgeInsetsDirectional.fromSTEB(4, 0, 6, 0),
+            MediaQuery.textScaleFactorOf(context),
+          )
+        : CButtonStyleButton.scaledPadding(
+            const EdgeInsetsDirectional.fromSTEB(12, 0, 16, 0),
+            const EdgeInsets.symmetric(horizontal: 8),
+            const EdgeInsetsDirectional.fromSTEB(8, 0, 4, 0),
+            MediaQuery.textScaleFactorOf(context),
+          );
     return super.defaultStyleOf(context).copyWith(
-          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(scaledPadding),
+          padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(scaledPadding),
         );
   }
 }
 
 class _CElevatedButtonWithIconChild extends StatelessWidget {
-  const _CElevatedButtonWithIconChild({
-    Key? key,
-    required this.label,
-    required this.icon,
-  }) : super(key: key);
+  const _CElevatedButtonWithIconChild(
+      {required this.label, required this.icon});
 
   final Widget label;
   final Widget icon;
 
   @override
   Widget build(BuildContext context) {
-    final double scale = MediaQuery.maybeOf(context)?.textScaleFactor ?? 1;
+    final double scale = MediaQuery.textScaleFactorOf(context);
     final double gap =
         scale <= 1 ? 8 : lerpDouble(8, 4, math.min(scale - 1, 1))!;
     return Row(
@@ -483,3 +514,130 @@ class _CElevatedButtonWithIconChild extends StatelessWidget {
     );
   }
 }
+
+// BEGIN GENERATED TOKEN PROPERTIES - ElevatedButton
+
+// Do not edit by hand. The code between the "BEGIN GENERATED" and
+// "END GENERATED" comments are generated from data in the Material
+// Design token database by the script:
+//   dev/tools/gen_defaults/bin/gen_defaults.dart.
+
+// Token database version: v0_162
+
+class _CElevatedButtonDefaultsM3 extends CButtonStyle {
+  _CElevatedButtonDefaultsM3(this.context)
+      : super(
+          animationDuration: kThemeChangeDuration,
+          enableFeedback: true,
+          alignment: Alignment.center,
+        );
+
+  final BuildContext context;
+  late final ColorScheme _colors = Theme.of(context).colorScheme;
+
+  @override
+  MaterialStateProperty<TextStyle?> get textStyle =>
+      MaterialStatePropertyAll<TextStyle?>(
+          Theme.of(context).textTheme.labelLarge);
+
+  @override
+  MaterialStateProperty<Color?>? get backgroundColor =>
+      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return _colors.onSurface.withOpacity(0.12);
+        }
+        return _colors.surface;
+      });
+
+  @override
+  MaterialStateProperty<Color?>? get foregroundColor =>
+      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return _colors.onSurface.withOpacity(0.38);
+        }
+        return _colors.primary;
+      });
+
+  @override
+  MaterialStateProperty<Color?>? get overlayColor =>
+      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+        if (states.contains(MaterialState.hovered)) {
+          return _colors.primary.withOpacity(0.08);
+        }
+        if (states.contains(MaterialState.focused)) {
+          return _colors.primary.withOpacity(0.12);
+        }
+        if (states.contains(MaterialState.pressed)) {
+          return _colors.primary.withOpacity(0.12);
+        }
+        return null;
+      });
+
+  @override
+  MaterialStateProperty<Color>? get shadowColor =>
+      MaterialStatePropertyAll<Color>(_colors.shadow);
+
+  @override
+  MaterialStateProperty<Color>? get surfaceTintColor =>
+      MaterialStatePropertyAll<Color>(_colors.surfaceTint);
+
+  @override
+  MaterialStateProperty<double>? get elevation =>
+      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return 0.0;
+        }
+        if (states.contains(MaterialState.hovered)) {
+          return 3.0;
+        }
+        if (states.contains(MaterialState.focused)) {
+          return 1.0;
+        }
+        if (states.contains(MaterialState.pressed)) {
+          return 1.0;
+        }
+        return 1.0;
+      });
+
+  @override
+  MaterialStateProperty<EdgeInsetsGeometry>? get padding =>
+      MaterialStatePropertyAll<EdgeInsetsGeometry>(_scaledPadding(context));
+
+  @override
+  MaterialStateProperty<Size>? get minimumSize =>
+      const MaterialStatePropertyAll<Size>(Size(64.0, 40.0));
+
+  // No default fixedSize
+
+  @override
+  MaterialStateProperty<Size>? get maximumSize =>
+      const MaterialStatePropertyAll<Size>(Size.infinite);
+
+  // No default side
+
+  @override
+  MaterialStateProperty<OutlinedBorder>? get shape =>
+      const MaterialStatePropertyAll<OutlinedBorder>(StadiumBorder());
+
+  @override
+  MaterialStateProperty<MouseCursor?>? get mouseCursor =>
+      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return SystemMouseCursors.basic;
+        }
+        return SystemMouseCursors.click;
+      });
+
+  @override
+  VisualDensity? get visualDensity => Theme.of(context).visualDensity;
+
+  @override
+  MaterialTapTargetSize? get tapTargetSize =>
+      Theme.of(context).materialTapTargetSize;
+
+  @override
+  InteractiveInkFeatureFactory? get splashFactory =>
+      Theme.of(context).splashFactory;
+}
+
+// END GENERATED TOKEN PROPERTIES - ElevatedButton

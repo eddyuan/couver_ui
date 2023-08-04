@@ -38,6 +38,14 @@ class MyAppState extends State<MyApp> {
       title: 'Couver UI Demo',
       theme: ThemeData(
         useMaterial3: useMaterial3,
+        // platform: TargetPlatform.iOS,
+        // elevatedButtonTheme: ElevatedButtonThemeData(
+        //   style: ElevatedButton.styleFrom(
+        //     foregroundColor: Colors.white,
+        //     backgroundColor: Colors.red,
+        //     elevation: 0,
+        //   ),
+        // ),
       ),
       darkTheme: ThemeData.dark(
         useMaterial3: useMaterial3,

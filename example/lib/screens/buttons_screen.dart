@@ -91,6 +91,7 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
   @override
   Widget build(BuildContext context) {
     return Screen(
+      backgroundColor: Colors.grey.shade400,
       actions: [
         CListTile(
           dense: true,
@@ -112,8 +113,6 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
           width: double.infinity,
           child: Column(
             children: [
-              ElevatedButton(onPressed: () {}, child: Text("Original El")),
-              TextButton(onPressed: () {}, child: Text("Original Text")),
               CButton.input(
                 child: const Text("A input styled button"),
                 onPressed: () {},
@@ -123,9 +122,11 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                     vertical: CouverTheme.of(context).pagePadding),
                 child: Text(
                   "Circle (Icon)",
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
+              IconButton(onPressed: () {}, icon: const Icon(Icons.abc)),
+              CIconButton(onPressed: () {}, icon: const Icon(Icons.abc)),
               Wrap(
                 children: ButtonDemoConfig.build()
                     .map(
@@ -148,8 +149,16 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
                   "Filled",
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
+              ),
+              ElevatedButton(
+                onPressed: loading ? null : () {},
+                child: const Text("Original"),
+              ),
+              CElevatedButton(
+                onPressed: loading ? null : () {},
+                child: const Text("Original"),
               ),
               ...ButtonDemoConfig.build()
                   .map((e) => CButton.filled(
@@ -169,8 +178,16 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                 padding: const EdgeInsets.only(bottom: 16, top: 32),
                 child: Text(
                   "Text",
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
+              ),
+              TextButton(
+                onPressed: loading ? null : () {},
+                child: const Text("Original"),
+              ),
+              CTextButton(
+                onPressed: loading ? null : () {},
+                child: const Text("Original2"),
               ),
               ...ButtonDemoConfig.build()
                   .map((e) => CButton(
@@ -190,8 +207,26 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                 padding: const EdgeInsets.only(bottom: 16, top: 32),
                 child: Text(
                   "Outlined",
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
+              ),
+              OutlinedButton(
+                onPressed: loading ? null : () {},
+                child: const Text("Original"),
+              ),
+              OutlinedButton(
+                onPressed: loading ? null : () {},
+                child: const Text("Original"),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.red,
+                  side: BorderSide(
+                      // color: Colors.blue,
+                      ),
+                ),
+              ),
+              COutlinedButton(
+                onPressed: loading ? null : () {},
+                child: const Text("Original 2"),
               ),
               ...ButtonDemoConfig.build()
                   .map((e) => CButton.outlined(

@@ -124,12 +124,18 @@ class CButtonColor {
     Color? foregroundColor,
     Gradient? foregroundGradient,
     Color? backgroundColor,
-    Gradient? backgroundGradient,
-  ) {
+    Gradient? backgroundGradient, {
+    Color? focusColor,
+    Color? hoverColor,
+    Color? highlightColor,
+  }) {
     if (foregroundColor == null &&
         backgroundColor == null &&
         foregroundGradient == null &&
-        backgroundGradient == null) {
+        backgroundGradient == null &&
+        focusColor == null &&
+        hoverColor == null &&
+        highlightColor == null) {
       return null;
     }
 
@@ -145,9 +151,11 @@ class CButtonColor {
       if (targetBackgroundColor.opacity > 0.4) {
         final Color targetOverlayColor =
             _isDark(targetBackgroundColor) ? Colors.white : Colors.black;
-        return _CButtonDefaultOverlay(targetOverlayColor);
+        return _CButtonDefaultOverlay(
+            targetOverlayColor, focusColor, hoverColor, highlightColor);
       } else {
-        return _CButtonDefaultOverlay(targetBackgroundColor.withOpacity(1));
+        return _CButtonDefaultOverlay(targetBackgroundColor.withOpacity(1),
+            focusColor, hoverColor, highlightColor);
       }
     }
     final Color? targetForegroundColor;
@@ -159,7 +167,8 @@ class CButtonColor {
       targetForegroundColor = null;
     }
     if (targetForegroundColor != null && targetForegroundColor.opacity > 0) {
-      return _CButtonDefaultOverlay(targetForegroundColor);
+      return _CButtonDefaultOverlay(
+          targetForegroundColor, focusColor, hoverColor, highlightColor);
     }
     return null;
   }
@@ -220,20 +229,50 @@ class _CButtonDefaultSide extends MaterialStateProperty<BorderSide?>
 @immutable
 class _CButtonDefaultOverlay extends MaterialStateProperty<Color?>
     with Diagnosticable {
-  _CButtonDefaultOverlay(this.foreground);
+  _CButtonDefaultOverlay(
+    this.foregroundColor, [
+    this.focusColor,
+    this.hoverColor,
+    this.highlightColor,
+  ]);
 
-  final Color foreground;
+  // final Color foreground;
+  final Color? foregroundColor;
+  final Color? focusColor;
+  final Color? hoverColor;
+  final Color? highlightColor;
 
   @override
   Color? resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.hovered)) {
-      return foreground.withOpacity(0.04);
+    if (states.contains(MaterialState.selected)) {
+      if (states.contains(MaterialState.pressed)) {
+        return highlightColor ?? foregroundColor?.withOpacity(0.12);
+      }
+      if (states.contains(MaterialState.hovered)) {
+        return hoverColor ?? foregroundColor?.withOpacity(0.08);
+      }
+      if (states.contains(MaterialState.focused)) {
+        return focusColor ?? foregroundColor?.withOpacity(0.12);
+      }
     }
-    if (states.contains(MaterialState.focused) ||
-        states.contains(MaterialState.pressed)) {
-      return foreground.withOpacity(0.12);
+    if (states.contains(MaterialState.pressed)) {
+      return highlightColor ?? foregroundColor?.withOpacity(0.12);
+    }
+    if (states.contains(MaterialState.hovered)) {
+      return hoverColor ?? foregroundColor?.withOpacity(0.08);
+    }
+    if (states.contains(MaterialState.focused)) {
+      return focusColor ?? foregroundColor?.withOpacity(0.08);
     }
     return null;
+    // if (states.contains(MaterialState.hovered)) {
+    //   return foreground.withOpacity(0.04);
+    // }
+    // if (states.contains(MaterialState.focused) ||
+    //     states.contains(MaterialState.pressed)) {
+    //   return foreground.withOpacity(0.12);
+    // }
+    // return null;
   }
 }
 

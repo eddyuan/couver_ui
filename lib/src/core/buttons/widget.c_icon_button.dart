@@ -5,6 +5,7 @@ import "package:flutter/material.dart";
 import "package:flutter/rendering.dart";
 
 import '../../enums/enum.platform_style.dart';
+import "helper.c_button_color.dart";
 import 'widget.c_button_style_button.dart';
 
 // Examples can assume:
@@ -192,43 +193,41 @@ class CIconButton extends IconButton {
     bool? animateElevation,
   }) {
     final MaterialStateProperty<Color?>? buttonBackgroundColor =
-        (backgroundColor == null && disabledBackgroundColor == null)
-            ? null
-            : _CIconButtonDefaultBackground(
-                backgroundColor, disabledBackgroundColor);
+        CButtonColor.buildBackgroundState(
+      backgroundColor,
+      disabledBackgroundColor,
+      backgroundGradient,
+    );
     final MaterialStateProperty<Color?>? buttonForegroundColor =
-        (foregroundColor == null && disabledForegroundColor == null)
-            ? null
-            : _CIconButtonDefaultForeground(
-                foregroundColor, disabledForegroundColor);
+        CButtonColor.buildForegroundState(
+      foregroundColor,
+      disabledForegroundColor,
+      foregroundGradient,
+      backgroundColor,
+      backgroundGradient,
+    );
     final MaterialStateProperty<Color?>? overlayColor =
-        (foregroundColor == null &&
-                hoverColor == null &&
-                focusColor == null &&
-                highlightColor == null)
-            ? null
-            : _CIconButtonDefaultOverlay(
-                foregroundColor, focusColor, hoverColor, highlightColor);
-    final MaterialStateProperty<MouseCursor>? mouseCursor =
-        (enabledMouseCursor == null && disabledMouseCursor == null)
-            ? null
-            : _CIconButtonDefaultMouseCursor(
-                enabledMouseCursor!, disabledMouseCursor!);
+        CButtonColor.buildOverlayState(
+      foregroundColor,
+      foregroundGradient,
+      backgroundColor,
+      backgroundGradient,
+      focusColor: focusColor,
+      hoverColor: hoverColor,
+      highlightColor: highlightColor,
+    );
+    final MaterialStateProperty<MouseCursor?>? mouseCursor =
+        CButtonColor.buildMouseCursorState(
+            enabledMouseCursor, disabledMouseCursor);
 
     final MaterialStateProperty<Gradient?>? backgroundGradientProp =
-        (backgroundGradient == null)
-            ? null
-            : _CIconButtonDefaultGradient(backgroundGradient);
+        CButtonColor.buildGradientState(backgroundGradient);
 
     final MaterialStateProperty<Gradient?>? foregroundGradientProp =
-        (foregroundGradient == null)
-            ? null
-            : _CIconButtonDefaultGradient(foregroundGradient);
+        CButtonColor.buildGradientState(foregroundGradient);
 
     final MaterialStateProperty<Gradient?>? borderGradientProp =
-        (borderGradient == null)
-            ? null
-            : _CIconButtonDefaultGradient(borderGradient);
+        CButtonColor.buildGradientState(borderGradient);
 
     return CButtonStyle(
       backgroundColor: buttonBackgroundColor,
@@ -264,7 +263,7 @@ class CIconButton extends IconButton {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
-    if (theme.useMaterial3) {
+    if (theme.useMaterial3 || (cStyle?.platformStyle.isIos ?? false)) {
       final Size? minSize = constraints == null
           ? null
           : Size(constraints!.minWidth, constraints!.minHeight);
@@ -597,132 +596,6 @@ class _CIconButtonM3 extends CButtonStyleButton {
         .cButtonStyle;
   }
 }
-
-@immutable
-class _CIconButtonDefaultBackground extends MaterialStateProperty<Color?> {
-  _CIconButtonDefaultBackground(this.background, this.disabledBackground);
-
-  final Color? background;
-  final Color? disabledBackground;
-
-  @override
-  Color? resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.disabled)) {
-      return disabledBackground;
-    }
-    return background;
-  }
-
-  @override
-  String toString() {
-    return '{disabled: $disabledBackground, otherwise: $background}';
-  }
-}
-
-@immutable
-class _CIconButtonDefaultForeground extends MaterialStateProperty<Color?> {
-  _CIconButtonDefaultForeground(
-      this.foregroundColor, this.disabledForegroundColor);
-
-  final Color? foregroundColor;
-  final Color? disabledForegroundColor;
-
-  @override
-  Color? resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.disabled)) {
-      return disabledForegroundColor;
-    }
-    return foregroundColor;
-  }
-
-  @override
-  String toString() {
-    return '{disabled: $disabledForegroundColor, otherwise: $foregroundColor}';
-  }
-}
-
-@immutable
-class _CIconButtonDefaultOverlay extends MaterialStateProperty<Color?> {
-  _CIconButtonDefaultOverlay(this.foregroundColor, this.focusColor,
-      this.hoverColor, this.highlightColor);
-
-  final Color? foregroundColor;
-  final Color? focusColor;
-  final Color? hoverColor;
-  final Color? highlightColor;
-
-  @override
-  Color? resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.selected)) {
-      if (states.contains(MaterialState.pressed)) {
-        return highlightColor ?? foregroundColor?.withOpacity(0.12);
-      }
-      if (states.contains(MaterialState.hovered)) {
-        return hoverColor ?? foregroundColor?.withOpacity(0.08);
-      }
-      if (states.contains(MaterialState.focused)) {
-        return focusColor ?? foregroundColor?.withOpacity(0.12);
-      }
-    }
-    if (states.contains(MaterialState.pressed)) {
-      return highlightColor ?? foregroundColor?.withOpacity(0.12);
-    }
-    if (states.contains(MaterialState.hovered)) {
-      return hoverColor ?? foregroundColor?.withOpacity(0.08);
-    }
-    if (states.contains(MaterialState.focused)) {
-      return focusColor ?? foregroundColor?.withOpacity(0.08);
-    }
-    return null;
-  }
-
-  @override
-  String toString() {
-    return '{hovered: $hoverColor, focused: $focusColor, pressed: $highlightColor, otherwise: null}';
-  }
-}
-
-@immutable
-class _CIconButtonDefaultMouseCursor extends MaterialStateProperty<MouseCursor>
-    with Diagnosticable {
-  _CIconButtonDefaultMouseCursor(this.enabledCursor, this.disabledCursor);
-
-  final MouseCursor enabledCursor;
-  final MouseCursor disabledCursor;
-
-  @override
-  MouseCursor resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.disabled)) {
-      return disabledCursor;
-    }
-    return enabledCursor;
-  }
-}
-
-@immutable
-class _CIconButtonDefaultGradient extends MaterialStateProperty<Gradient?>
-    with Diagnosticable {
-  _CIconButtonDefaultGradient(this.gradient);
-
-  final Gradient? gradient;
-
-  @override
-  Gradient? resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.disabled)) {
-      return null;
-    }
-    return gradient;
-  }
-}
-
-// BEGIN GENERATED TOKEN PROPERTIES - CIconButton
-
-// Do not edit by hand. The code between the "BEGIN GENERATED" and
-// "END GENERATED" comments are generated from data in the Material
-// Design token database by the script:
-//   dev/tools/gen_defaults/bin/gen_defaults.dart.
-
-// Token database version: v0_162
 
 class _CIconButtonDefaultsM3 extends CButtonStyle {
   _CIconButtonDefaultsM3(this.context, this.toggleable)

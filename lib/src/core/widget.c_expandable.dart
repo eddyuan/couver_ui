@@ -143,7 +143,7 @@ class _CExpandableState extends State<CExpandable> {
   late bool expanded = widget.initialExpanded;
   late final Curve curve =
       widget.curve ?? CouverTheme.of(context).animationSizeCurve;
-  late final Duration duartion =
+  late final Duration duration =
       widget.duration ?? CouverTheme.of(context).animationSizeDuration;
   late final EdgeInsetsGeometry arrowPadding =
       widget.arrowPadding ?? EdgeInsets.all(CouverTheme.of(context).gutter * 3);
@@ -169,7 +169,7 @@ class _CExpandableState extends State<CExpandable> {
       sizeCurve: curve,
       crossFadeState:
           expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-      duration: duartion,
+      duration: duration,
     );
   }
 
@@ -203,7 +203,7 @@ class _CExpandableState extends State<CExpandable> {
                           EdgeInsets.only(left: CouverTheme.of(context).gutter),
                       child: AnimatedRotation(
                         turns: expanded ? -0.5 : 0,
-                        duration: duartion,
+                        duration: duration,
                         child: Icon(
                           Icons.keyboard_arrow_down_outlined,
                           size: widget.arrowSize,
@@ -221,16 +221,16 @@ class _CExpandableState extends State<CExpandable> {
                   children: [
                     if (widget.header != null)
                       Expanded(
-                        child: widget.header!(true),
+                        child: widget.header!(expanded),
                       ),
                     if (widget.showIcon)
                       Padding(
                         padding: arrowPadding,
                         child: AnimatedRotation(
                           turns: expanded ? -0.5 : 0,
-                          duration: duartion,
+                          duration: duration,
                           child: AnimatedOpacity(
-                            duration: duartion,
+                            duration: duration,
                             curve: curve,
                             opacity: expanded ? 1 : 0.6,
                             child: Icon(

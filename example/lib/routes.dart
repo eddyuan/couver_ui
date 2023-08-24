@@ -1,4 +1,6 @@
+import 'package:example/screens/expandable_screen.dart';
 import 'package:example/screens/flip_boards_screen.dart';
+import 'package:example/screens/ink_sreen.dart';
 import 'package:example/screens/input_screen.dart';
 import 'package:example/screens/list_tiles_screen.dart';
 import 'package:example/screens/page_view_screen.dart';
@@ -49,6 +51,8 @@ class AppRoutes {
     '/page_view': (context) => const PageViewScreen(),
     '/list_tile': (context) => const ListTileScreen(),
     '/input': (context) => const InputScreen(),
+    '/expandable': (context) => const ExpandableScreen(),
+    '/ink': (context) => const InkScreen(),
   };
 
   static List<RouteButtonConfig> get buttons =>

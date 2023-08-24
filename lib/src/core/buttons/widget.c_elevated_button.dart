@@ -358,58 +358,58 @@ EdgeInsetsGeometry _scaledPadding(BuildContext context) {
   );
 }
 
-@immutable
-class _CElevatedButtonDefaultGradient extends MaterialStateProperty<Gradient?>
-    with Diagnosticable {
-  _CElevatedButtonDefaultGradient(this.gradient);
+// @immutable
+// class _CElevatedButtonDefaultGradient extends MaterialStateProperty<Gradient?>
+//     with Diagnosticable {
+//   _CElevatedButtonDefaultGradient(this.gradient);
 
-  final Gradient? gradient;
+//   final Gradient? gradient;
 
-  @override
-  Gradient? resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.disabled)) {
-      return null;
-    }
-    return gradient;
-  }
-}
+//   @override
+//   Gradient? resolve(Set<MaterialState> states) {
+//     if (states.contains(MaterialState.disabled)) {
+//       return null;
+//     }
+//     return gradient;
+//   }
+// }
 
-@immutable
-class _CElevatedButtonDefaultColor extends MaterialStateProperty<Color?>
-    with Diagnosticable {
-  _CElevatedButtonDefaultColor(this.color, this.disabled);
+// @immutable
+// class _CElevatedButtonDefaultColor extends MaterialStateProperty<Color?>
+//     with Diagnosticable {
+//   _CElevatedButtonDefaultColor(this.color, this.disabled);
 
-  final Color? color;
-  final Color? disabled;
+//   final Color? color;
+//   final Color? disabled;
 
-  @override
-  Color? resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.disabled)) {
-      return disabled;
-    }
-    return color;
-  }
-}
+//   @override
+//   Color? resolve(Set<MaterialState> states) {
+//     if (states.contains(MaterialState.disabled)) {
+//       return disabled;
+//     }
+//     return color;
+//   }
+// }
 
-@immutable
-class _CElevatedButtonDefaultOverlay extends MaterialStateProperty<Color?>
-    with Diagnosticable {
-  _CElevatedButtonDefaultOverlay(this.overlay);
+// @immutable
+// class _CElevatedButtonDefaultOverlay extends MaterialStateProperty<Color?>
+//     with Diagnosticable {
+//   _CElevatedButtonDefaultOverlay(this.overlay);
 
-  final Color overlay;
+//   final Color overlay;
 
-  @override
-  Color? resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.hovered)) {
-      return overlay.withOpacity(0.08);
-    }
-    if (states.contains(MaterialState.focused) ||
-        states.contains(MaterialState.pressed)) {
-      return overlay.withOpacity(0.24);
-    }
-    return null;
-  }
-}
+//   @override
+//   Color? resolve(Set<MaterialState> states) {
+//     if (states.contains(MaterialState.hovered)) {
+//       return overlay.withOpacity(0.08);
+//     }
+//     if (states.contains(MaterialState.focused) ||
+//         states.contains(MaterialState.pressed)) {
+//       return overlay.withOpacity(0.24);
+//     }
+//     return null;
+//   }
+// }
 
 @immutable
 class _CElevatedButtonDefaultElevation extends MaterialStateProperty<double>

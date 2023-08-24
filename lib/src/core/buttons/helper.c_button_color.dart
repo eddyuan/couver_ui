@@ -21,30 +21,40 @@ class CButtonColor {
         backgroundGradient == null) {
       return null;
     }
+    final Color? referenceBackgroundColor =
+        backgroundGradient != null && backgroundGradient.colors.isNotEmpty
+            ? backgroundGradient.colors[0]
+            : backgroundColor;
     final Color targetForegroundColor;
     if (foregroundGradient != null && foregroundGradient.colors.isNotEmpty) {
       targetForegroundColor = foregroundGradient.colors[0];
     } else if (foregroundColor != null) {
       targetForegroundColor = foregroundColor;
-    } else if (backgroundGradient != null &&
-        backgroundGradient.colors.isNotEmpty) {
-      targetForegroundColor =
-          _isDark(backgroundGradient.colors[0]) ? Colors.white : Colors.black;
-    } else if (backgroundColor != null) {
-      if (backgroundColor.opacity > 0.45) {
+    } else if (referenceBackgroundColor != null) {
+      if (referenceBackgroundColor.opacity > 0.45) {
         targetForegroundColor =
-            _isDark(backgroundColor) ? Colors.white : Colors.black;
+            _isDark(referenceBackgroundColor) ? Colors.white : Colors.black;
       } else {
-        targetForegroundColor = backgroundColor.withOpacity(1);
+        targetForegroundColor = referenceBackgroundColor.withOpacity(1);
       }
     } else {
       targetForegroundColor = Colors.black;
     }
-    final bool isForegroundDark = _isDark(targetForegroundColor);
-    final Color targetDisabledColor = disabledForegroundColor ??
-        (isForegroundDark
-            ? Colors.black.withOpacity(0.3)
-            : Colors.white.withOpacity(0.5));
+
+    final Color targetDisabledColor;
+
+    if (referenceBackgroundColor != null &&
+        referenceBackgroundColor.opacity > 0) {
+      targetDisabledColor = _isDark(referenceBackgroundColor)
+          ? Colors.black.withOpacity(0.3)
+          : Colors.white.withOpacity(0.5);
+    } else {
+      targetDisabledColor = disabledForegroundColor ??
+          (_isDark(targetForegroundColor)
+              ? Colors.black.withOpacity(0.3)
+              : Colors.white.withOpacity(0.5));
+    }
+
     return _CButtonDefaultColor(targetForegroundColor, targetDisabledColor);
   }
 

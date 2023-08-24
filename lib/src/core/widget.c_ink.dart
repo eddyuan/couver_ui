@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 
 import 'comp.gradient_box_border.dart';
 import '../enums/enum.platform_style.dart';
+import '../utils/extension_border_radius.dart';
 import 'widget.c_ink_cupertino.dart';
 import 'widget.c_ink_material.dart';
 
@@ -33,9 +34,9 @@ class CInk extends StatelessWidget {
   }) : super(key: key);
   final Widget? child;
 
-  /// Define with sctyl, [Cupertino] or [Material]
+  /// Define with style, [Cupertino] or [Material]
   final PlatformStyle style;
-  // basic dunction
+  // basic duration
   final GestureTapCallback? onTap;
   final GestureTapCallback? onDoubleTap;
   final GestureLongPressCallback? onLongPress;
@@ -81,14 +82,17 @@ class CInk extends StatelessWidget {
         );
       }
 
-      return Border.all(color: borderColor ?? Theme.of(context).dividerColor);
+      return Border.all(
+        color: borderColor ?? Theme.of(context).dividerColor,
+        width: borderWidth,
+      );
     }
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
-    final Decoration targetDecoration = BoxDecoration(
+    final BoxDecoration targetDecoration = BoxDecoration(
       gradient: gradient,
       color: color,
       borderRadius: borderRadius,
@@ -96,20 +100,13 @@ class CInk extends StatelessWidget {
       image: decorationImage,
       border: getTargetBorder(context),
     );
-    // final BoxBorder? targetBorder = borderWidth>0?
-    // (borderGradient!=null? GradientBoxBorder(
-    //       gradient: borderGradient,
-    //       width: borderWidth,
-    //     ) : borderColor!=null? Border.all(color: borderColor??Theme.of(context).dividerColor, width: borderWidth,):null)
-    //  :null
-    // final Widget child_ = Container(
-    //   clipBehavior: clipBehavior,
-    //   decoration: targetDecoration,
-    //   child: child,
-    // );
+
+    late final Widget inkWidget;
+
+    final BorderRadius? innerRadius = borderRadius?.modifyBy(-borderWidth);
 
     if (style.isIos) {
-      return CInkCupertino(
+      inkWidget = CInkCupertino(
         onTap: onTap,
         onDoubleTap: onDoubleTap,
         onLongPress: onLongPress,
@@ -121,18 +118,21 @@ class CInk extends StatelessWidget {
         decoration: targetDecoration,
         child: child,
       );
+    } else {
+      inkWidget = CInkMaterial(
+        onTap: onTap,
+        onDoubleTap: onDoubleTap,
+        onLongPress: onLongPress,
+        onTapDown: onTapDown,
+        onTapCancel: onTapCancel,
+        borderRadius: borderRadius,
+        innerRadius: innerRadius,
+        materialOption: materialOption ?? const CInkMaterialOption(),
+        clipBehavior: clipBehavior,
+        decoration: targetDecoration,
+        child: child,
+      );
     }
-    return CInkMaterial(
-      onTap: onTap,
-      onDoubleTap: onDoubleTap,
-      onLongPress: onLongPress,
-      onTapDown: onTapDown,
-      onTapCancel: onTapCancel,
-      borderRadius: borderRadius,
-      materialOption: materialOption ?? const CInkMaterialOption(),
-      clipBehavior: clipBehavior,
-      decoration: targetDecoration,
-      child: child,
-    );
+    return inkWidget;
   }
 }

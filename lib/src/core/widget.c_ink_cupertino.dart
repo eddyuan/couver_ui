@@ -43,7 +43,7 @@ class CInkCupertino extends StatefulWidget {
   }) : super(key: key);
 
   final Widget? child;
-  // basic dunction
+  // basic function
   final GestureTapCallback? onTap;
   final GestureTapCallback? onDoubleTap;
   final GestureLongPressCallback? onLongPress;
@@ -53,7 +53,7 @@ class CInkCupertino extends StatefulWidget {
   final CInkCupertinoOption cupertinoOption;
 
   final Clip clipBehavior;
-  final Decoration? decoration;
+  final BoxDecoration? decoration;
   @override
   State<CInkCupertino> createState() => _CInkCupertinoState();
 }
@@ -192,7 +192,7 @@ class _CInkCupertinoState extends State<CInkCupertino>
         child: widget.child,
       );
 
-      late Widget animationWrapper;
+      final Widget animationWrapper;
       switch (widget.cupertinoOption.cupertinoInkStyle) {
         case CupertinoInkStyle.opaque:
           animationWrapper = FadeTransition(
@@ -242,6 +242,8 @@ class _CInkCupertinoState extends State<CInkCupertino>
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         splashFactory: NoSplash.splashFactory,
+        hoverColor: Colors.transparent,
+        borderRadius: widget.borderRadius,
         child: animationWrapper,
       );
     }

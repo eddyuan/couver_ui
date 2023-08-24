@@ -35,6 +35,7 @@ class CInkMaterial extends StatelessWidget {
     this.onTapDown,
     this.onTapCancel,
     this.borderRadius,
+    this.innerRadius,
     this.materialOption = const CInkMaterialOption(),
     this.clipBehavior = Clip.none,
     this.decoration,
@@ -46,10 +47,11 @@ class CInkMaterial extends StatelessWidget {
   final GestureTapDownCallback? onTapDown;
   final GestureTapCancelCallback? onTapCancel;
   final BorderRadius? borderRadius;
+  final BorderRadius? innerRadius;
   final CInkMaterialOption materialOption;
   final Clip clipBehavior;
 
-  final Decoration? decoration;
+  final BoxDecoration? decoration;
 
   bool get _enabled =>
       onTap != null ||
@@ -59,7 +61,6 @@ class CInkMaterial extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // if (child != null) {
     if (materialOption.inkOnTop) {
       return Container(
         clipBehavior: clipBehavior,
@@ -72,9 +73,9 @@ class CInkMaterial extends StatelessWidget {
                 ignoring: !_enabled,
                 child: Material(
                   type: MaterialType.transparency,
-                  borderRadius: borderRadius,
+                  borderRadius: innerRadius,
                   child: InkWell(
-                    borderRadius: borderRadius,
+                    borderRadius: innerRadius,
                     onTapDown: onTapDown,
                     onTapCancel: onTapCancel,
                     onTap: onTap,
@@ -108,12 +109,12 @@ class CInkMaterial extends StatelessWidget {
       clipBehavior: clipBehavior,
       decoration: decoration,
       child: Material(
-        borderRadius: borderRadius,
+        borderRadius: innerRadius,
         // color: color ?? Colors.transparent,
         type: MaterialType.transparency,
         // clipBehavior: clipBehavior,
         child: InkWell(
-          borderRadius: borderRadius,
+          borderRadius: innerRadius,
           onTapDown: onTapDown,
           onTapCancel: onTapCancel,
           onTap: onTap,

@@ -959,7 +959,9 @@ class _CTextFormFieldState extends State<CTextFormField> {
           cursorColor: widget.cursorColor,
           keyboardAppearance: widget.keyboardAppearance,
           scrollPadding: widget.scrollPadding,
-          enableInteractiveSelection: widget.enableInteractiveSelection,
+          enableInteractiveSelection: widget.mustClickEdit
+              ? _focusNode.canRequestFocus
+              : widget.enableInteractiveSelection,
           selectionControls: widget.selectionControls,
           buildCounter: widget.buildCounter,
           scrollPhysics: widget.scrollPhysics,

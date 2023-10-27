@@ -26,7 +26,7 @@ class CouverTheme extends InheritedWidget {
 
 class CouverThemeData {
   const CouverThemeData({
-    this.obscuringCharacter = "*",
+    this.obscuringCharacter = "·",
     this.locale,
     this.gutter = 4,
     this.pagePadding = 24,
@@ -38,7 +38,7 @@ class CouverThemeData {
   });
 
   const CouverThemeData.dark({
-    this.obscuringCharacter = "*",
+    this.obscuringCharacter = "·",
     this.locale,
     this.gutter = 4,
     this.pagePadding = 24,

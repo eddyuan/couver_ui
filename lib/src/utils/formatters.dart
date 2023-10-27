@@ -15,17 +15,25 @@ class CFormatters {
   static final FilteringTextInputFormatter addressFormatter =
       FilteringTextInputFormatter.allow(RegExp(r"^[a-zA-Z0-9&%=-_]+$"));
 
+  static final MaskTextInputFormatter cardNumFormatter = MaskTextInputFormatter(
+      mask: "#### #### #### ####", filter: {"#": RegExp(r"[0-9]")});
+
+  static final MaskTextInputFormatter unionpayCardNumFormatter =
+      MaskTextInputFormatter(
+          mask: "#### #### #### #### ###", filter: {"#": RegExp(r"[0-9]")});
+
   static final MaskTextInputFormatter cardCvcFormatter =
       MaskTextInputFormatter(mask: "###", filter: {"#": RegExp(r"[0-9]")});
+
+  static final MaskTextInputFormatter uniCardCvcFormatter =
+      MaskTextInputFormatter(mask: "####", filter: {"#": RegExp(r"[0-9]")});
 
   static final MaskTextInputFormatter cardPinFormatter =
       MaskTextInputFormatter(mask: "######", filter: {"#": RegExp(r"[0-9]")});
 
   static final MaskTextInputFormatter cardDateFormatter =
-      MaskTextInputFormatter(mask: "ab/c#", filter: {
+      MaskTextInputFormatter(mask: "a#/##", filter: {
     "a": RegExp(r"[0-1]"),
-    "b": RegExp(r"[0-2]"),
-    "c": RegExp(r"[0-3]"),
     "#": RegExp(r"[0-9]"),
   });
 

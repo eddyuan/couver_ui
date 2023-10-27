@@ -56,6 +56,7 @@ class CListTile extends StatelessWidget {
     this.leadingIcon,
     this.leadingIconSize,
     this.titleText,
+    this.titleTextStyle,
     this.subtitleText,
     this.subtitleTextStyle,
     this.arrow = false,
@@ -110,6 +111,7 @@ class CListTile extends StatelessWidget {
     this.leadingIcon,
     this.leadingIconSize,
     this.titleText,
+    this.titleTextStyle,
     this.subtitleText,
     this.subtitleTextStyle,
     this.titleBold = false,
@@ -337,6 +339,9 @@ class CListTile extends StatelessWidget {
   final String? subtitleText;
 
   /// The style for subtitleText
+  final TextStyle? titleTextStyle;
+
+  /// The style for subtitleText
   final TextStyle? subtitleTextStyle;
 
   /// Show an arrow at the end
@@ -471,16 +476,19 @@ class CListTile extends StatelessWidget {
   }
 
   TextStyle _titleTextStyle(ThemeData theme, ListTileThemeData tileTheme) {
+    if (titleTextStyle != null) {
+      return titleTextStyle!;
+    }
     final TextStyle textStyle;
     switch (style ??
         tileTheme.style ??
         theme.listTileTheme.style ??
         ListTileStyle.list) {
       case ListTileStyle.drawer:
-        textStyle = theme.textTheme.bodyText1!;
+        textStyle = theme.textTheme.bodyLarge!;
         break;
       case ListTileStyle.list:
-        textStyle = theme.textTheme.subtitle1!;
+        textStyle = theme.textTheme.titleMedium!;
         break;
     }
     final Color? color = _textColor(theme, tileTheme, textStyle.color);
@@ -492,9 +500,9 @@ class CListTile extends StatelessWidget {
   }
 
   TextStyle _subtitleTextStyle(ThemeData theme, ListTileThemeData tileTheme) {
-    final TextStyle textStyle = theme.textTheme.bodyText2!;
+    final TextStyle textStyle = theme.textTheme.bodyMedium!;
     final Color? color =
-        _textColor(theme, tileTheme, theme.textTheme.caption!.color);
+        _textColor(theme, tileTheme, theme.textTheme.bodySmall!.color);
     return textStyle.copyWith(
       color: color,
       fontSize: _isDenseLayout(theme, tileTheme) ? 12.0 : 13.0,
@@ -502,15 +510,15 @@ class CListTile extends StatelessWidget {
   }
 
   TextStyle _leadingTextStyle(ThemeData theme, ListTileThemeData tileTheme) {
-    final TextStyle textStyle = theme.textTheme.bodyText2!;
+    final TextStyle textStyle = theme.textTheme.bodyMedium!;
     final Color? color = _textColor(theme, tileTheme, textStyle.color);
     return textStyle.copyWith(color: color);
   }
 
   TextStyle _trailingTextStyle(ThemeData theme, ListTileThemeData tileTheme) {
-    final TextStyle textStyle = theme.textTheme.bodyText2!;
+    final TextStyle textStyle = theme.textTheme.bodyMedium!;
     final Color? color =
-        _textColor(theme, tileTheme, theme.textTheme.caption!.color);
+        _textColor(theme, tileTheme, theme.textTheme.bodySmall!.color);
     return textStyle.copyWith(color: color);
   }
 
@@ -709,6 +717,7 @@ class CListTile extends StatelessWidget {
             selected: selected,
             enabled: onTap != null,
             size: radioSize,
+            color: _trailingIconColor(theme, tileTheme),
           );
         } else if (trailing != null) {
           trailingInnerWidget = trailing!;
@@ -782,7 +791,12 @@ class CListTile extends StatelessWidget {
     return CInk(
       // style: PlatformStyle.material,
       color: tileBackgroundColorVal_,
-      onTap: _enabled ? onTap : null,
+      onTap: _enabled && onTap != null
+          ? () {
+              FocusManager.instance.primaryFocus?.unfocus();
+              onTap?.call();
+            }
+          : null,
       onLongPress: _enabled ? onLongPress : null,
       cupertinoOption:
           const CInkCupertinoOption(cupertinoInkStyle: CupertinoInkStyle.shade),

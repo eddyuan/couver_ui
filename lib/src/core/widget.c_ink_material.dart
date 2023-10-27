@@ -82,15 +82,9 @@ class CInkMaterial extends StatelessWidget {
                     onDoubleTap: onDoubleTap,
                     onLongPress: onLongPress,
                     highlightColor: materialOption.highlightColor ??
-                        Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withOpacity(0.1),
+                        Theme.of(context).highlightColor,
                     splashColor: materialOption.splashColor ??
-                        Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withOpacity(0.1),
+                        Theme.of(context).splashColor,
                     splashFactory: materialOption.splashFactory ??
                         CouverTheme.of(context).splashFactory,
                     focusColor: materialOption.focusColor,

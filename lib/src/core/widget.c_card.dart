@@ -14,6 +14,8 @@ class CCard extends StatelessWidget {
     this.child,
     this.padding,
     this.color,
+    this.splashColor,
+    this.highlightColor,
     this.gradient,
     this.leadingColor,
     this.leadingGradient,
@@ -46,12 +48,18 @@ class CCard extends StatelessWidget {
   /// The whole color of the card
   final Color? color;
 
+  /// Color of the splash
+  final Color? splashColor;
+
+  /// Color of highlight
+  final Color? highlightColor;
+
   final Gradient? gradient;
 
   /// Color of the leadingBar at the left
   final Color? leadingColor;
 
-  /// Width of the laeadingBar at the left
+  /// Width of the leadingBar at the left
   final double? leadingWidth;
 
   /// Gradient of the leadingBar at the left
@@ -113,13 +121,15 @@ class CCard extends StatelessWidget {
             ? NoSplash.splashFactory
             : CouverTheme.of(context).splashFactory);
     final Color cardColor = color ?? Theme.of(context).cardColor;
+    final Color targetSplashColor = splashColor ??
+        (color == null
+            ? Theme.of(context).splashColor
+            : contrastColorTrans(cardColor));
+    final Color targetHighlightColor = highlightColor ??
+        (color == null
+            ? Theme.of(context).highlightColor
+            : contrastColorTrans(cardColor));
     final double targetLeadingWidth = leadingWidth ?? 0;
-
-    final Color contrastColor = contrastColorTrans(cardColor);
-    final Color highlightColor = contrastColor;
-    // splashFactory == NoSplash.splashFactory
-    //     ? contrastColor
-    //     : contrastColor; // Colors.transparent;
 
     final Color? targetShadowColor =
         shadowColor ?? cardTheme.shadowColor ?? defaults.shadowColor;
@@ -170,6 +180,18 @@ class CCard extends StatelessWidget {
       );
     }
 
+    BorderRadius? targetBorderRadius = borderRadius;
+    if (targetBorderRadius == null) {
+      if (cardTheme.shape is RoundedRectangleBorder) {
+        final RoundedRectangleBorder borderShape =
+            cardTheme.shape as RoundedRectangleBorder;
+        targetBorderRadius =
+            borderShape.borderRadius.resolve(Directionality.of(context));
+      } else {
+        targetBorderRadius = BorderRadius.circular(8);
+      }
+    }
+
     return SizedBox(
       width: width,
       height: height,
@@ -178,15 +200,15 @@ class CCard extends StatelessWidget {
         style: platformStyle,
         onDoubleTap: onDoubleTap,
         onLongPress: onLongPress,
-        borderRadius: borderRadius ?? BorderRadius.circular(8),
+        borderRadius: targetBorderRadius,
         borderWidth: borderWidth,
         borderColor: borderColor,
         borderGradient: borderGradient,
         cupertinoOption: cupertinoOption,
         materialOption: materialOption ??
             CInkMaterialOption(
-              highlightColor: highlightColor,
-              splashColor: contrastColor,
+              highlightColor: targetHighlightColor,
+              splashColor: targetSplashColor,
               inkOnTop: inkOnTop,
               splashFactory: splashFactory,
             ),

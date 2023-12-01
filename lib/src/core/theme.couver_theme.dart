@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
 class CouverTheme extends InheritedWidget {
@@ -35,6 +36,9 @@ class CouverThemeData {
     this.animationSizeCurve = Curves.easeInOut,
     this.splashFactory = InkSparkle.splashFactory,
     this.colors = const CouverThemeColors(),
+    this.buttonLoadingBuilder,
+    this.tileLoadingBuilder,
+    this.tileLoadingWidth,
   });
 
   const CouverThemeData.dark({
@@ -47,6 +51,9 @@ class CouverThemeData {
     this.animationSizeCurve = Curves.easeInOut,
     this.splashFactory = InkSparkle.splashFactory,
     this.colors = const CouverThemeColors.dark(),
+    this.buttonLoadingBuilder,
+    this.tileLoadingBuilder,
+    this.tileLoadingWidth,
   });
 
   final String obscuringCharacter;
@@ -58,6 +65,17 @@ class CouverThemeData {
   final Duration animationSizeDuration;
   final InteractiveInkFeatureFactory splashFactory;
   final CouverThemeColors colors;
+  final Widget Function(
+    BuildContext context,
+    Size size,
+    Color? color,
+  )? buttonLoadingBuilder;
+  final Widget Function(
+    BuildContext context,
+    Size size,
+    Color? color,
+  )? tileLoadingBuilder;
+  final double? tileLoadingWidth;
 
   double get gutter2 => gutter * 2;
   double get gutter3 => gutter * 3;
@@ -68,6 +86,59 @@ class CouverThemeData {
   double get gutter8 => gutter * 8;
   double get gutter9 => gutter * 9;
   double get gutter10 => gutter * 10;
+
+  CouverThemeData copyWith({
+    String? obscuringCharacter,
+    Locale? locale,
+    double? gutter,
+    double? pagePadding,
+    double? inputBorderRadius,
+    Curve? animationSizeCurve,
+    Duration? animationSizeDuration,
+    InteractiveInkFeatureFactory? splashFactory,
+    CouverThemeColors? colors,
+  }) {
+    return CouverThemeData(
+      obscuringCharacter: obscuringCharacter ?? this.obscuringCharacter,
+      locale: locale ?? this.locale,
+      gutter: gutter ?? this.gutter,
+      pagePadding: pagePadding ?? this.pagePadding,
+      inputBorderRadius: inputBorderRadius ?? this.inputBorderRadius,
+      animationSizeCurve: animationSizeCurve ?? this.animationSizeCurve,
+      animationSizeDuration:
+          animationSizeDuration ?? this.animationSizeDuration,
+      splashFactory: splashFactory ?? this.splashFactory,
+      colors: colors ?? this.colors,
+    );
+  }
+
+  @override
+  bool operator ==(covariant CouverThemeData other) {
+    if (identical(this, other)) return true;
+
+    return other.obscuringCharacter == obscuringCharacter &&
+        other.locale == locale &&
+        other.gutter == gutter &&
+        other.pagePadding == pagePadding &&
+        other.inputBorderRadius == inputBorderRadius &&
+        other.animationSizeCurve == animationSizeCurve &&
+        other.animationSizeDuration == animationSizeDuration &&
+        other.splashFactory == splashFactory &&
+        other.colors == colors;
+  }
+
+  @override
+  int get hashCode {
+    return obscuringCharacter.hashCode ^
+        locale.hashCode ^
+        gutter.hashCode ^
+        pagePadding.hashCode ^
+        inputBorderRadius.hashCode ^
+        animationSizeCurve.hashCode ^
+        animationSizeDuration.hashCode ^
+        splashFactory.hashCode ^
+        colors.hashCode;
+  }
 }
 
 class CouverThemeColors {

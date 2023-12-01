@@ -1,10 +1,8 @@
 // import 'package:couver_app/utils/helpers.dart';
 // import 'package:couver_app/widgets/widgets.dart';
-import 'package:couver_ui/src/core/widget.c_radio_icon.dart';
+import 'package:couver_ui/couver_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-
-import 'widget.c_ink.dart';
 
 class CListTileSkeletonOption {
   const CListTileSkeletonOption({
@@ -60,6 +58,7 @@ class CListTile extends StatelessWidget {
     this.subtitleText,
     this.subtitleTextStyle,
     this.arrow = false,
+    this.arrowIcon,
     this.titleBold = false,
     this.gradient,
     this.titleColor,
@@ -134,6 +133,7 @@ class CListTile extends StatelessWidget {
         trailing = null,
         trailingIconColor = radioColor,
         arrow = false,
+        arrowIcon = null,
         super(key: key);
 
   //----------------Original datas---------------------
@@ -250,7 +250,7 @@ class CListTile extends StatelessWidget {
   /// Insets a [ListTile]'s contents: its [leading], [title], [subtitle],
   /// and [trailing] widgets.
   ///
-  /// If null, `EdgeInsets.symmetric(horizontal: 16.0)` is used.
+  /// If null, `EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0)` is used.
   final EdgeInsetsGeometry? contentPadding;
 
   /// Whether this list tile is interactive.
@@ -346,6 +346,9 @@ class CListTile extends StatelessWidget {
 
   /// Show an arrow at the end
   final bool arrow;
+
+  /// The iconData of the arrow
+  final IconData? arrowIcon;
 
   /// Give title a bold style
   final bool titleBold;
@@ -533,6 +536,8 @@ class CListTile extends StatelessWidget {
 
   final Duration _kAnimationSizeDuration = const Duration(milliseconds: 200);
   final double _kDefaultPadding = 24;
+  final double _kDefaultPaddingVertical = 12;
+  final double _kDefaultPaddingVerticalDense = 8;
 
   @override
   Widget build(BuildContext context) {
@@ -547,6 +552,22 @@ class CListTile extends StatelessWidget {
         _tileBackgroundColor(theme, tileTheme);
 
     final bool dense_ = _isDenseLayout(theme, tileTheme);
+
+    final EdgeInsets contentPadding_ = (contentPadding ??
+            theme.listTileTheme.contentPadding ??
+            EdgeInsets.symmetric(
+              horizontal: _kDefaultPadding,
+              vertical: dense_
+                  ? _kDefaultPaddingVerticalDense
+                  : _kDefaultPaddingVertical,
+            ))
+        .resolve(Directionality.of(context));
+
+    final EdgeInsets verticalPadding_ =
+        contentPadding_.copyWith(left: 0, right: 0);
+
+    final EdgeInsets horizontalPadding_ =
+        contentPadding_.copyWith(top: 0, bottom: 0);
 
     Widget? innerRow_;
     if (skeleton) {
@@ -584,7 +605,8 @@ class CListTile extends StatelessWidget {
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: minHeight_),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  padding: verticalPadding_,
+                  // padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -697,19 +719,24 @@ class CListTile extends StatelessWidget {
         TextStyle trailingTextStyle = _trailingTextStyle(theme, tileTheme);
         late Widget trailingInnerWidget;
         if (loading) {
-          trailingInnerWidget = SizedBox(
-            width: loadingWidth ?? 20,
-            height: 20,
-            child: Center(
-              child: SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator.adaptive(
-                  strokeWidth: 3,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).disabledColor),
-                ),
-              ),
+          final Size loadingSize = Size(
+              loadingWidth ?? CouverTheme.of(context).tileLoadingWidth ?? 20,
+              20);
+          trailingInnerWidget = SizedBox.fromSize(
+            size: loadingSize,
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: CouverTheme.of(context).tileLoadingBuilder?.call(
+                      context, loadingSize, Theme.of(context).disabledColor) ??
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator.adaptive(
+                      strokeWidth: 3,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          Theme.of(context).disabledColor),
+                    ),
+                  ),
             ),
           );
         } else if (isRadio) {
@@ -751,7 +778,7 @@ class CListTile extends StatelessWidget {
             child: ConstrainedBox(
               constraints: BoxConstraints(minHeight: minHeight_),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                padding: verticalPadding_,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -773,7 +800,7 @@ class CListTile extends StatelessWidget {
             Transform.translate(
               offset: const Offset(6.0, 0.0),
               child: Icon(
-                Icons.chevron_right,
+                arrowIcon ?? Icons.chevron_right,
                 color: theme.disabledColor,
                 size: 20,
               ),
@@ -781,12 +808,6 @@ class CListTile extends StatelessWidget {
         ],
       );
     }
-
-    final EdgeInsetsGeometry contentPadding_ = contentPadding ??
-        theme.listTileTheme.contentPadding ??
-        EdgeInsets.symmetric(
-          horizontal: _kDefaultPadding,
-        );
 
     return CInk(
       // style: PlatformStyle.material,
@@ -808,19 +829,19 @@ class CListTile extends StatelessWidget {
             Divider(
               height: 1,
               thickness: dividerThickness,
-              indent: dividerInsets ? _kDefaultPadding : 0,
-              endIndent: dividerInsets ? _kDefaultPadding : 0,
+              indent: dividerInsets ? horizontalPadding_.left : 0,
+              endIndent: dividerInsets ? horizontalPadding_.right : 0,
             ),
           Padding(
-            padding: contentPadding_,
+            padding: horizontalPadding_,
             child: innerRow_,
           ),
           if (dividerBottom)
             Divider(
               height: 1,
               thickness: dividerThickness,
-              indent: dividerInsets ? _kDefaultPadding : 0,
-              endIndent: dividerInsets ? _kDefaultPadding : 0,
+              indent: dividerInsets ? horizontalPadding_.left : 0,
+              endIndent: dividerInsets ? horizontalPadding_.right : 0,
             ),
         ],
       ),

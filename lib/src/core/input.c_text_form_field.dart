@@ -770,7 +770,7 @@ class _CTextFormFieldState extends State<CTextFormField> {
     return null;
   }
 
-  InputBorder _border(BuildContext context) {
+  InputBorder? _border(BuildContext context) {
     final double inputBorderRadius = CouverTheme.of(context).inputBorderRadius;
     if (widget.border != null) {
       return widget.border!;
@@ -780,9 +780,10 @@ class _CTextFormFieldState extends State<CTextFormField> {
         borderRadius: BorderRadius.all(Radius.circular(inputBorderRadius)),
       );
     }
-    return OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(inputBorderRadius)),
-    );
+    return null;
+    // return OutlineInputBorder(
+    //   borderRadius: BorderRadius.all(Radius.circular(inputBorderRadius)),
+    // );
   }
 
   TextInputType? getKeyboardType() {
@@ -879,7 +880,7 @@ class _CTextFormFieldState extends State<CTextFormField> {
       counter: widget.counter,
       counterText: getCounterText(),
       counterStyle: widget.counterStyle,
-      filled: widget.filled ?? !isEnabled,
+      filled: widget.filled ?? (!isEnabled ? true : null),
       fillColor: widget.fillColor ??
           (!isEnabled ? cTheme.colors.inputDisableFillColor : null),
       focusColor: widget.focusColor,
@@ -888,10 +889,10 @@ class _CTextFormFieldState extends State<CTextFormField> {
       errorBorder: widget.errorBorder,
       // disabledBorder: widget.disabledBorder,
       disabledBorder: widget.disabledBorder ??
-          _border(context).copyColor(cTheme.colors.inputDisableBorderColor),
+          _border(context)?.copyColor(cTheme.colors.inputDisableBorderColor),
       // enabledBorder: widget.enabledBorder,
       enabledBorder: widget.enabledBorder ??
-          _border(context).copyColor(cTheme.colors.inputEnabledBorderColor),
+          _border(context)?.copyColor(cTheme.colors.inputEnabledBorderColor),
       border: _border(context),
       enabled: isEnabled,
       semanticCounterText: widget.semanticCounterText,
@@ -913,11 +914,14 @@ class _CTextFormFieldState extends State<CTextFormField> {
         widget.obscuringCharacter ?? CouverTheme.of(context).obscuringCharacter;
     return Theme(
       data: Theme.of(context).copyWith(
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: CouverTheme.of(context).colors.inputFocusBorderColor,
-          brightness: Theme.of(context).brightness,
-        ),
-      ),
+          colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: CouverTheme.of(context).colors.inputFocusBorderColor)
+
+          // ColorScheme.fromSwatch(
+          //   primarySwatch: CouverTheme.of(context).colors.inputFocusBorderColor,
+          //   brightness: Theme.of(context).brightness,
+          // ),
+          ),
       child: Padding(
         padding: widget.margin ?? EdgeInsets.zero,
         child: TextFormField(

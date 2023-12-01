@@ -107,6 +107,15 @@ String takeLast(String? value, int count) {
   }
 }
 
+String takeFirst(String? value, int count) {
+  if (value == null || value.isEmpty || count < 1) return "";
+  if (value.length > count) {
+    return value.substring(0, count);
+  } else {
+    return value;
+  }
+}
+
 dynamic shortenParamForLog(dynamic value, {int keep = 1000}) {
   if (value is String) {
     if (value.length > keep) {
@@ -253,8 +262,8 @@ List<T> tList<T>(val) {
   if (val is String) {
     try {
       var decodedJSON = json.decode(val);
-      if (decodedJSON is List<T>) {
-        return decodedJSON;
+      if (decodedJSON is List) {
+        return decodedJSON.map((item) => item as T).toList();
       }
     } catch (e) {}
   }

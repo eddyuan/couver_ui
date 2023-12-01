@@ -6,6 +6,7 @@ import 'dart:math' as math;
 import 'dart:math';
 
 // import 'package:couver_app/utils/helpers.dart';
+import 'package:couver_ui/couver_ui.dart';
 import 'package:couver_ui/src/core/painter/ext.shape_border.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -251,6 +252,28 @@ class _CButtonStyleState extends State<CButtonStyleButton>
         ),
         if (widget.isLoading) loadingWidget,
       ],
+    );
+  }
+
+  Widget buildLoadingWidget(
+    BuildContext context, {
+    required Size size,
+    Color? color,
+  }) {
+    return SizedBox(
+      // width: size.width,
+      height: size.height,
+      child: CouverTheme.of(context)
+              .buttonLoadingBuilder
+              ?.call(context, size, color) ??
+          SizedBox.fromSize(
+            size: size,
+            child: CircularProgressIndicator.adaptive(
+              strokeWidth: (size.height / 6).ceilToDouble(),
+              valueColor: AlwaysStoppedAnimation(color),
+              backgroundColor: color?.withOpacity(0.1),
+            ),
+          ),
     );
   }
 
@@ -522,17 +545,20 @@ class _CButtonStyleState extends State<CButtonStyleButton>
                               child: widget.child,
                             )
                           : (widget.child ?? const SizedBox.shrink()),
-                      loadingWidget: SizedBox(
-                        width: resolvedIconSize,
-                        height: resolvedIconSize,
-                        child: CircularProgressIndicator.adaptive(
-                          strokeWidth: (resolvedIconSize / 6).ceilToDouble(),
-                          valueColor:
-                              AlwaysStoppedAnimation(resolvedForegroundColor),
-                          backgroundColor:
-                              resolvedForegroundColor?.withOpacity(0.1),
-                        ),
-                      ),
+                      loadingWidget: buildLoadingWidget(context,
+                          size: Size(resolvedIconSize, resolvedIconSize),
+                          color: resolvedForegroundColor),
+                      // SizedBox(
+                      //   width: resolvedIconSize,
+                      //   height: resolvedIconSize,
+                      //   child: CircularProgressIndicator.adaptive(
+                      //     strokeWidth: (resolvedIconSize / 6).ceilToDouble(),
+                      //     valueColor:
+                      //         AlwaysStoppedAnimation(resolvedForegroundColor),
+                      //     backgroundColor:
+                      //         resolvedForegroundColor?.withOpacity(0.1),
+                      //   ),
+                      // ),
                     ),
                   ),
                 ),

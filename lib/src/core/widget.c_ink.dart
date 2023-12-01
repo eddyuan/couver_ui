@@ -11,6 +11,7 @@ export "widget.c_ink_material.dart";
 
 class CInk extends StatelessWidget {
   const CInk({
+    super.key,
     this.child,
     this.style = PlatformStyle.auto,
     // basic function
@@ -30,8 +31,8 @@ class CInk extends StatelessWidget {
     this.borderWidth = 0,
     this.borderGradient,
     this.decorationImage,
-    Key? key,
-  }) : super(key: key);
+    this.autoRemoveFocus = true,
+  });
   final Widget? child;
 
   /// Define with style, [Cupertino] or [Material]
@@ -72,6 +73,9 @@ class CInk extends StatelessWidget {
 
   /// Background image
   final DecorationImage? decorationImage;
+
+  /// Remove focus when tapped
+  final bool autoRemoveFocus;
 
   BoxBorder? getTargetBorder(BuildContext context) {
     if (borderWidth > 0) {
@@ -116,6 +120,7 @@ class CInk extends StatelessWidget {
         cupertinoOption: cupertinoOption ?? const CInkCupertinoOption(),
         clipBehavior: clipBehavior,
         decoration: targetDecoration,
+        autoRemoveFocus: autoRemoveFocus,
         child: child,
       );
     } else {
@@ -130,6 +135,7 @@ class CInk extends StatelessWidget {
         materialOption: materialOption ?? const CInkMaterialOption(),
         clipBehavior: clipBehavior,
         decoration: targetDecoration,
+        autoRemoveFocus: autoRemoveFocus,
         child: child,
       );
     }

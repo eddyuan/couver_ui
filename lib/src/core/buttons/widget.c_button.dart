@@ -114,9 +114,8 @@ enum _ButtonType {
 
 class CButton extends StatelessWidget {
   const CButton({
-    Key? key,
+    super.key,
     this.child,
-    // this.padding,
     this.margin,
     this.borderRadius,
     this.alignment = Alignment.center,
@@ -134,19 +133,17 @@ class CButton extends StatelessWidget {
     this.onPressed,
     this.shrinkWhenLoading,
     this.tapTargetSize,
+    this.iconLeft,
+    this.iconRight,
   })  : borderColor = null,
         splashRadius = null,
         _type = _ButtonType.text,
-        borderWidth = 0,
-        icon = null,
-        super(key: key);
+        borderWidth = 0;
 
   const CButton.filled({
-    Key? key,
+    super.key,
     this.child,
-    // this.padding,
     this.margin,
-    // this.pressedOpacity,
     this.borderRadius,
     this.alignment = Alignment.center,
     this.gradient,
@@ -163,17 +160,16 @@ class CButton extends StatelessWidget {
     this.onPressed,
     this.shrinkWhenLoading,
     this.tapTargetSize,
+    this.iconLeft,
+    this.iconRight,
   })  : borderColor = null,
         splashRadius = null,
         _type = _ButtonType.filled,
-        borderWidth = 0,
-        icon = null,
-        super(key: key);
+        borderWidth = 0;
 
   const CButton.outlined({
-    Key? key,
+    super.key,
     this.child,
-    // this.padding,
     this.margin,
     this.borderRadius,
     this.alignment = Alignment.center,
@@ -193,15 +189,14 @@ class CButton extends StatelessWidget {
     this.shrinkWhenLoading,
     this.tapTargetSize,
     this.borderColor,
+    this.iconLeft,
+    this.iconRight,
   })  : splashRadius = null,
-        _type = _ButtonType.outlined,
-        icon = null,
-        super(key: key);
+        _type = _ButtonType.outlined;
 
   CButton.circle({
-    Key? key,
+    super.key,
     this.child,
-    // this.padding,
     this.margin,
     this.alignment = Alignment.center,
     this.gradient,
@@ -214,8 +209,7 @@ class CButton extends StatelessWidget {
     this.platformStyle = PlatformStyle.auto,
     this.onPressed,
     this.splashRadius,
-    this.icon,
-    // this.tapTargetSize,
+    // this.icon,
   })  : borderColor = null,
         _type = _ButtonType.icon,
         shrinkWhenLoading = false,
@@ -226,14 +220,13 @@ class CButton extends StatelessWidget {
         backgroundColor = null,
         tapTargetSize = null,
         size = size != null ? BtnSize(minHeight: size) : BtnSize.iconButton,
-        super(key: key);
+        iconLeft = null,
+        iconRight = null;
 
   const CButton.input({
-    Key? key,
+    super.key,
     this.child,
-    // this.padding,
     this.margin,
-    // this.pressedOpacity,
     this.borderRadius,
     this.alignment = Alignment.center,
     this.gradient,
@@ -244,19 +237,11 @@ class CButton extends StatelessWidget {
     this.backgroundColor,
     this.disabledColor,
     this.text,
-    // this.size,
-    // this.minWidth,
     double? minHeight,
     this.round = true,
     this.platformStyle = PlatformStyle.auto,
     this.onPressed,
     this.borderWidth = 1,
-    // this.fontSize,
-    // this.fontWeight,
-    // this.translucent,
-    // this.circle = false,
-    // this.filled = false,
-    // this.circleSize,
     this.shrinkWhenLoading,
     this.tapTargetSize,
     this.borderColor,
@@ -264,8 +249,8 @@ class CButton extends StatelessWidget {
   })  : splashRadius = null,
         size = isDense ? BtnSize.inputDense : BtnSize.input,
         _type = _ButtonType.input,
-        icon = null,
-        super(key: key);
+        iconLeft = null,
+        iconRight = null;
 
   /// [child] will override [text]
   final Widget? child;
@@ -327,7 +312,8 @@ class CButton extends StatelessWidget {
   /// Gives border a different color
   final Color? borderColor;
 
-  final IconData? icon;
+  final IconData? iconLeft;
+  final IconData? iconRight;
 
   bool get enabled => (onPressed != null && !disabled && loading != true);
 
@@ -343,6 +329,7 @@ class CButton extends StatelessWidget {
     final TextStyle targetTextStyle = TextStyle(
       fontSize: targetFontSize,
       fontWeight: targetFontWeight,
+      height: 1.2,
     );
 
     final OutlinedBorder? targetShape = borderRadius != null
@@ -358,7 +345,27 @@ class CButton extends StatelessWidget {
             ? FittedBox(
                 fit: BoxFit.scaleDown,
                 alignment: Alignment.center,
-                child: Text(text!),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (iconLeft != null)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 4),
+                        child: Icon(
+                          iconLeft,
+                          size: targetFontSize + 2,
+                        ),
+                      ),
+                    Text(text!),
+                    if (iconRight != null)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: Icon(iconRight, size: targetFontSize + 2),
+                      ),
+                  ],
+                ),
               )
             : const SizedBox.shrink());
 

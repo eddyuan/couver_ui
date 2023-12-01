@@ -27,7 +27,7 @@ class CInkMaterialOption {
 
 class CInkMaterial extends StatelessWidget {
   const CInkMaterial({
-    Key? key,
+    super.key,
     this.child,
     this.onTap,
     this.onDoubleTap,
@@ -39,7 +39,8 @@ class CInkMaterial extends StatelessWidget {
     this.materialOption = const CInkMaterialOption(),
     this.clipBehavior = Clip.none,
     this.decoration,
-  }) : super(key: key);
+    this.autoRemoveFocus = true,
+  });
   final Widget? child;
   final GestureTapCallback? onTap;
   final GestureTapCallback? onDoubleTap;
@@ -53,11 +54,21 @@ class CInkMaterial extends StatelessWidget {
 
   final BoxDecoration? decoration;
 
+  /// Remove focus when tapped
+  final bool autoRemoveFocus;
+
   bool get _enabled =>
       onTap != null ||
       onLongPress != null ||
       onDoubleTap != null ||
       onTapDown != null;
+
+  void _handleTapDown(TapDownDetails details) {
+    if (autoRemoveFocus) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
+    onTapDown?.call(details);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +87,7 @@ class CInkMaterial extends StatelessWidget {
                   borderRadius: innerRadius,
                   child: InkWell(
                     borderRadius: innerRadius,
-                    onTapDown: onTapDown,
+                    onTapDown: _enabled ? _handleTapDown : onTapDown,
                     onTapCancel: onTapCancel,
                     onTap: onTap,
                     onDoubleTap: onDoubleTap,

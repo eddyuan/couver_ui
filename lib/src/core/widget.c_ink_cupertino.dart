@@ -40,6 +40,7 @@ class CInkCupertino extends StatefulWidget {
     this.cupertinoOption = const CInkCupertinoOption(),
     this.clipBehavior = Clip.none,
     this.decoration,
+    this.autoRemoveFocus = true,
   }) : super(key: key);
 
   final Widget? child;
@@ -54,6 +55,9 @@ class CInkCupertino extends StatefulWidget {
 
   final Clip clipBehavior;
   final BoxDecoration? decoration;
+
+  /// Remove focus when tapped
+  final bool autoRemoveFocus;
   @override
   State<CInkCupertino> createState() => _CInkCupertinoState();
 }
@@ -136,6 +140,11 @@ class _CInkCupertinoState extends State<CInkCupertino>
       _buttonHeldDown = true;
       _animate();
     }
+    if (widget.autoRemoveFocus) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
+
+    widget.onTapDown?.call(details);
   }
 
   void _handleTapUp(TapUpDetails details) {
@@ -150,6 +159,7 @@ class _CInkCupertinoState extends State<CInkCupertino>
       _buttonHeldDown = false;
       _animate();
     }
+    widget.onTapCancel?.call();
   }
 
   void _animate() {

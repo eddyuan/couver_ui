@@ -73,9 +73,11 @@ class CInkMaterial extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (materialOption.inkOnTop) {
-      return Container(
+      return AnimatedContainer(
         clipBehavior: clipBehavior,
         decoration: decoration,
+        curve: Curves.ease,
+        duration: Duration(milliseconds: 200),
         child: Stack(
           children: [
             child ?? const SizedBox.shrink(),

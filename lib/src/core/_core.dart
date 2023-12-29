@@ -29,6 +29,7 @@ export 'widget.c_ink.dart';
 export 'widget.c_list_tile.dart';
 export 'buttons/widget.c_outlined_button.dart';
 export 'widget.c_page_view.dart';
+export 'widget.c_rrect_container.dart';
 // export 'widget.c_progress_bar.dart';
 export 'widget.c_progress_indicator.dart' hide IndicatorGapShape;
 export 'widget.c_radio_icon.dart';

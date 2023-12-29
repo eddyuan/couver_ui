@@ -1,9 +1,10 @@
 import 'package:example/screens/expandable_screen.dart';
 import 'package:example/screens/flip_boards_screen.dart';
-import 'package:example/screens/ink_sreen.dart';
+import 'package:example/screens/ink_screen.dart';
 import 'package:example/screens/input_screen.dart';
 import 'package:example/screens/list_tiles_screen.dart';
 import 'package:example/screens/page_view_screen.dart';
+import 'package:example/screens/ribbons_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/buttons_screen.dart';
@@ -53,6 +54,7 @@ class AppRoutes {
     '/input': (context) => const InputScreen(),
     '/expandable': (context) => const ExpandableScreen(),
     '/ink': (context) => const InkScreen(),
+    '/ribbons': (context) => const RibbonsScreen(),
   };
 
   static List<RouteButtonConfig> get buttons =>

@@ -1,3 +1,5 @@
+import 'package:couver_ui/couver_ui.dart';
+
 import 'theme.couver_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -49,6 +51,7 @@ enum ExpandPosition { top, bottom }
 
 class CExpandable extends StatefulWidget {
   const CExpandable({
+    this.platformStyle,
     this.header,
     // this.elevation,
     this.child,
@@ -76,6 +79,8 @@ class CExpandable extends StatefulWidget {
     Key? key,
   })  : assert(header != null || useButton),
         super(key: key);
+
+  final PlatformStyle? platformStyle;
 
   /// The bar at the top for click
   final Widget Function(bool expanded)? header;
@@ -183,6 +188,7 @@ class _CExpandableState extends State<CExpandable> {
         if (widget.extraTop != null) widget.extraTop!,
         widget.useButton
             ? CButton(
+                platformStyle: widget.platformStyle ?? PlatformStyle.cupertino,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 borderRadius: 0,
                 onPressed: onToggle,
@@ -214,6 +220,7 @@ class _CExpandableState extends State<CExpandable> {
                 ),
               )
             : CInk(
+                style: widget.platformStyle ?? PlatformStyle.auto,
                 onTap: onToggle,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

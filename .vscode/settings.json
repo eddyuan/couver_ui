@@ -9,6 +9,7 @@
     "lerp",
     "LTRB",
     "LTWH",
+    "rrect",
     "themedata",
     "toggleable",
     "unfocus"

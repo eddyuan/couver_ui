@@ -27,7 +27,7 @@ class CListTileSkeletonOption {
 
 class CListTile extends StatelessWidget {
   const CListTile({
-    Key? key,
+    super.key,
     // original
     this.leading,
     this.title,
@@ -75,10 +75,10 @@ class CListTile extends StatelessWidget {
     this.skeletonOption = const CListTileSkeletonOption(),
     this.skeleton = false,
     this.rowAlignment = CrossAxisAlignment.center,
-  })  : isRadio = false,
-        radioSize = 20,
-        radioInactiveColor = null,
-        super(key: key);
+    this.isRadio = false,
+    this.radioSize = 20,
+    this.radioInactiveColor,
+  });
 
   const CListTile.radio({
     Key? key,
@@ -90,6 +90,7 @@ class CListTile extends StatelessWidget {
     this.leading,
     this.title,
     this.subtitle,
+    this.trailing,
     this.isThreeLine = false,
     this.dense,
     this.style,
@@ -130,7 +131,6 @@ class CListTile extends StatelessWidget {
     this.skeleton = false,
     this.rowAlignment = CrossAxisAlignment.center,
   })  : isRadio = true,
-        trailing = null,
         trailingIconColor = radioColor,
         arrow = false,
         arrowIcon = null,
@@ -525,13 +525,17 @@ class CListTile extends StatelessWidget {
     return textStyle.copyWith(color: color);
   }
 
-  Color _tileBackgroundColor(ThemeData theme, ListTileThemeData tileTheme) {
-    final Color? color = selected
-        ? selectedTileColor ??
-            tileTheme.selectedTileColor ??
-            theme.listTileTheme.selectedTileColor
-        : tileColor ?? tileTheme.tileColor ?? theme.listTileTheme.tileColor;
-    return color ?? Colors.transparent;
+  Color? _tileBackgroundColor(ThemeData theme, ListTileThemeData tileTheme) {
+    late final Color? color;
+    if (selected) {
+      color = selectedTileColor ??
+          tileTheme.selectedTileColor ??
+          theme.listTileTheme.selectedTileColor;
+    } else {
+      color = tileColor ?? tileTheme.tileColor ?? theme.listTileTheme.tileColor;
+    }
+
+    return color;
   }
 
   final Duration _kAnimationSizeDuration = const Duration(milliseconds: 200);
@@ -548,7 +552,7 @@ class CListTile extends StatelessWidget {
     final double horizontalTitleGap_ =
         horizontalTitleGap ?? tileTheme.horizontalTitleGap ?? 16;
 
-    final Color tileBackgroundColorVal_ =
+    final Color? tileBackgroundColorVal_ =
         _tileBackgroundColor(theme, tileTheme);
 
     final bool dense_ = _isDenseLayout(theme, tileTheme);
@@ -571,10 +575,10 @@ class CListTile extends StatelessWidget {
 
     Widget? innerRow_;
     if (skeleton) {
-      final Color skeletonBaseColor_ =
-          tileBackgroundColorVal_ == Colors.transparent
-              ? Theme.of(context).cardColor
-              : tileBackgroundColorVal_;
+      final Color skeletonBaseColor_ = tileBackgroundColorVal_ == null ||
+              tileBackgroundColorVal_ == Colors.transparent
+          ? Theme.of(context).cardColor
+          : tileBackgroundColorVal_;
       innerRow_ = Shimmer.fromColors(
         baseColor: theme.disabledColor.withOpacity(0.1),
         highlightColor: skeletonBaseColor_.withOpacity(0.1),
@@ -740,11 +744,19 @@ class CListTile extends StatelessWidget {
             ),
           );
         } else if (isRadio) {
-          trailingInnerWidget = CRadioIcon(
-            selected: selected,
-            enabled: onTap != null,
-            size: radioSize,
-            color: _trailingIconColor(theme, tileTheme),
+          trailingInnerWidget = Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (trailing != null) trailing!,
+              if (trailing != null) const SizedBox(width: 8),
+              CRadioIcon(
+                selected: selected,
+                enabled: onTap != null,
+                size: radioSize,
+                color: _trailingIconColor(theme, tileTheme),
+              )
+            ],
           );
         } else if (trailing != null) {
           trailingInnerWidget = trailing!;

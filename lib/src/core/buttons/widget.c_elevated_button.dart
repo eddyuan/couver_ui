@@ -67,6 +67,7 @@ class CElevatedButton extends CButtonStyleButton {
     super.statesController,
     required super.child,
     super.loading,
+    super.canRequestFocus,
   });
 
   /// Create an elevated button from a pair of widgets that serve as the button's
@@ -90,6 +91,7 @@ class CElevatedButton extends CButtonStyleButton {
     required Widget icon,
     required Widget label,
     bool? loading,
+    bool? canRequestFocus,
   }) = _CElevatedButtonWithIcon;
 
   /// A static convenience method that constructs an elevated button
@@ -468,6 +470,7 @@ class _CElevatedButtonWithIcon extends CElevatedButton {
     required Widget icon,
     required Widget label,
     super.loading,
+    super.canRequestFocus,
   }) : super(
           autofocus: autofocus ?? false,
           clipBehavior: clipBehavior ?? Clip.none,

@@ -7,11 +7,11 @@ enum Fill { none, fillFront, fillBack }
 
 class AnimationCard extends StatelessWidget {
   const AnimationCard({
-    Key? key,
+    super.key,
     this.child,
     this.animation,
     this.direction,
-  }) : super(key: key);
+  });
 
   final Widget? child;
   final Animation<double>? animation;
@@ -56,7 +56,7 @@ class FlipCard extends StatefulWidget {
   final bool flipped;
 
   const FlipCard({
-    Key? key,
+    super.key,
     required this.front,
     required this.back,
     this.speed = 500,
@@ -67,7 +67,7 @@ class FlipCard extends StatefulWidget {
     this.alignment = Alignment.center,
     this.fill = Fill.none,
     this.flipped = false,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => FlipCardState();

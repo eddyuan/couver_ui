@@ -15,11 +15,11 @@ class FlipCardItem {
 
 class FlipCards extends StatefulWidget {
   const FlipCards({
-    Key? key,
+    super.key,
     required this.cardItems,
     this.flipped = false,
     this.interval = const Duration(milliseconds: 50),
-  }) : super(key: key);
+  });
 
   final List<FlipCardItem> cardItems;
   final bool flipped;

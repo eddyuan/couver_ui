@@ -22,7 +22,7 @@ class AlwaysDisabledFocusNode extends FocusNode {
 
 class CTextFormField extends StatefulWidget {
   const CTextFormField({
-    Key? key,
+    super.key,
     this.clearable = false,
     this.clearableText,
     this.password = false,
@@ -139,11 +139,10 @@ class CTextFormField extends StatefulWidget {
     this.showOptional = false,
     // ------------
   })  : _outlined = false,
-        useOutlinePadding = false,
-        super(key: key);
+        useOutlinePadding = false;
 
   const CTextFormField.outlined({
-    Key? key,
+    super.key,
     this.clearable = false,
     this.clearableText,
     this.password = false,
@@ -260,8 +259,7 @@ class CTextFormField extends StatefulWidget {
     this.showRequired = false,
     this.showOptional = false,
     // ------------
-  })  : _outlined = true,
-        super(key: key);
+  }) : _outlined = true;
 
   // ------Custom fields --------
 
@@ -526,7 +524,7 @@ class CTextFormField extends StatefulWidget {
   /// External padding
   final EdgeInsetsGeometry? margin;
 
-  /// Ignor debounce when changed to empty
+  /// Ignore debounce when changed to empty
   final bool noDebounceOnEmpty;
 
   /// Gives a specific couver style
@@ -731,6 +729,7 @@ class _CTextFormFieldState extends State<CTextFormField> {
     if (widget.clearable && _hasValue && _canShowSuffixButton) {
       if ((widget.clearableText ?? "").isNotEmpty) {
         return CButton(
+          canRequestFocus: false,
           text: widget.clearableText,
           onPressed: clearField,
           size: BtnSize.xs.copyWith(
@@ -739,6 +738,7 @@ class _CTextFormFieldState extends State<CTextFormField> {
         );
       }
       return CButton.circle(
+        canRequestFocus: false,
         onPressed: clearField,
         size: null,
         child: Icon(

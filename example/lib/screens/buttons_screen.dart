@@ -36,9 +36,9 @@ class ButtonDemoConfig {
       const ButtonDemoConfig(text: "Disabled", disabled: true),
       ButtonDemoConfig(
         color: Colors.lime.withOpacity(0.5),
-        child: Row(
+        child: const Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
+          children: [
             Text("Custom children"),
             Icon(Icons.abc_outlined),
           ],
@@ -216,13 +216,13 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
               ),
               OutlinedButton(
                 onPressed: loading ? null : () {},
-                child: const Text("Original"),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.red,
-                  side: BorderSide(
+                  side: const BorderSide(
                       // color: Colors.blue,
                       ),
                 ),
+                child: const Text("Original"),
               ),
               COutlinedButton(
                 onPressed: loading ? null : () {},

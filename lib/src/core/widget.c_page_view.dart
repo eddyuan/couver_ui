@@ -494,7 +494,7 @@ class CPageController extends ScrollController {
 
 class CPageView extends StatefulWidget {
   const CPageView({
-    Key? key,
+    super.key,
     this.controller,
     this.padding = const EdgeInsets.symmetric(horizontal: 24),
     this.gap = 6,
@@ -512,11 +512,10 @@ class CPageView extends StatefulWidget {
     this.clipBehavior = Clip.hardEdge,
     this.inactiveScale,
   })  : itemBuilder = null,
-        itemCount = children.length,
-        super(key: key);
+        itemCount = children.length;
 
   const CPageView.builder({
-    Key? key,
+    super.key,
     this.controller,
     this.padding = const EdgeInsets.symmetric(horizontal: 24),
     this.gap = 6,
@@ -534,9 +533,7 @@ class CPageView extends StatefulWidget {
     this.addSemanticIndexes = true,
     this.clipBehavior = Clip.hardEdge,
     this.inactiveScale,
-  })  : children = const [],
-        // childrenBuilder = null,
-        super(key: key);
+  })  : children = const [];
 
   final CPageController? controller;
 

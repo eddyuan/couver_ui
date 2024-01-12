@@ -7,17 +7,17 @@ class RibbonsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Screen(
+    return const Screen(
       child: Column(
         children: [
           Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(24),
                 child: CCard(
                   color: Colors.grey,
                   child: Padding(
-                    padding: const EdgeInsets.all(64),
+                    padding: EdgeInsets.all(64),
                     child: Text("Ribbon"),
                   ),
                 ),

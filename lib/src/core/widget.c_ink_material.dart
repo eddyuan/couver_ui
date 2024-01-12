@@ -77,7 +77,7 @@ class CInkMaterial extends StatelessWidget {
         clipBehavior: clipBehavior,
         decoration: decoration,
         curve: Curves.ease,
-        duration: Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         child: Stack(
           children: [
             child ?? const SizedBox.shrink(),

@@ -1,17 +1,33 @@
 {
   "cSpell.words": [
+    "Alives",
     "appbar",
     "ARGB",
+    "Bulder",
     "Couver",
+    "crossfading",
     "cupertino",
+    "curpage",
     "dartpad",
+    "debonce",
     "endtemplate",
+    "fullscreen",
     "lerp",
     "LTRB",
     "LTWH",
+    "overscroll",
+    "perc",
+    "Relayout",
     "rrect",
+    "Schyler",
+    "scrollbars",
+    "scroller",
+    "STEB",
+    "tabbar",
     "themedata",
     "toggleable",
-    "unfocus"
+    "unfocus",
+    "vsync",
+    "wordcounts"
   ]
 }

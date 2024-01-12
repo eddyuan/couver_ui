@@ -1,18 +1,15 @@
 import 'package:couver_ui/couver_ui.dart';
 
-import 'theme.couver_theme.dart';
 import 'package:flutter/material.dart';
 
-import 'buttons/widget.c_button.dart';
-import 'widget.c_ink.dart';
 
 class CExpandableImageHeader extends StatelessWidget {
   const CExpandableImageHeader({
     this.image,
     required this.text,
     this.imageGap,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Widget? image;
   final String text;
@@ -76,9 +73,8 @@ class CExpandable extends StatefulWidget {
     this.arrowSize = 20,
     this.extraTop,
     this.extraBottom,
-    Key? key,
-  })  : assert(header != null || useButton),
-        super(key: key);
+    super.key,
+  })  : assert(header != null || useButton);
 
   final PlatformStyle? platformStyle;
 

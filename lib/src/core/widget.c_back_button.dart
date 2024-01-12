@@ -76,11 +76,11 @@ class CBackButton extends StatelessWidget {
   /// Creates an [IconButton] with the appropriate "back" icon for the current
   /// target platform.
   const CBackButton({
-    Key? key,
+    super.key,
     this.color,
     this.onPressed,
     this.heroTag = '',
-  }) : super(key: key);
+  });
 
   final String? heroTag;
 
@@ -150,11 +150,11 @@ class CBackButton extends StatelessWidget {
 class CCloseButton extends StatelessWidget {
   /// Creates a Material Design close button.
   const CCloseButton({
-    Key? key,
+    super.key,
     this.color,
     this.onPressed,
     // this.heroTag,
-  }) : super(key: key);
+  });
 
   /// Add a hero
   // final String? heroTag;

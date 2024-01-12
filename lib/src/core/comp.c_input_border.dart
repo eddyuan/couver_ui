@@ -31,11 +31,10 @@ class COutlineInputBorder extends InputBorder {
   ///    will extend beyond the container as if the border were still being
   ///    drawn.
   const COutlineInputBorder({
-    BorderSide borderSide = const BorderSide(),
+    super.borderSide = const BorderSide(),
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
     this.gapPadding = 4.0,
-  })  : assert(gapPadding >= 0.0),
-        super(borderSide: borderSide);
+  })  : assert(gapPadding >= 0.0);
 
   // The label text's gap can extend into the corners (even both the top left
   // and the top right corner). To avoid the more complicated problem of finding

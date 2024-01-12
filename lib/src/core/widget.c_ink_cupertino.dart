@@ -28,7 +28,7 @@ class CInkCupertinoOption {
 
 class CInkCupertino extends StatefulWidget {
   const CInkCupertino({
-    Key? key,
+    super.key,
     this.child,
     // basic function
     this.onTap,
@@ -41,7 +41,7 @@ class CInkCupertino extends StatefulWidget {
     this.clipBehavior = Clip.none,
     this.decoration,
     this.autoRemoveFocus = true,
-  }) : super(key: key);
+  });
 
   final Widget? child;
   // basic function

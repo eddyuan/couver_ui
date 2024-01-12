@@ -79,6 +79,7 @@ class COutlinedButton extends CButtonStyleButton {
     super.statesController,
     required super.child,
     super.loading,
+    super.canRequestFocus,
   });
 
   /// Create a text button from a pair of widgets that serve as the button's
@@ -99,6 +100,7 @@ class COutlinedButton extends CButtonStyleButton {
     required Widget icon,
     required Widget label,
     bool? loading,
+    bool? canRequestFocus,
   }) = _COutlinedButtonWithIcon;
 
   /// A static convenience method that constructs an outlined button
@@ -414,10 +416,10 @@ class _COutlinedButtonWithIcon extends COutlinedButton {
     super.focusNode,
     bool? autofocus,
     Clip? clipBehavior,
-    super.statesController,
     required Widget icon,
     required Widget label,
     super.loading,
+    super.canRequestFocus,
     // bool? shrinkWhenLoading,
   }) : super(
           autofocus: autofocus ?? false,

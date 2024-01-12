@@ -81,7 +81,7 @@ class CListTile extends StatelessWidget {
   });
 
   const CListTile.radio({
-    Key? key,
+    super.key,
     // Radio specific options
     this.radioSize = 20,
     this.radioInactiveColor,
@@ -133,8 +133,7 @@ class CListTile extends StatelessWidget {
   })  : isRadio = true,
         trailingIconColor = radioColor,
         arrow = false,
-        arrowIcon = null,
-        super(key: key);
+        arrowIcon = null;
 
   //----------------Original datas---------------------
   /// A widget to display before the title.
@@ -160,14 +159,14 @@ class CListTile extends StatelessWidget {
   /// two lines. For example, you can use [Text.maxLines] to enforce the number
   /// of lines.
   ///
-  /// The subtitle's default [TextStyle] depends on [TextTheme.bodyText2] except
+  /// The subtitle's default [TextStyle] depends on [TextTheme.bodyMedium] except
   /// [TextStyle.color]. The [TextStyle.color] depends on the value of [enabled]
   /// and [selected].
   ///
   /// When [enabled] is false, the text color is set to [ThemeData.disabledColor].
   ///
   /// When [selected] is false, the text color is set to [ListTileTheme.textColor]
-  /// if it's not null and to [TextTheme.caption]'s color if [ListTileTheme.textColor]
+  /// if it's not null and to [TextTheme.bodySmall]'s color if [ListTileTheme.textColor]
   /// is null.
   final Widget? subtitle;
 

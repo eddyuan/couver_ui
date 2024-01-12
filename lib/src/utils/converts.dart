@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:intl/intl.dart';
 // import 'package:jiffy/jiffy.dart';
 
-String? tStringOrNull(dynamic value, {bool allowEmpty = true}) {
+String? tStringOrNull(dynamic value, {bool allowEmpty = false}) {
   String? targetValue;
   try {
     if (value == null) {
@@ -269,6 +269,16 @@ List<T> tList<T>(val) {
   }
 
   return [];
+}
+
+List<T>? tListOrNull<T>(
+  val, {
+  bool allowEmpty = false,
+}) {
+  if (val is List<T> && val.isNotEmpty) {
+    return val;
+  }
+  return null;
 }
 
 List<String> tListString(val) {

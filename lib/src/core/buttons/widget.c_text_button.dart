@@ -5,7 +5,6 @@
 import 'dart:math' as math;
 import 'dart:ui' show lerpDouble;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../enums/enum.platform_style.dart';
@@ -72,6 +71,7 @@ class CTextButton extends CButtonStyleButton {
     super.statesController,
     required Widget super.child,
     super.loading,
+    super.canRequestFocus,
   });
 
   /// Create a text button from a pair of widgets that serve as the button's
@@ -95,6 +95,7 @@ class CTextButton extends CButtonStyleButton {
     required Widget icon,
     required Widget label,
     bool? loading,
+    bool? canRequestFocus,
   }) = _CTextButtonWithIcon;
 
   /// A static convenience method that constructs a text button
@@ -375,6 +376,7 @@ class _CTextButtonWithIcon extends CTextButton {
     required Widget icon,
     required Widget label,
     super.loading,
+    super.canRequestFocus,
   }) : super(
           autofocus: autofocus ?? false,
           clipBehavior: clipBehavior ?? Clip.none,

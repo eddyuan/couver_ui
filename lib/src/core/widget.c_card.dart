@@ -10,7 +10,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 class CCard extends StatelessWidget {
   const CCard({
-    Key? key,
+    super.key,
     this.child,
     this.padding,
     this.color,
@@ -40,7 +40,7 @@ class CCard extends StatelessWidget {
     this.cupertinoOption,
     this.materialOption,
     this.childAlign = Alignment.center,
-  }) : super(key: key);
+  });
 
   final Widget? child;
   final EdgeInsetsGeometry? padding;

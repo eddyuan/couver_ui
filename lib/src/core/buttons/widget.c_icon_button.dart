@@ -43,6 +43,7 @@ class CIconButton extends IconButton {
     super.selectedIcon,
     required super.icon,
     this.loading,
+    this.canRequestFocus,
   })  : assert(splashRadius == null || splashRadius > 0),
         _variant = _CIconButtonVariant.standard,
         cStyle = style,
@@ -77,6 +78,7 @@ class CIconButton extends IconButton {
     super.selectedIcon,
     required super.icon,
     this.loading,
+    this.canRequestFocus,
   })  : assert(splashRadius == null || splashRadius > 0),
         _variant = _CIconButtonVariant.filled,
         cStyle = style,
@@ -113,6 +115,7 @@ class CIconButton extends IconButton {
     super.selectedIcon,
     required super.icon,
     this.loading,
+    this.canRequestFocus,
   })  : assert(splashRadius == null || splashRadius > 0),
         _variant = _CIconButtonVariant.filledTonal,
         cStyle = style,
@@ -148,6 +151,7 @@ class CIconButton extends IconButton {
     super.selectedIcon,
     required super.icon,
     this.loading,
+    this.canRequestFocus,
   })  : assert(splashRadius == null || splashRadius > 0),
         _variant = _CIconButtonVariant.outlined,
         cStyle = style,
@@ -158,6 +162,8 @@ class CIconButton extends IconButton {
   final _CIconButtonVariant _variant;
 
   final bool? loading;
+
+  final bool? canRequestFocus;
 
   static CButtonStyle styleFrom({
     Color? foregroundColor,
@@ -312,6 +318,7 @@ class CIconButton extends IconButton {
         isSelected: isSelected,
         variant: _variant,
         loading: loading,
+        canRequestFocus: canRequestFocus,
         child: iconButton,
       );
     }
@@ -376,7 +383,7 @@ class CIconButton extends IconButton {
       child: InkResponse(
         focusNode: focusNode,
         autofocus: autofocus,
-        canRequestFocus: onPressed != null,
+        canRequestFocus: canRequestFocus ?? onPressed != null,
         onTap: onPressed,
         mouseCursor: mouseCursor ??
             (onPressed == null
@@ -435,6 +442,7 @@ class _SelectableCIconButton extends StatefulWidget {
     required this.onPressed,
     required this.child,
     this.loading,
+    this.canRequestFocus,
   });
 
   final bool? isSelected;
@@ -445,6 +453,7 @@ class _SelectableCIconButton extends StatefulWidget {
   final VoidCallback? onPressed;
   final Widget child;
   final bool? loading;
+  final bool? canRequestFocus;
 
   @override
   State<_SelectableCIconButton> createState() => _SelectableCIconButtonState();
@@ -491,6 +500,7 @@ class _SelectableCIconButtonState extends State<_SelectableCIconButton> {
       variant: widget.variant,
       toggleable: toggleable,
       loading: widget.loading,
+      canRequestFocus: widget.canRequestFocus,
       child: widget.child,
     );
   }
@@ -507,6 +517,7 @@ class _CIconButtonM3 extends CButtonStyleButton {
     required this.toggleable,
     required Widget super.child,
     super.loading,
+    super.canRequestFocus,
   }) : super(
             onLongPress: null,
             onHover: null,

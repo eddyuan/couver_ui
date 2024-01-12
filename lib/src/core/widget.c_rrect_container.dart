@@ -16,25 +16,25 @@ enum CRRectCornerType {
 class CRRectRadius extends Radius {
   final CRRectCornerType type;
 
-  const CRRectRadius.circular(double radius)
+  const CRRectRadius.circular(super.radius)
       : type = CRRectCornerType.normal,
-        super.circular(radius);
+        super.circular();
 
   const CRRectRadius.none()
       : type = CRRectCornerType.normal,
         super.circular(0);
 
-  const CRRectRadius.invert(double radius)
+  const CRRectRadius.invert(super.radius)
       : type = CRRectCornerType.invert,
-        super.circular(radius);
+        super.circular();
 
-  const CRRectRadius.extrude(double radius)
+  const CRRectRadius.extrude(super.radius)
       : type = CRRectCornerType.extrude,
-        super.circular(radius);
+        super.circular();
 
-  const CRRectRadius.elliptical(double x, double y,
+  const CRRectRadius.elliptical(super.x, super.y,
       {this.type = CRRectCornerType.normal})
-      : super.elliptical(x, y);
+      : super.elliptical();
 }
 
 class CRRectCorners {

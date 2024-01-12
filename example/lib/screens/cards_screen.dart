@@ -9,8 +9,8 @@ class CardsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final children = [
       const Card(
-        child: Text('Flutter card'),
         elevation: 6,
+        child: Text('Flutter card'),
       ),
       CCard(
         onTap: () {},
@@ -27,12 +27,12 @@ class CardsScreen extends StatelessWidget {
         platformStyle: PlatformStyle.cupertino,
         onTap: () {},
         padding: const EdgeInsets.all(16),
-        child: const Text('cupertino'),
-        decorationImage: DecorationImage(
+        decorationImage: const DecorationImage(
           image: NetworkImage(
             'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png',
           ),
         ),
+        child: const Text('cupertino'),
       ),
       CCard(
         platformStyle: PlatformStyle.cupertino,
@@ -40,12 +40,12 @@ class CardsScreen extends StatelessWidget {
             cupertinoInkStyle: CupertinoInkStyle.shade),
         onTap: () {},
         padding: const EdgeInsets.all(16),
-        child: const Text('cupertino shade'),
-        decorationImage: DecorationImage(
+        decorationImage: const DecorationImage(
           image: NetworkImage(
             'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png',
           ),
         ),
+        child: const Text('cupertino shade'),
       ),
       CCard(
         platformStyle: PlatformStyle.cupertino,
@@ -53,12 +53,12 @@ class CardsScreen extends StatelessWidget {
             cupertinoInkStyle: CupertinoInkStyle.scale),
         onTap: () {},
         padding: const EdgeInsets.all(16),
-        child: const Text('cupertino scale'),
-        decorationImage: DecorationImage(
+        decorationImage: const DecorationImage(
           image: NetworkImage(
             'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png',
           ),
         ),
+        child: const Text('cupertino scale'),
       ),
     ]
         .map(

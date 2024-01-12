@@ -8,7 +8,7 @@ import "package:flutter/material.dart";
 
 class CRippleAnimation extends StatefulWidget {
   const CRippleAnimation({
-    Key? key,
+    super.key,
     this.child,
     this.color,
     this.delay = const Duration(milliseconds: 0),
@@ -17,7 +17,7 @@ class CRippleAnimation extends StatefulWidget {
     this.ripplesCount = 5,
     this.duration = const Duration(milliseconds: 3000),
     this.interval = const Duration(milliseconds: 800),
-  }) : super(key: key);
+  });
 
   final Widget? child;
   final Duration delay;

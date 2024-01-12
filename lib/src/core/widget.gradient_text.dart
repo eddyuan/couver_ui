@@ -5,8 +5,8 @@ class GradientText extends StatelessWidget {
     this.text, {
     required this.gradient,
     this.style,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String text;
   final TextStyle? style;

@@ -55,7 +55,7 @@ class CFlipBoard extends _CFlipBoard {
 
 abstract class _CFlipBoard extends StatefulWidget {
   const _CFlipBoard({
-    Key? key,
+    super.key,
     required this.itemCount,
     required this.itemBuilder,
     this.loopsOnInit,
@@ -92,8 +92,7 @@ abstract class _CFlipBoard extends StatefulWidget {
                     ? _kMaxLoopMax
                     : maxLoop) *
             itemCount,
-        _absoluteIndex = (targetIndex ?? 0) % itemCount,
-        super(key: key);
+        _absoluteIndex = (targetIndex ?? 0) % itemCount;
 
   // final List<Widget> items;
 

@@ -135,6 +135,7 @@ class CButton extends StatelessWidget {
     this.tapTargetSize,
     this.iconLeft,
     this.iconRight,
+    this.canRequestFocus,
   })  : borderColor = null,
         splashRadius = null,
         _type = _ButtonType.text,
@@ -162,6 +163,7 @@ class CButton extends StatelessWidget {
     this.tapTargetSize,
     this.iconLeft,
     this.iconRight,
+    this.canRequestFocus,
   })  : borderColor = null,
         splashRadius = null,
         _type = _ButtonType.filled,
@@ -191,6 +193,7 @@ class CButton extends StatelessWidget {
     this.borderColor,
     this.iconLeft,
     this.iconRight,
+    this.canRequestFocus,
   })  : splashRadius = null,
         _type = _ButtonType.outlined;
 
@@ -209,6 +212,7 @@ class CButton extends StatelessWidget {
     this.platformStyle = PlatformStyle.auto,
     this.onPressed,
     this.splashRadius,
+    this.canRequestFocus,
     // this.icon,
   })  : borderColor = null,
         _type = _ButtonType.icon,
@@ -246,6 +250,7 @@ class CButton extends StatelessWidget {
     this.tapTargetSize,
     this.borderColor,
     bool isDense = false,
+    this.canRequestFocus,
   })  : splashRadius = null,
         size = isDense ? BtnSize.inputDense : BtnSize.input,
         _type = _ButtonType.input,
@@ -314,6 +319,8 @@ class CButton extends StatelessWidget {
 
   final IconData? iconLeft;
   final IconData? iconRight;
+
+  final bool? canRequestFocus;
 
   bool get enabled => (onPressed != null && !disabled && loading != true);
 
@@ -448,6 +455,7 @@ class CButton extends StatelessWidget {
         ),
         splashRadius: splashRadius,
         disabledColor: targetDColor?.withOpacity(0.7),
+        canRequestFocus: canRequestFocus,
       );
     }
 
@@ -472,6 +480,7 @@ class CButton extends StatelessWidget {
               ? MaterialStateProperty.all(targetElevation)
               : null,
         ),
+        canRequestFocus: canRequestFocus,
         child: targetChild,
       );
     }
@@ -500,6 +509,7 @@ class CButton extends StatelessWidget {
           tapTargetSize: targetTapSize,
           platformStyle: platformStyle,
         ),
+        canRequestFocus: canRequestFocus,
         child: targetChild,
       );
     }
@@ -531,6 +541,7 @@ class CButton extends StatelessWidget {
           tapTargetSize: targetTapSize,
           platformStyle: platformStyle,
         ),
+        canRequestFocus: canRequestFocus,
         child: targetChild,
       );
     }
@@ -551,6 +562,7 @@ class CButton extends StatelessWidget {
           tapTargetSize: targetTapSize,
           platformStyle: platformStyle,
         ),
+        canRequestFocus: canRequestFocus,
         child: targetChild,
       );
     }

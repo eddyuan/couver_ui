@@ -5,8 +5,8 @@ class CHero extends StatelessWidget {
     required this.child,
     this.tag,
     this.transitionOnUserGestures = true,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
   final Widget child;
   final String? tag;
   final bool transitionOnUserGestures;

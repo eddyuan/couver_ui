@@ -19,11 +19,11 @@ class InkScreen extends StatelessWidget {
               ),
             ),
             child: Padding(
-              padding: EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(24.0),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("Sample"),
+                  const Text("Sample"),
                   CButton.filled(
                     text: "BTN",
                     onPressed: () {
@@ -40,13 +40,13 @@ class InkScreen extends StatelessWidget {
             borderWidth: 6.0,
             borderRadius: BorderRadius.circular(8),
             color: Colors.blue,
-            materialOption: CInkMaterialOption(inkOnTop: false),
+            materialOption: const CInkMaterialOption(inkOnTop: false),
             child: Padding(
-              padding: EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(24.0),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("Sample"),
+                  const Text("Sample"),
                   CButton.filled(
                     text: "BTN",
                     onPressed: () {

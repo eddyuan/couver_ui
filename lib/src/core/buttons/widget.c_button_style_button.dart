@@ -12,9 +12,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '../../enums/enum.platform_style.dart';
-import 'theme.c_button_style.dart';
-
 /// The base [StatefulWidget] class for buttons whose style is defined by a [CButtonStyle] object.
 ///
 /// Concrete subclasses must override [defaultStyleOf] and [themeStyleOf].
@@ -41,11 +38,13 @@ abstract class CButtonStyleButton extends ButtonStyleButton {
     required super.clipBehavior,
     super.statesController,
     required super.child,
+    this.canRequestFocus,
     this.loading,
   })  : _cStyle = style,
         super(style: style);
 
   final CButtonStyle? _cStyle;
+  final bool? canRequestFocus;
 
   @override
   CButtonStyle? get style => _cStyle;
@@ -505,7 +504,7 @@ class _CButtonStyleState extends State<CButtonStyleButton>
               mouseCursor: mouseCursor,
               enableFeedback: resolvedEnableFeedback,
               focusNode: widget.focusNode,
-              canRequestFocus: widget.enabled,
+              canRequestFocus: widget.canRequestFocus ?? widget.enabled,
               onFocusChange: widget.onFocusChange,
               autofocus: widget.autofocus,
               splashFactory: widget.platformStyle.isIos

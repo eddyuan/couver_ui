@@ -39,7 +39,7 @@ class _ProgressIndicatorsScreenState extends State<ProgressIndicatorsScreen> {
           subtitle: Text(value?.toStringAsFixed(5) ?? value.toString()),
           trailing: CButton.filled(
             onPressed: addVal,
-            child: Row(children: const [Icon(Icons.add), Text("Add")]),
+            child: const Row(children: [Icon(Icons.add), Text("Add")]),
           ),
         ),
         CListTile(

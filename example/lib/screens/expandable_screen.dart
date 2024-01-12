@@ -12,7 +12,7 @@ class ExpandableScreen extends StatelessWidget {
         children: [
           CExpandable(
             header: (expanded) => Text(expanded ? "Expanded" : "Collapsed"),
-            child: Text('Expand Child'),
+            child: const Text('Expand Child'),
           ),
         ],
       ),

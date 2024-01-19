@@ -285,21 +285,27 @@ List<String> tListString(val) {
   return (val as List).map((item) => item as String).toList();
 }
 
-DateTime? tTime(dynamic val) {
-  if (val is int || val is double) {
-    if (val < 100000000000) {
-      return DateTime.fromMillisecondsSinceEpoch(val * 1000);
-    } else {
-      return DateTime.fromMillisecondsSinceEpoch(val);
-    }
-  }
+DateTime? tTime(
+  dynamic val, {
+  final bool toLocal = true,
+}) {
+  DateTime? result;
   if (val is DateTime) {
-    return val;
+    result = val;
+  } else if (val is int || val is double) {
+    if (val < 100000000000) {
+      result = DateTime.fromMillisecondsSinceEpoch(val * 1000);
+    } else {
+      result = DateTime.fromMillisecondsSinceEpoch(val);
+    }
+  } else if (val is String) {
+    result = DateTime.parse(val);
   }
-  if (val is String) {
-    return DateTime.parse(val);
+
+  if (toLocal) {
+    return result?.toLocal();
   }
-  return null;
+  return result;
 }
 
 int? tDaysFromNow(val) {

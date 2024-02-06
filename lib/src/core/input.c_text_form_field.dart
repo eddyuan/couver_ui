@@ -707,6 +707,7 @@ class _CTextFormFieldState extends State<CTextFormField> {
       return Padding(
         padding: const EdgeInsets.only(right: 4),
         child: CIconButton(
+          canRequestFocus: false,
           onPressed: () => _onEditButtonTap(),
           icon: const Icon(Icons.edit_outlined),
         ),
@@ -716,6 +717,7 @@ class _CTextFormFieldState extends State<CTextFormField> {
       return Padding(
         padding: const EdgeInsets.only(right: 4),
         child: CIconButton(
+          canRequestFocus: false,
           onPressed: _togglePasswordV,
           icon: Icon(
             passwordV

@@ -59,7 +59,7 @@ bool tBool(
       targetValue = true;
     }
   }
-  return targetValue ?? false;
+  return targetValue ?? defaultValue;
 }
 
 int? tIntOrNull(dynamic value) {

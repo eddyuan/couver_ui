@@ -471,6 +471,7 @@ class CPageController extends ScrollController {
   @override
   void attach(ScrollPosition position) {
     super.attach(position);
+
     final _CPagePosition pagePosition = position as _CPagePosition;
     // print("attach");
     // print("itemWidth");
@@ -533,7 +534,7 @@ class CPageView extends StatefulWidget {
     this.addSemanticIndexes = true,
     this.clipBehavior = Clip.hardEdge,
     this.inactiveScale,
-  })  : children = const [];
+  }) : children = const [];
 
   final CPageController? controller;
 

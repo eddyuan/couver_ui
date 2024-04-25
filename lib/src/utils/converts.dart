@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
 // import 'package:jiffy/jiffy.dart';
 
 String? tStringOrNull(dynamic value, {bool allowEmpty = false}) {
@@ -193,24 +193,50 @@ String toPrice(
     if (cents is String) {
       val = double.tryParse(cents);
     }
-    if (val is int || val is double) {
-      String result = NumberFormat.currency(
-        symbol: symbol,
-        decimalDigits: decimalDigits,
-      ).format(val / 100);
-      if (isNegative && val > 0) {
-        result = "-$result";
-      } else if (showPlus && val >= 0) {
-        result = "+$result";
-      }
+    if (val is num) {
+      final bool trueNegative = isNegative || (val < 0);
+      String dollarResult = (divider > 1 ? (val / divider) : val)
+          .abs()
+          .toDouble()
+          .toStringAsFixed(decimalDigits);
+      List<String> dollarParts = dollarResult.split('.');
+      dollarParts[0] = dollarParts[0].replaceAllMapped(
+        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+        (Match match) => '${match[1]},',
+      );
+      dollarResult = dollarParts.join('.');
+
       if (removeTrailingZeros) {
-        if (result == '0') return '0';
-        if (result.endsWith('.00')) {
-          return result.substring(0, result.length - 3);
-        }
-        if (result.endsWith('0')) return result.substring(0, result.length - 1);
+        dollarResult = dollarResult.replaceAll(RegExp(r"([.]*0)(?!.*\d)"), "");
       }
-      return result;
+
+      if (symbol?.isNotEmpty ?? false) {
+        dollarResult = "$symbol$dollarResult";
+      }
+
+      if (trueNegative) {
+        dollarResult = "-$dollarResult";
+      } else if (showPlus) {
+        dollarResult = "+$dollarResult";
+      }
+
+      // String result = NumberFormat.currency(
+      //   symbol: symbol,
+      //   decimalDigits: decimalDigits,
+      // ).format(val / 100);
+      // if (isNegative && val > 0) {
+      //   result = "-$result";
+      // } else if (showPlus && val >= 0) {
+      //   result = "+$result";
+      // }
+      // if (removeTrailingZeros) {
+      //   if (result == '0') return '0';
+      //   if (result.endsWith('.00')) {
+      //     return result.substring(0, result.length - 3);
+      //   }
+      //   if (result.endsWith('0')) return result.substring(0, result.length - 1);
+      // }
+      return dollarResult;
     }
   }
   return "\$-";
@@ -232,6 +258,10 @@ String? tUrlOrNull(val) {
   return null;
 }
 
+String _padZero(int value) {
+  return value.toString().padLeft(2, '0');
+}
+
 String? tDateString(val) {
   DateTime? d;
   if (val is int || val is double) {
@@ -248,7 +278,11 @@ String? tDateString(val) {
   }
 
   if (d is DateTime) {
-    return DateFormat('yyyy-MM-dd').format(d);
+    final String year = d.year.toString();
+    final String month = _padZero(d.month);
+    final String day = _padZero(d.day);
+    return '$year-$month-$day';
+    // return DateFormat('yyyy-MM-dd').format(d);
   }
 
   return null;

@@ -1,3 +1,7 @@
+## 0.3.0
+
+Remove intl dependency for better compatibility
+
 ## 0.1.2
 
 Updated with Material 3

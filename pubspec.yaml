@@ -1,7 +1,7 @@
 name: couver_ui
 description: UI Library for couver
-version: 0.3.0
-homepage:
+version: 0.3.1
+homepage: https://github.com/eddyuan/couver_ui
 
 environment:
   sdk: '>=2.18.2 <4.0.0'

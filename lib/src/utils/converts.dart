@@ -206,8 +206,12 @@ String toPrice(
       );
       dollarResult = dollarParts.join('.');
 
-      if (removeTrailingZeros) {
-        dollarResult = dollarResult.replaceAll(RegExp(r"([.]*0)(?!.*\d)"), "");
+      if (removeTrailingZeros && dollarResult != '0') {
+        if (dollarResult.endsWith('.00')) {
+          dollarResult = dollarResult.substring(0, dollarResult.length - 3);
+        } else if (dollarResult.endsWith('0')) {
+          dollarResult = dollarResult.substring(0, dollarResult.length - 1);
+        }
       }
 
       if (symbol?.isNotEmpty ?? false) {

@@ -1,3 +1,7 @@
+## 0.3.2
+
+Breaking: Adapt to flutter 3.2.2, button break change
+
 ## 0.3.0
 
 Remove intl dependency for better compatibility

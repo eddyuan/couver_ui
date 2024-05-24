@@ -37,6 +37,7 @@ abstract class CButtonStyleButton extends ButtonStyleButton {
     required super.autofocus,
     required super.clipBehavior,
     super.statesController,
+    super.isSemanticButton = true,
     required super.child,
     this.canRequestFocus,
     this.loading,
@@ -100,18 +101,16 @@ abstract class CButtonStyleButton extends ButtonStyleButton {
     EdgeInsetsGeometry geometry1x,
     EdgeInsetsGeometry geometry2x,
     EdgeInsetsGeometry geometry3x,
-    double textScaleFactor,
+    double fontSizeMultiplier,
   ) {
-    if (textScaleFactor <= 1) {
-      return geometry1x;
-    } else if (textScaleFactor >= 3) {
-      return geometry3x;
-    } else if (textScaleFactor <= 2) {
-      return EdgeInsetsGeometry.lerp(
-          geometry1x, geometry2x, textScaleFactor - 1)!;
-    }
-    return EdgeInsetsGeometry.lerp(
-        geometry2x, geometry3x, textScaleFactor - 2)!;
+    return switch (fontSizeMultiplier) {
+      <= 1 => geometry1x,
+      < 2 => EdgeInsetsGeometry.lerp(
+          geometry1x, geometry2x, fontSizeMultiplier - 1)!,
+      < 3 => EdgeInsetsGeometry.lerp(
+          geometry2x, geometry3x, fontSizeMultiplier - 2)!,
+      _ => geometry3x,
+    };
   }
 }
 
@@ -384,7 +383,14 @@ class _CButtonStyleState extends State<CButtonStyleButton>
     final Offset densityAdjustment = resolvedVisualDensity!.baseSizeAdjustment;
     final InteractiveInkFeatureFactory? resolvedSplashFactory =
         effectiveValue((CButtonStyle? style) => style?.splashFactory);
-
+    final ButtonLayerBuilder? resolvedBackgroundBuilder =
+        effectiveValue((ButtonStyle? style) => style?.backgroundBuilder);
+    final ButtonLayerBuilder? resolvedForegroundBuilder =
+        effectiveValue((ButtonStyle? style) => style?.foregroundBuilder);
+    final Clip effectiveClipBehavior = widget.clipBehavior ??
+        ((resolvedBackgroundBuilder ?? resolvedForegroundBuilder) != null
+            ? Clip.antiAlias
+            : Clip.none);
     BoxConstraints effectiveConstraints =
         resolvedVisualDensity.effectiveConstraints(
       BoxConstraints(
@@ -468,6 +474,45 @@ class _CButtonStyleState extends State<CButtonStyleButton>
       borderRadius = const BorderRadius.all(Radius.circular(9999));
     }
 
+    final Widget customChild = buildChildWithLoading(
+      context,
+      childWidget: resolvedForegroundGradient != null
+          ? ShaderMask(
+              blendMode: BlendMode.srcIn,
+              shaderCallback: (bounds) =>
+                  resolvedForegroundGradient.createShader(
+                Rect.fromLTWH(
+                  0,
+                  0,
+                  bounds.width,
+                  bounds.height,
+                ),
+              ),
+              child: widget.child,
+            )
+          : (widget.child ?? const SizedBox.shrink()),
+      loadingWidget: buildLoadingWidget(context,
+          size: Size(resolvedIconSize, resolvedIconSize),
+          color: resolvedForegroundColor),
+    );
+
+    Widget effectiveChild = Padding(
+      padding: padding,
+      child: Align(
+        alignment: resolvedAlignment!,
+        widthFactor: 1.0,
+        heightFactor: 1.0,
+        child: resolvedForegroundBuilder != null
+            ? resolvedForegroundBuilder(
+                context, statesController.value, customChild)
+            : customChild,
+      ),
+    );
+    if (resolvedBackgroundBuilder != null) {
+      effectiveChild = resolvedBackgroundBuilder(
+          context, statesController.value, effectiveChild);
+    }
+
     final Widget result = ConstrainedBox(
       constraints: effectiveConstraints,
       child: FadeTransition(
@@ -485,7 +530,7 @@ class _CButtonStyleState extends State<CButtonStyleButton>
               ? MaterialType.transparency
               : MaterialType.button,
           animationDuration: resolvedAnimationDuration,
-          clipBehavior: widget.clipBehavior,
+          clipBehavior: effectiveClipBehavior,
           // clipBehavior:
           //     borderRadius == null ? Clip.antiAlias : widget.clipBehavior,
           child: Ink(
@@ -521,46 +566,7 @@ class _CButtonStyleState extends State<CButtonStyleButton>
                   color: resolvedIconColor ?? resolvedForegroundColor,
                   size: resolvedIconSize,
                 ),
-                child: Padding(
-                  padding: padding,
-                  child: Align(
-                    alignment: resolvedAlignment!,
-                    widthFactor: 1.0,
-                    heightFactor: 1.0,
-                    child: buildChildWithLoading(
-                      context,
-                      childWidget: resolvedForegroundGradient != null
-                          ? ShaderMask(
-                              blendMode: BlendMode.srcIn,
-                              shaderCallback: (bounds) =>
-                                  resolvedForegroundGradient.createShader(
-                                Rect.fromLTWH(
-                                  0,
-                                  0,
-                                  bounds.width,
-                                  bounds.height,
-                                ),
-                              ),
-                              child: widget.child,
-                            )
-                          : (widget.child ?? const SizedBox.shrink()),
-                      loadingWidget: buildLoadingWidget(context,
-                          size: Size(resolvedIconSize, resolvedIconSize),
-                          color: resolvedForegroundColor),
-                      // SizedBox(
-                      //   width: resolvedIconSize,
-                      //   height: resolvedIconSize,
-                      //   child: CircularProgressIndicator.adaptive(
-                      //     strokeWidth: (resolvedIconSize / 6).ceilToDouble(),
-                      //     valueColor:
-                      //         AlwaysStoppedAnimation(resolvedForegroundColor),
-                      //     backgroundColor:
-                      //         resolvedForegroundColor?.withOpacity(0.1),
-                      //   ),
-                      // ),
-                    ),
-                  ),
-                ),
+                child: effectiveChild,
               ),
             ),
           ),
@@ -577,10 +583,10 @@ class _CButtonStyleState extends State<CButtonStyleButton>
         );
         assert(minSize.width >= 0.0);
         assert(minSize.height >= 0.0);
-        break;
+      // break;
       case MaterialTapTargetSize.shrinkWrap:
         minSize = Size.zero;
-        break;
+      // break;
     }
 
     return Semantics(

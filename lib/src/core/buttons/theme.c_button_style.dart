@@ -160,6 +160,8 @@ class CButtonStyle extends ButtonStyle {
     super.enableFeedback,
     super.alignment,
     super.splashFactory,
+    super.backgroundBuilder,
+    super.foregroundBuilder,
     // Extra params
     this.backgroundGradient,
     this.foregroundGradient,
@@ -201,6 +203,8 @@ class CButtonStyle extends ButtonStyle {
       enableFeedback: style.enableFeedback,
       alignment: style.alignment,
       splashFactory: style.splashFactory,
+      foregroundBuilder: style.foregroundBuilder,
+      backgroundBuilder: style.backgroundBuilder,
     );
   }
 
@@ -228,6 +232,8 @@ class CButtonStyle extends ButtonStyle {
     bool? enableFeedback,
     AlignmentGeometry? alignment,
     InteractiveInkFeatureFactory? splashFactory,
+    ButtonLayerBuilder? backgroundBuilder,
+    ButtonLayerBuilder? foregroundBuilder,
     // Extra props
     MaterialStateProperty<Gradient?>? backgroundGradient,
     MaterialStateProperty<Gradient?>? foregroundGradient,
@@ -257,6 +263,8 @@ class CButtonStyle extends ButtonStyle {
       enableFeedback: enableFeedback ?? this.enableFeedback,
       alignment: alignment ?? this.alignment,
       splashFactory: splashFactory ?? this.splashFactory,
+      backgroundBuilder: backgroundBuilder ?? this.backgroundBuilder,
+      foregroundBuilder: foregroundBuilder ?? this.foregroundBuilder,
       // Extra params
       backgroundGradient: backgroundGradient ?? this.backgroundGradient,
       foregroundGradient: foregroundGradient ?? this.foregroundGradient,
@@ -293,6 +301,8 @@ class CButtonStyle extends ButtonStyle {
       enableFeedback: enableFeedback ?? style.enableFeedback,
       alignment: alignment ?? style.alignment,
       splashFactory: splashFactory ?? style.splashFactory,
+      backgroundBuilder: backgroundBuilder ?? style.backgroundBuilder,
+      foregroundBuilder: foregroundBuilder ?? style.foregroundBuilder,
       // Extra params
       backgroundGradient: backgroundGradient ??
           (style is CButtonStyle ? style.backgroundGradient : null),
@@ -329,6 +339,8 @@ class CButtonStyle extends ButtonStyle {
       enableFeedback,
       alignment,
       splashFactory,
+      backgroundBuilder,
+      foregroundBuilder,
       // Extra params
       foregroundGradient,
       backgroundGradient,
@@ -367,7 +379,9 @@ class CButtonStyle extends ButtonStyle {
         other.animationDuration == animationDuration &&
         other.enableFeedback == enableFeedback &&
         other.alignment == alignment &&
-        other.splashFactory == splashFactory
+        other.splashFactory == splashFactory &&
+        other.backgroundBuilder == backgroundBuilder &&
+        other.foregroundBuilder == foregroundBuilder
         // Extra params
         &&
         other.backgroundGradient == backgroundGradient &&
@@ -417,6 +431,8 @@ class CButtonStyle extends ButtonStyle {
       enableFeedback: t < 0.5 ? a?.enableFeedback : b?.enableFeedback,
       alignment: AlignmentGeometry.lerp(a?.alignment, b?.alignment, t),
       splashFactory: t < 0.5 ? a?.splashFactory : b?.splashFactory,
+      backgroundBuilder: t < 0.5 ? a?.backgroundBuilder : b?.backgroundBuilder,
+      foregroundBuilder: t < 0.5 ? a?.foregroundBuilder : b?.foregroundBuilder,
       // Extra params
       foregroundGradient: MaterialStateProperty.lerp<Gradient?>(
           a?.foregroundGradient, b?.foregroundGradient, t, Gradient.lerp),

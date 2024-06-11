@@ -1,5 +1,9 @@
 ## 0.3.2
 
+Breaking: Remove utils to other package
+
+## 0.3.2
+
 Breaking: Adapt to flutter 3.2.2, button break change
 
 ## 0.3.0

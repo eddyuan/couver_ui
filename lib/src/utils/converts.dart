@@ -187,6 +187,7 @@ String toPrice(
   /// 1 if is dollar, 100 if is cent
   double divider = 100,
   bool removeTrailingZeros = false,
+  bool thousandSeparator = true,
 }) {
   if (cents != null) {
     dynamic val = cents;
@@ -200,10 +201,12 @@ String toPrice(
           .toDouble()
           .toStringAsFixed(decimalDigits);
       List<String> dollarParts = dollarResult.split('.');
-      dollarParts[0] = dollarParts[0].replaceAllMapped(
-        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-        (Match match) => '${match[1]},',
-      );
+      if (thousandSeparator) {
+        dollarParts[0] = dollarParts[0].replaceAllMapped(
+          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (Match match) => '${match[1]},',
+        );
+      }
       dollarResult = dollarParts.join('.');
 
       if (removeTrailingZeros && dollarResult != '0') {

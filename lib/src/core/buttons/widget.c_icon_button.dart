@@ -758,7 +758,7 @@ class _FilledCIconButtonDefaultsM3 extends CButtonStyle {
         }
         if (toggleable) {
           // toggleable but unselected case
-          return _colors.surfaceVariant;
+          return _colors.surfaceContainerHighest;
         }
         return _colors.primary;
       });
@@ -911,7 +911,7 @@ class _FilledTonalCIconButtonDefaultsM3 extends CButtonStyle {
         }
         if (toggleable) {
           // toggleable but unselected case
-          return _colors.surfaceVariant;
+          return _colors.surfaceContainerHighest;
         }
         return _colors.secondaryContainer;
       });

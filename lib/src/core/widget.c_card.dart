@@ -1,10 +1,12 @@
 import "dart:io";
+import 'package:couver_ui/src/core/_couver_internal.dart';
+
 import 'theme.couver_theme.dart';
 import "package:flutter/material.dart";
 
 import '../enums/enum.platform_style.dart';
-import '../utils/converts.dart';
-import '../utils/utils.dart';
+// import '../utils/converts.dart';
+// import '../utils/utils.dart';
 import 'widget.c_ink.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -124,11 +126,11 @@ class CCard extends StatelessWidget {
     final Color targetSplashColor = splashColor ??
         (color == null
             ? Theme.of(context).splashColor
-            : contrastColorTrans(cardColor));
+            : CouverInternal.contrastColorTrans(cardColor));
     final Color targetHighlightColor = highlightColor ??
         (color == null
             ? Theme.of(context).highlightColor
-            : contrastColorTrans(cardColor));
+            : CouverInternal.contrastColorTrans(cardColor));
     final double targetLeadingWidth = leadingWidth ?? 0;
 
     final Color? targetShadowColor =

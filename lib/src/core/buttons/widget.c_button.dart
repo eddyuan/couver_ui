@@ -1,4 +1,5 @@
 import 'package:couver_ui/couver_util.dart';
+import 'package:couver_ui/src/core/_couver_internal.dart';
 import "package:flutter/material.dart";
 
 import '../theme.couver_theme.dart';
@@ -400,7 +401,7 @@ class CButton extends StatelessWidget {
 
     if (targetBColor != null) {
       final int alpha = targetBColor.alpha;
-      final bool isBDark = isDark(targetBColor);
+      final bool isBDark = CouverInternal.isDark(targetBColor);
       if (targetFColor == null) {
         if (isBDark) {
           if (alpha < 99) {
@@ -420,7 +421,7 @@ class CButton extends StatelessWidget {
     }
 
     if (targetFColor != null && targetDColor == null) {
-      final bool isFDark = isDark(targetFColor);
+      final bool isFDark = CouverInternal.isDark(targetFColor);
       if (!isFDark) {
         targetDColor ??= Colors.white;
       }

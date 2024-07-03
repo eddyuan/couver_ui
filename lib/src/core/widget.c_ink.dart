@@ -1,8 +1,8 @@
+import 'package:couver_ui/src/core/_couver_internal.dart';
 import "package:flutter/material.dart";
 
 import 'comp.gradient_box_border.dart';
 import '../enums/enum.platform_style.dart';
-import '../utils/extension_border_radius.dart';
 import 'widget.c_ink_cupertino.dart';
 import 'widget.c_ink_material.dart';
 
@@ -107,7 +107,9 @@ class CInk extends StatelessWidget {
 
     late final Widget inkWidget;
 
-    final BorderRadius? innerRadius = borderRadius?.modifyBy(-borderWidth);
+    final BorderRadius? innerRadius = borderRadius != null
+        ? CouverInternal.borderRadiusModifyBy(borderRadius!, -borderWidth)
+        : null;
 
     if (style.isIos) {
       inkWidget = CInkCupertino(

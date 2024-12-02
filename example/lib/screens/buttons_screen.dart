@@ -113,6 +113,98 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
           width: double.infinity,
           child: Column(
             children: [
+              // CButton2(
+              //   text: "CButton2",
+              //   onPressed: () {},
+              // ),
+              ElevatedButton(
+                onPressed: () {},
+                child: Text('elevated button'),
+                style: ButtonStyle(
+                  elevation: WidgetStatePropertyAll(0),
+                  animationDuration: Durations.short1,
+                  shape: WidgetStateProperty.resolveWith(
+                    (states) {
+                      if (states.contains(WidgetState.pressed)) {
+                        return GradientRoundedRectangleBorder(
+                          side: GradientBorderSide(
+                            width: 3,
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.red,
+                                Colors.blue,
+                              ],
+                            ).withAlpha(100),
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        );
+                      }
+                      return GradientRoundedRectangleBorder(
+                        side: GradientBorderSide(
+                          width: 3,
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.red,
+                              Colors.blue,
+                            ],
+                          ),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      );
+                    },
+                  ),
+
+                  // WidgetStatePropertyAll(
+                  //   GradientRoundedRectangleBorder(
+                  //     side: GradientBorderSide(
+                  //       width: 3,
+                  //       gradient: LinearGradient(
+                  //         colors: [
+                  //           Colors.red,
+                  //           Colors.blue,
+                  //         ],
+                  //       ),
+                  //     ),
+                  //     borderRadius: BorderRadius.circular(10),
+                  //   ),
+                  // ),
+                  // side: WidgetStatePropertyAll(BorderSide(color: Colors.red)),
+                  backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+                  backgroundBuilder: (context, states, child) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Colors.green.withAlpha(100),
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.blue,
+                            Colors.red,
+                          ],
+                        ),
+                      ),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CCircularProgressIndicator(),
+                          ),
+                          Opacity(
+                            opacity: 0,
+                            child: child,
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  // foregroundBuilder: (context, states, child) {
+                  //   return Container(
+                  //     decoration: BoxDecoration(color: Colors.red),
+                  //     child: child ?? const SizedBox.shrink(),
+                  //   );
+                  // },
+                ),
+              ),
               CButton.input(
                 child: const Text("A input styled button"),
                 onPressed: () {},

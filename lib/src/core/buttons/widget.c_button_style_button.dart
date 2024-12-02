@@ -7,7 +7,7 @@ import 'dart:math';
 
 // import 'package:couver_app/utils/helpers.dart';
 import 'package:couver_ui/couver_ui.dart';
-import 'package:couver_ui/src/core/painter/ext.shape_border.dart';
+import 'package:couver_ui/src/core/border/ext.shape_border.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -39,6 +39,7 @@ abstract class CButtonStyleButton extends ButtonStyleButton {
     super.statesController,
     super.isSemanticButton = true,
     required super.child,
+    super.iconAlignment = IconAlignment.start,
     this.canRequestFocus,
     this.loading,
   })  : _cStyle = style,
@@ -83,11 +84,11 @@ abstract class CButtonStyleButton extends ButtonStyleButton {
         defaultValue: null));
   }
 
-  /// Returns null if [value] is null, otherwise `MaterialStateProperty.all<T>(value)`.
+  /// Returns null if [value] is null, otherwise `WidgetStateProperty.all<T>(value)`.
   ///
   /// A convenience method for subclasses.
-  static MaterialStateProperty<T>? allOrNull<T>(T? value) =>
-      value == null ? null : MaterialStatePropertyAll<T>(value);
+  static WidgetStateProperty<T>? allOrNull<T>(T? value) =>
+      value == null ? null : WidgetStatePropertyAll<T>(value);
 
   /// Returns an interpolated value based on the [textScaleFactor] parameter:
   ///
@@ -127,21 +128,21 @@ class _CButtonStyleState extends State<CButtonStyleButton>
   AnimationController? controller;
   double? elevation;
   Color? backgroundColor;
-  MaterialStatesController? internalStatesController;
+  WidgetStatesController? internalStatesController;
 
   void handleStatesControllerChange() {
-    // Force a rebuild to resolve MaterialStateProperty properties
+    // Force a rebuild to resolve WidgetStateProperty properties
     setState(() {});
   }
 
-  MaterialStatesController get statesController =>
+  WidgetStatesController get statesController =>
       widget.statesController ?? internalStatesController!;
 
   void initStatesController() {
     if (widget.statesController == null) {
-      internalStatesController = MaterialStatesController();
+      internalStatesController = WidgetStatesController();
     }
-    statesController.update(MaterialState.disabled, !widget.enabled);
+    statesController.update(WidgetState.disabled, !widget.enabled);
     statesController.addListener(handleStatesControllerChange);
     if (widget.platformStyle.isIos) {
       _initCupertinoAnimation();
@@ -149,8 +150,6 @@ class _CButtonStyleState extends State<CButtonStyleButton>
   }
 
   // Cupertino animation =======================================================
-
-  // static const Duration kFadeOutDuration = Duration.zero;
   final Duration _cupertinoFadeInDuration = const Duration(milliseconds: 600);
   final Tween<double> _cupertinoOpacityTween = Tween<double>(begin: 1.0);
 
@@ -211,10 +210,10 @@ class _CButtonStyleState extends State<CButtonStyleButton>
       initStatesController();
     }
     if (widget.enabled != oldWidget.enabled) {
-      statesController.update(MaterialState.disabled, !widget.enabled);
+      statesController.update(WidgetState.disabled, !widget.enabled);
       if (!widget.enabled) {
         // The button may have been disabled while a press gesture is currently underway.
-        statesController.update(MaterialState.pressed, false);
+        statesController.update(WidgetState.pressed, false);
       }
     }
   }
@@ -289,7 +288,7 @@ class _CButtonStyleState extends State<CButtonStyleButton>
     }
 
     T? resolve<T>(
-        MaterialStateProperty<T>? Function(CButtonStyle? style) getProperty) {
+        WidgetStateProperty<T>? Function(CButtonStyle? style) getProperty) {
       return effectiveValue(
         (CButtonStyle? style) =>
             getProperty(style)?.resolve(statesController.value),
@@ -359,14 +358,14 @@ class _CButtonStyleState extends State<CButtonStyleButton>
     final OutlinedBorder? resolvedShape =
         resolve<OutlinedBorder?>((CButtonStyle? style) => style?.shape);
 
-    final MaterialStateMouseCursor mouseCursor = _MouseCursor(
-      (Set<MaterialState> states) => effectiveValue(
+    final WidgetStateMouseCursor mouseCursor = _MouseCursor(
+      (Set<WidgetState> states) => effectiveValue(
           (CButtonStyle? style) => style?.mouseCursor?.resolve(states)),
     );
 
-    final MaterialStateProperty<Color?> overlayColor =
-        MaterialStateProperty.resolveWith<Color?>(
-      (Set<MaterialState> states) => effectiveValue(
+    final WidgetStateProperty<Color?> overlayColor =
+        WidgetStateProperty.resolveWith<Color?>(
+      (Set<WidgetState> states) => effectiveValue(
           (CButtonStyle? style) => style?.overlayColor?.resolve(states)),
     );
 
@@ -556,7 +555,7 @@ class _CButtonStyleState extends State<CButtonStyleButton>
                   ? NoSplash.splashFactory
                   : resolvedSplashFactory,
               overlayColor: widget.platformStyle.isIos
-                  ? MaterialStateProperty.all(Colors.transparent)
+                  ? const WidgetStatePropertyAll(Colors.transparent)
                   : overlayColor,
               highlightColor: Colors.transparent,
               customBorder: shapeWithBorder,
@@ -583,10 +582,8 @@ class _CButtonStyleState extends State<CButtonStyleButton>
         );
         assert(minSize.width >= 0.0);
         assert(minSize.height >= 0.0);
-      // break;
       case MaterialTapTargetSize.shrinkWrap:
         minSize = Size.zero;
-      // break;
     }
 
     return Semantics(
@@ -601,13 +598,13 @@ class _CButtonStyleState extends State<CButtonStyleButton>
   }
 }
 
-class _MouseCursor extends MaterialStateMouseCursor {
+class _MouseCursor extends WidgetStateMouseCursor {
   const _MouseCursor(this.resolveCallback);
 
-  final MaterialPropertyResolver<MouseCursor?> resolveCallback;
+  final WidgetPropertyResolver<MouseCursor?> resolveCallback;
 
   @override
-  MouseCursor resolve(Set<MaterialState> states) => resolveCallback(states)!;
+  MouseCursor resolve(Set<WidgetState> states) => resolveCallback(states)!;
 
   @override
   String get debugDescription => 'CButtonStyleButton_MouseCursor';

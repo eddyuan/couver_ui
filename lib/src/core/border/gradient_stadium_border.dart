@@ -1,12 +1,11 @@
 import 'dart:ui' as ui show lerpDouble;
-
-import 'package:couver_ui/couver_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'gradient_border_side.dart';
 
-extension GradientStadiumBorder on StadiumBorder {
-  CStadiumBorder toGradient(Gradient? gradient) =>
-      CStadiumBorder.fromBorder(border: this, gradient: gradient);
+extension GradientStadiumBorderExt on StadiumBorder {
+  GradientStadiumBorder toGradient(Gradient? gradient) =>
+      GradientStadiumBorder.fromBorder(border: this, gradient: gradient);
 }
 
 /// A border that fits a stadium-shaped border (a box with semicircles on the ends)
@@ -20,49 +19,46 @@ extension GradientStadiumBorder on StadiumBorder {
 /// See also:
 ///
 ///  * [BorderSide], which is used to describe the border of the stadium.
-class CStadiumBorder extends StadiumBorder {
+class GradientStadiumBorder extends StadiumBorder {
   /// Create a stadium border.
   ///
   /// The [side] argument must not be null.
-  const CStadiumBorder({
-    super.side,
-    this.gradient,
-  });
+  const GradientStadiumBorder({
+    GradientBorderSide side = GradientBorderSide.none,
+  }) : super(side: side);
 
-  final Gradient? gradient;
-
-  factory CStadiumBorder.fromBorder({
+  factory GradientStadiumBorder.fromBorder({
     required StadiumBorder border,
     Gradient? gradient,
   }) =>
-      CStadiumBorder(side: border.side, gradient: gradient);
+      GradientStadiumBorder(side: border.side.toGradient(gradient));
 
   StadiumBorder dropGradient() => StadiumBorder(side: side);
 
   @override
   ShapeBorder scale(double t) =>
-      CStadiumBorder(side: side.scale(t), gradient: gradient);
+      GradientStadiumBorder(side: side.toGradient().scale(t));
 
   @override
   ShapeBorder? lerpFrom(ShapeBorder? a, double t) {
     if (a is StadiumBorder) {
-      return CStadiumBorder(
-        side: BorderSide.lerp(a.side, side, t),
-        gradient: a is CStadiumBorder
-            ? Gradient.lerp(a.gradient, gradient, t)
-            : gradient,
+      return GradientStadiumBorder(
+        side:
+            GradientBorderSide.lerp(a.side.toGradient(), side.toGradient(), t),
       );
     }
     if (a is CircleBorder) {
-      return _CStadiumToCircleBorder(
-        side: BorderSide.lerp(a.side, side, t),
+      return _GradientStadiumToCircleBorder(
+        side:
+            GradientBorderSide.lerp(a.side.toGradient(), side.toGradient(), t),
         circularity: 1.0 - t,
         eccentricity: a.eccentricity,
       );
     }
     if (a is RoundedRectangleBorder) {
-      return _StadiumToRoundedRectangleBorder(
-        side: BorderSide.lerp(a.side, side, t),
+      return _GradientStadiumToRoundedRectangleBorder(
+        side:
+            GradientBorderSide.lerp(a.side.toGradient(), side.toGradient(), t),
         borderRadius: a.borderRadius,
         rectilinearity: 1.0 - t,
       );
@@ -72,19 +68,23 @@ class CStadiumBorder extends StadiumBorder {
 
   @override
   ShapeBorder? lerpTo(ShapeBorder? b, double t) {
-    if (b is CStadiumBorder) {
-      return CStadiumBorder(side: BorderSide.lerp(side, b.side, t));
+    if (b is GradientStadiumBorder) {
+      return GradientStadiumBorder(
+          side: GradientBorderSide.lerp(
+              side.toGradient(), b.side.toGradient(), t));
     }
     if (b is CircleBorder) {
-      return _CStadiumToCircleBorder(
-        side: BorderSide.lerp(side, b.side, t),
+      return _GradientStadiumToCircleBorder(
+        side:
+            GradientBorderSide.lerp(side.toGradient(), b.side.toGradient(), t),
         circularity: t,
         eccentricity: b.eccentricity,
       );
     }
     if (b is RoundedRectangleBorder) {
-      return _StadiumToRoundedRectangleBorder(
-        side: BorderSide.lerp(side, b.side, t),
+      return _GradientStadiumToRoundedRectangleBorder(
+        side:
+            GradientBorderSide.lerp(side.toGradient(), b.side.toGradient(), t),
         borderRadius: b.borderRadius,
         rectilinearity: t,
       );
@@ -93,56 +93,30 @@ class CStadiumBorder extends StadiumBorder {
   }
 
   @override
-  CStadiumBorder copyWith({
+  GradientStadiumBorder copyWith({
     BorderSide? side,
     Gradient? gradient,
   }) {
-    return CStadiumBorder(
-      side: side ?? this.side,
-      gradient: gradient ?? this.gradient,
+    return GradientStadiumBorder(
+      side: (side ?? this.side).toGradient(),
     );
   }
 
-  // @override
-  // Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
-  //   final Radius radius = Radius.circular(rect.shortestSide / 2.0);
-  //   final RRect borderRect = RRect.fromRectAndRadius(rect, radius);
-  //   final RRect adjustedRect = borderRect.deflate(side.strokeInset);
-  //   return Path()..addRRect(adjustedRect);
-  // }
-
-  // @override
-  // Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-  //   final Radius radius = Radius.circular(rect.shortestSide / 2.0);
-  //   return Path()..addRRect(RRect.fromRectAndRadius(rect, radius));
-  // }
-
-  // @override
-  // void paintInterior(Canvas canvas, Rect rect, Paint paint,
-  //     {TextDirection? textDirection}) {
-  //   final Radius radius = Radius.circular(rect.shortestSide / 2.0);
-  //   canvas.drawRRect(RRect.fromRectAndRadius(rect, radius), paint);
-  // }
-
-  // @override
-  // bool get preferPaintInterior => true;
-
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
-    if (gradient == null) {
+    final side = this.side.toGradient();
+    if (side.gradient == null) {
       super.paint(canvas, rect, textDirection: textDirection);
-    } else {
-      switch (side.style) {
-        case BorderStyle.none:
-          break;
-        case BorderStyle.solid:
-          final Radius radius = Radius.circular(rect.shortestSide / 2);
-          final RRect borderRect = RRect.fromRectAndRadius(rect, radius);
-          final Paint paint = side.toPaint()
-            ..shader = gradient?.createShader(rect);
-
-          canvas.drawRRect(borderRect.inflate(side.strokeOffset / 2), paint);
-      }
+      return;
+    }
+    switch (side.style) {
+      case BorderStyle.none:
+        break;
+      case BorderStyle.solid:
+        final Radius radius = Radius.circular(rect.shortestSide / 2);
+        final RRect borderRect = RRect.fromRectAndRadius(rect, radius);
+        final Paint paint = side.toGradientPaint(rect);
+        canvas.drawRRect(borderRect.inflate(side.strokeOffset / 2), paint);
     }
   }
 
@@ -151,13 +125,11 @@ class CStadiumBorder extends StadiumBorder {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is CStadiumBorder &&
-        other.side == side &&
-        other.gradient == gradient;
+    return other is GradientStadiumBorder && other.side == side;
   }
 
   @override
-  int get hashCode => Object.hash(side, gradient);
+  int get hashCode => side.hashCode;
 
   @override
   String toString() {
@@ -166,56 +138,49 @@ class CStadiumBorder extends StadiumBorder {
 }
 
 // Class to help with transitioning to/from a CircleBorder.
-class _CStadiumToCircleBorder extends OutlinedBorder {
-  const _CStadiumToCircleBorder({
-    super.side,
+class _GradientStadiumToCircleBorder extends OutlinedBorder {
+  const _GradientStadiumToCircleBorder({
+    GradientBorderSide side = GradientBorderSide.none,
     this.circularity = 0.0,
     required this.eccentricity,
-    this.gradient,
-  });
+  }) : super(side: side);
 
-  final Gradient? gradient;
   final double circularity;
   final double eccentricity;
 
   @override
   ShapeBorder scale(double t) {
-    return _CStadiumToCircleBorder(
-      side: side.scale(t),
+    return _GradientStadiumToCircleBorder(
+      side: side.toGradient().scale(t),
       circularity: t,
       eccentricity: eccentricity,
-      gradient: gradient,
     );
   }
 
   @override
   ShapeBorder? lerpFrom(ShapeBorder? a, double t) {
     if (a is StadiumBorder) {
-      return _CStadiumToCircleBorder(
-        side: BorderSide.lerp(a.side, side, t),
+      return _GradientStadiumToCircleBorder(
+        side:
+            GradientBorderSide.lerp(a.side.toGradient(), side.toGradient(), t),
         circularity: circularity * t,
         eccentricity: eccentricity,
-        gradient: a is CStadiumBorder
-            ? Gradient.lerp(a.gradient, gradient, t)
-            : gradient,
       );
     }
     if (a is CircleBorder) {
-      return _CStadiumToCircleBorder(
-        side: BorderSide.lerp(a.side, side, t),
+      return _GradientStadiumToCircleBorder(
+        side:
+            GradientBorderSide.lerp(a.side.toGradient(), side.toGradient(), t),
         circularity: circularity + (1.0 - circularity) * (1.0 - t),
         eccentricity: a.eccentricity,
-        gradient: a is CCircleBorder
-            ? Gradient.lerp(a.gradient, gradient, t)
-            : gradient,
       );
     }
-    if (a is _CStadiumToCircleBorder) {
-      return _CStadiumToCircleBorder(
-        side: BorderSide.lerp(a.side, side, t),
+    if (a is _GradientStadiumToCircleBorder) {
+      return _GradientStadiumToCircleBorder(
+        side:
+            GradientBorderSide.lerp(a.side.toGradient(), side.toGradient(), t),
         circularity: ui.lerpDouble(a.circularity, circularity, t)!,
         eccentricity: ui.lerpDouble(a.eccentricity, eccentricity, t)!,
-        gradient: Gradient.lerp(a.gradient, gradient, t),
       );
     }
     return super.lerpFrom(a, t);
@@ -224,31 +189,27 @@ class _CStadiumToCircleBorder extends OutlinedBorder {
   @override
   ShapeBorder? lerpTo(ShapeBorder? b, double t) {
     if (b is StadiumBorder) {
-      return _CStadiumToCircleBorder(
-        side: BorderSide.lerp(side, b.side, t),
+      return _GradientStadiumToCircleBorder(
+        side:
+            GradientBorderSide.lerp(side.toGradient(), b.side.toGradient(), t),
         circularity: circularity * (1.0 - t),
         eccentricity: eccentricity,
-        gradient: b is CStadiumBorder
-            ? Gradient.lerp(gradient, b.gradient, t)
-            : gradient,
       );
     }
     if (b is CircleBorder) {
-      return _CStadiumToCircleBorder(
-        side: BorderSide.lerp(side, b.side, t),
+      return _GradientStadiumToCircleBorder(
+        side:
+            GradientBorderSide.lerp(side.toGradient(), b.side.toGradient(), t),
         circularity: circularity + (1.0 - circularity) * t,
         eccentricity: b.eccentricity,
-        gradient: b is CCircleBorder
-            ? Gradient.lerp(gradient, b.gradient, t)
-            : gradient,
       );
     }
-    if (b is _CStadiumToCircleBorder) {
-      return _CStadiumToCircleBorder(
-        side: BorderSide.lerp(side, b.side, t),
+    if (b is _GradientStadiumToCircleBorder) {
+      return _GradientStadiumToCircleBorder(
+        side:
+            GradientBorderSide.lerp(side.toGradient(), b.side.toGradient(), t),
         circularity: ui.lerpDouble(circularity, b.circularity, t)!,
         eccentricity: ui.lerpDouble(eccentricity, b.eccentricity, t)!,
-        gradient: Gradient.lerp(gradient, b.gradient, t),
       );
     }
     return super.lerpTo(b, t);
@@ -327,33 +288,29 @@ class _CStadiumToCircleBorder extends OutlinedBorder {
   bool get preferPaintInterior => true;
 
   @override
-  _CStadiumToCircleBorder copyWith({
+  _GradientStadiumToCircleBorder copyWith({
     BorderSide? side,
     double? circularity,
     double? eccentricity,
-    Gradient? gradient,
   }) {
-    return _CStadiumToCircleBorder(
-      side: side ?? this.side,
+    return _GradientStadiumToCircleBorder(
+      side: (side ?? this.side).toGradient(),
       circularity: circularity ?? this.circularity,
       eccentricity: eccentricity ?? this.eccentricity,
-      gradient: gradient ?? this.gradient,
     );
   }
 
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
+    final side = this.side.toGradient();
     switch (side.style) {
       case BorderStyle.none:
         break;
       case BorderStyle.solid:
         final RRect borderRect =
             _adjustBorderRadius(rect).toRRect(_adjustRect(rect));
-        final Paint paint = side.toPaint();
-        if (gradient != null) {
-          paint.shader = gradient?.createShader(rect);
-        }
-        canvas.drawRRect(borderRect.inflate(side.strokeOffset / 2), paint);
+        canvas.drawRRect(borderRect.inflate(side.strokeOffset / 2),
+            side.toGradientPaint(rect));
     }
   }
 
@@ -362,14 +319,13 @@ class _CStadiumToCircleBorder extends OutlinedBorder {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is _CStadiumToCircleBorder &&
+    return other is _GradientStadiumToCircleBorder &&
         other.side == side &&
-        other.circularity == circularity &&
-        other.gradient == gradient;
+        other.circularity == circularity;
   }
 
   @override
-  int get hashCode => Object.hash(side, circularity, gradient);
+  int get hashCode => Object.hash(side, circularity);
 
   @override
   String toString() {
@@ -381,57 +337,50 @@ class _CStadiumToCircleBorder extends OutlinedBorder {
 }
 
 // Class to help with transitioning to/from a RoundedRectBorder.
-class _StadiumToRoundedRectangleBorder extends OutlinedBorder {
-  const _StadiumToRoundedRectangleBorder({
-    super.side,
+class _GradientStadiumToRoundedRectangleBorder extends OutlinedBorder {
+  const _GradientStadiumToRoundedRectangleBorder({
+    GradientBorderSide side = GradientBorderSide.none,
     this.borderRadius = BorderRadius.zero,
     this.rectilinearity = 0.0,
-    this.gradient,
-  });
+  }) : super(side: side);
 
   final BorderRadiusGeometry borderRadius;
   final double rectilinearity;
-  final Gradient? gradient;
 
   @override
   ShapeBorder scale(double t) {
-    return _StadiumToRoundedRectangleBorder(
-      side: side.scale(t),
+    return _GradientStadiumToRoundedRectangleBorder(
+      side: side.toGradient().scale(t),
       borderRadius: borderRadius * t,
       rectilinearity: t,
-      gradient: gradient,
     );
   }
 
   @override
   ShapeBorder? lerpFrom(ShapeBorder? a, double t) {
     if (a is StadiumBorder) {
-      return _StadiumToRoundedRectangleBorder(
-        side: BorderSide.lerp(a.side, side, t),
+      return _GradientStadiumToRoundedRectangleBorder(
+        side:
+            GradientBorderSide.lerp(a.side.toGradient(), side.toGradient(), t),
         borderRadius: borderRadius,
         rectilinearity: rectilinearity * t,
-        gradient: a is CStadiumBorder
-            ? Gradient.lerp(a.gradient, gradient, t)
-            : gradient,
       );
     }
     if (a is RoundedRectangleBorder) {
-      return _StadiumToRoundedRectangleBorder(
-        side: BorderSide.lerp(a.side, side, t),
+      return _GradientStadiumToRoundedRectangleBorder(
+        side:
+            GradientBorderSide.lerp(a.side.toGradient(), side.toGradient(), t),
         borderRadius: borderRadius,
         rectilinearity: rectilinearity + (1.0 - rectilinearity) * (1.0 - t),
-        gradient: a is CRoundedRectangleBorder
-            ? Gradient.lerp(a.gradient, gradient, t)
-            : gradient,
       );
     }
-    if (a is _StadiumToRoundedRectangleBorder) {
-      return _StadiumToRoundedRectangleBorder(
-        side: BorderSide.lerp(a.side, side, t),
+    if (a is _GradientStadiumToRoundedRectangleBorder) {
+      return _GradientStadiumToRoundedRectangleBorder(
+        side:
+            GradientBorderSide.lerp(a.side.toGradient(), side.toGradient(), t),
         borderRadius:
             BorderRadiusGeometry.lerp(a.borderRadius, borderRadius, t)!,
         rectilinearity: ui.lerpDouble(a.rectilinearity, rectilinearity, t)!,
-        gradient: Gradient.lerp(a.gradient, gradient, t),
       );
     }
     return super.lerpFrom(a, t);
@@ -440,32 +389,28 @@ class _StadiumToRoundedRectangleBorder extends OutlinedBorder {
   @override
   ShapeBorder? lerpTo(ShapeBorder? b, double t) {
     if (b is StadiumBorder) {
-      return _StadiumToRoundedRectangleBorder(
-        side: BorderSide.lerp(side, b.side, t),
+      return _GradientStadiumToRoundedRectangleBorder(
+        side:
+            GradientBorderSide.lerp(side.toGradient(), b.side.toGradient(), t),
         borderRadius: borderRadius,
         rectilinearity: rectilinearity * (1.0 - t),
-        gradient: b is CStadiumBorder
-            ? Gradient.lerp(gradient, b.gradient, t)
-            : gradient,
       );
     }
     if (b is RoundedRectangleBorder) {
-      return _StadiumToRoundedRectangleBorder(
-        side: BorderSide.lerp(side, b.side, t),
+      return _GradientStadiumToRoundedRectangleBorder(
+        side:
+            GradientBorderSide.lerp(side.toGradient(), b.side.toGradient(), t),
         borderRadius: borderRadius,
         rectilinearity: rectilinearity + (1.0 - rectilinearity) * t,
-        gradient: b is CRoundedRectangleBorder
-            ? Gradient.lerp(gradient, b.gradient, t)
-            : gradient,
       );
     }
-    if (b is _StadiumToRoundedRectangleBorder) {
-      return _StadiumToRoundedRectangleBorder(
-        side: BorderSide.lerp(side, b.side, t),
+    if (b is _GradientStadiumToRoundedRectangleBorder) {
+      return _GradientStadiumToRoundedRectangleBorder(
+        side:
+            GradientBorderSide.lerp(side.toGradient(), b.side.toGradient(), t),
         borderRadius:
             BorderRadiusGeometry.lerp(borderRadius, b.borderRadius, t)!,
         rectilinearity: ui.lerpDouble(rectilinearity, b.rectilinearity, t)!,
-        gradient: Gradient.lerp(gradient, b.gradient, t),
       );
     }
     return super.lerpTo(b, t);
@@ -511,12 +456,13 @@ class _StadiumToRoundedRectangleBorder extends OutlinedBorder {
   bool get preferPaintInterior => true;
 
   @override
-  _StadiumToRoundedRectangleBorder copyWith(
-      {BorderSide? side,
-      BorderRadiusGeometry? borderRadius,
-      double? rectilinearity}) {
-    return _StadiumToRoundedRectangleBorder(
-      side: side ?? this.side,
+  _GradientStadiumToRoundedRectangleBorder copyWith({
+    BorderSide? side,
+    BorderRadiusGeometry? borderRadius,
+    double? rectilinearity,
+  }) {
+    return _GradientStadiumToRoundedRectangleBorder(
+      side: (side ?? this.side).toGradient(),
       borderRadius: borderRadius ?? this.borderRadius,
       rectilinearity: rectilinearity ?? this.rectilinearity,
     );
@@ -524,6 +470,7 @@ class _StadiumToRoundedRectangleBorder extends OutlinedBorder {
 
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
+    final side = this.side.toGradient();
     switch (side.style) {
       case BorderStyle.none:
         break;
@@ -532,11 +479,8 @@ class _StadiumToRoundedRectangleBorder extends OutlinedBorder {
             _adjustBorderRadius(rect);
         final RRect borderRect =
             adjustedBorderRadius.resolve(textDirection).toRRect(rect);
-        final Paint paint = side.toPaint();
-        if (gradient != null) {
-          paint.shader = gradient?.createShader(rect);
-        }
-        canvas.drawRRect(borderRect.inflate(side.strokeOffset / 2), paint);
+        canvas.drawRRect(borderRect.inflate(side.strokeOffset / 2),
+            side.toGradientPaint(rect));
     }
   }
 
@@ -545,15 +489,14 @@ class _StadiumToRoundedRectangleBorder extends OutlinedBorder {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is _StadiumToRoundedRectangleBorder &&
+    return other is _GradientStadiumToRoundedRectangleBorder &&
         other.side == side &&
         other.borderRadius == borderRadius &&
-        other.rectilinearity == rectilinearity &&
-        other.gradient == gradient;
+        other.rectilinearity == rectilinearity;
   }
 
   @override
-  int get hashCode => Object.hash(side, borderRadius, rectilinearity, gradient);
+  int get hashCode => Object.hash(side, borderRadius, rectilinearity);
 
   @override
   String toString() {

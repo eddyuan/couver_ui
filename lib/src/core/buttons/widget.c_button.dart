@@ -1,13 +1,22 @@
-import 'package:couver_ui/couver_util.dart';
 import 'package:couver_ui/src/core/_couver_internal.dart';
 import "package:flutter/material.dart";
 
+import '../border/gradient_rounded_rectangle_border.dart';
 import '../theme.couver_theme.dart';
 import '../../enums/enum.platform_style.dart';
 import 'widget.c_elevated_button.dart';
 import 'widget.c_icon_button.dart';
 import 'widget.c_outlined_button.dart';
 import 'widget.c_text_button.dart';
+
+// enum CButtonType {
+//   text,
+//   filled,
+//   outlined,
+//   icon,
+//   input,
+//   tonal,
+// }
 
 class BtnSize {
   const BtnSize({
@@ -478,7 +487,7 @@ class CButton extends StatelessWidget {
           platformStyle: platformStyle,
         ).copyWith(
           elevation: targetElevation != null
-              ? MaterialStateProperty.all(targetElevation)
+              ? WidgetStateProperty.all(targetElevation)
               : null,
         ),
         canRequestFocus: canRequestFocus,

@@ -1,3 +1,6 @@
+export 'border/exports.dart';
+export 'ext/exports.dart';
+
 export 'comp.gradient_box_border.dart';
 export 'comp.c_input_border.dart';
 
@@ -36,5 +39,3 @@ export 'widget.c_radio_icon.dart';
 export 'widget.c_ribbon.dart';
 export 'buttons/widget.c_text_button.dart';
 export 'widget.gradient_text.dart';
-export 'painter/c_circle_border.dart';
-export 'painter/c_rounded_rectangle_border.dart';

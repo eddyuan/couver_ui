@@ -1,10 +1,11 @@
 import 'dart:ui' as ui show lerpDouble, clampDouble;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'gradient_border_side.dart';
 
-extension GradientCircleBorder on CircleBorder {
-  CCircleBorder toGradient(Gradient? gradient) =>
-      CCircleBorder.fromBorder(border: this, gradient: gradient);
+extension GradientCircleBorderExt on CircleBorder {
+  GradientCircleBorder toGradient(Gradient? gradient) =>
+      GradientCircleBorder.fromBorder(border: this, gradient: gradient);
 }
 
 /// A border that fits a circle within the available space.
@@ -27,49 +28,43 @@ extension GradientCircleBorder on CircleBorder {
 ///  * [BorderSide], which is used to describe each side of the box.
 ///  * [Border], which, when used with [BoxDecoration], can also describe a circle.
 
-class CCircleBorder extends CircleBorder {
+class GradientCircleBorder extends CircleBorder {
   /// Create a circle border.
   ///
   /// The [side] argument must not be null.
-  const CCircleBorder({
-    super.side,
+  const GradientCircleBorder({
+    GradientBorderSide side = GradientBorderSide.none,
     super.eccentricity = 0.0,
-    this.gradient,
-  })  : assert(eccentricity >= 0.0,
-            'The eccentricity argument $eccentricity is not greater than or equal to zero.'),
-        assert(eccentricity <= 1.0,
-            'The eccentricity argument $eccentricity is not less than or equal to one.');
+  }) : super(side: side);
 
-  final Gradient? gradient;
+  // final Gradient? gradient;
 
   CircleBorder dropGradient() =>
       CircleBorder(side: side, eccentricity: eccentricity);
 
-  factory CCircleBorder.fromBorder({
+  factory GradientCircleBorder.fromBorder({
     required CircleBorder border,
     Gradient? gradient,
   }) =>
-      CCircleBorder(
-        side: border.side,
+      GradientCircleBorder(
+        side: border.side.toGradient(gradient),
         eccentricity: border.eccentricity,
-        gradient: gradient,
       );
 
   @override
-  ShapeBorder scale(double t) => CCircleBorder(
-        side: side.scale(t),
+  ShapeBorder scale(double t) => GradientCircleBorder(
+        side: side.toGradient().scale(t),
         eccentricity: eccentricity,
-        gradient: gradient,
       );
 
   @override
   ShapeBorder? lerpFrom(ShapeBorder? a, double t) {
-    if (a is CCircleBorder) {
-      return CCircleBorder(
-        side: BorderSide.lerp(a.side, side, t),
+    if (a is GradientCircleBorder) {
+      return GradientCircleBorder(
+        side:
+            GradientBorderSide.lerp(a.side.toGradient(), side.toGradient(), t),
         eccentricity: ui.clampDouble(
             ui.lerpDouble(a.eccentricity, eccentricity, t)!, 0.0, 1.0),
-        gradient: Gradient.lerp(a.gradient, gradient, t),
       );
     }
     return super.lerpFrom(a, t);
@@ -77,77 +72,51 @@ class CCircleBorder extends CircleBorder {
 
   @override
   ShapeBorder? lerpTo(ShapeBorder? b, double t) {
-    if (b is CCircleBorder) {
-      return CCircleBorder(
-        side: BorderSide.lerp(side, b.side, t),
+    if (b is GradientCircleBorder) {
+      return GradientCircleBorder(
+        side:
+            GradientBorderSide.lerp(side.toGradient(), b.side.toGradient(), t),
         eccentricity: ui.clampDouble(
             ui.lerpDouble(eccentricity, b.eccentricity, t)!, 0.0, 1.0),
-        gradient: Gradient.lerp(gradient, b.gradient, t),
       );
     }
     return super.lerpTo(b, t);
   }
 
-  // @override
-  // Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
-  //   return Path()..addOval(_adjustRect(rect).deflate(side.strokeInset));
-  // }
-
-  // @override
-  // Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-  //   return Path()..addOval(_adjustRect(rect));
-  // }
-
-  // @override
-  // void paintInterior(Canvas canvas, Rect rect, Paint paint,
-  //     {TextDirection? textDirection}) {
-  //   if (eccentricity == 0.0) {
-  //     canvas.drawCircle(rect.center, rect.shortestSide / 2.0, paint);
-  //   } else {
-  //     canvas.drawOval(_adjustRect(rect), paint);
-  //   }
-  // }
-
-  // @override
-  // bool get preferPaintInterior => true;
-
   @override
-  CCircleBorder copyWith({
+  GradientCircleBorder copyWith({
     BorderSide? side,
     double? eccentricity,
     Gradient? gradient,
   }) {
-    return CCircleBorder(
-      side: side ?? this.side,
+    return GradientCircleBorder(
+      side: (side ?? this.side).toGradient(),
       eccentricity: eccentricity ?? this.eccentricity,
-      gradient: gradient,
     );
   }
 
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
-    if (gradient == null) {
+    final side = this.side.toGradient();
+    if (side.gradient == null) {
       super.paint(canvas, rect, textDirection: textDirection);
-    } else {
-      switch (side.style) {
-        case BorderStyle.none:
-          break;
-        case BorderStyle.solid:
-          final paint = side.toPaint()..shader = gradient?.createShader(rect);
-          if (eccentricity == 0.0) {
-            canvas.drawCircle(
+      return;
+    }
+
+    switch (side.style) {
+      case BorderStyle.none:
+        break;
+      case BorderStyle.solid:
+        if (eccentricity == 0.0) {
+          canvas.drawCircle(
               rect.center,
               (rect.shortestSide + side.strokeOffset) / 2,
-              paint,
-            );
-          } else {
-            final Rect borderRect = _adjustRect(rect);
-            canvas.drawOval(
-              borderRect.inflate(side.strokeOffset / 2),
-              paint,
-            );
-          }
-      }
+              side.toGradientPaint(rect));
+        } else {
+          final Rect borderRect = _adjustRect(rect);
+          canvas.drawOval(borderRect.inflate(side.strokeOffset / 2),
+              side.toGradientPaint(rect));
+        }
     }
   }
 
@@ -182,20 +151,19 @@ class CCircleBorder extends CircleBorder {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is CCircleBorder &&
+    return other is GradientCircleBorder &&
         other.side == side &&
-        other.eccentricity == eccentricity &&
-        gradient == gradient;
+        other.eccentricity == eccentricity;
   }
 
   @override
-  int get hashCode => Object.hash(side, eccentricity, gradient);
+  int get hashCode => Object.hash(side, eccentricity);
 
   @override
   String toString() {
     if (eccentricity != 0.0) {
-      return '${objectRuntimeType(this, 'CCircleBorder')}($side, eccentricity: $eccentricity)';
+      return '${objectRuntimeType(this, 'GradientCircleBorder')}($side, eccentricity: $eccentricity)';
     }
-    return '${objectRuntimeType(this, 'CCircleBorder')}($side)';
+    return '${objectRuntimeType(this, 'GradientCircleBorder')}($side)';
   }
 }

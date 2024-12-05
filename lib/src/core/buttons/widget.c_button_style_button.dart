@@ -540,8 +540,20 @@ class _CButtonStyleState extends State<CButtonStyleButton>
                   )
                 : null,
             child: InkWell(
-              onTap: widget.enabled ? widget.onPressed : null,
-              onLongPress: widget.enabled ? widget.onLongPress : null,
+              onTap: widget.enabled && widget.onPressed != null
+                  ? () {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      widget.onPressed?.call();
+                    }
+                  : null,
+              onLongPress: widget.enabled && widget.onLongPress != null
+                  ? () {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      widget.onLongPress?.call();
+                    }
+                  : null,
+              // onTap: widget.enabled ? widget.onPressed : null,
+              // onLongPress: widget.enabled ? widget.onLongPress : null,
               onHighlightChanged:
                   widget.platformStyle.isIos ? _doCupertinoAnimate : null,
               onHover: widget.onHover,

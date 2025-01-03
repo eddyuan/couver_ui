@@ -10,6 +10,8 @@ import '../enums/enum.platform_style.dart';
 import 'widget.c_ink.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
+enum _CardVariant { elevated, filled, outlined }
+
 class CCard extends StatelessWidget {
   const CCard({
     super.key,
@@ -110,19 +112,36 @@ class CCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CardTheme cardTheme = CardTheme.of(context);
-    final CardTheme defaults = Theme.of(context).useMaterial3
-        ? _CardDefaultsM3(context)
-        : _CardDefaultsM2(context);
-
     final int targetElevation = elevation ?? (hasAction ? 4 : 0);
+    final Color cardColor = color ?? Theme.of(context).cardColor;
+    final CardThemeData cardTheme = CardTheme.of(context);
+    final CardThemeData defaults;
+    _CardVariant _variant = _CardVariant.filled;
+    if (targetElevation > 0) {
+      _variant = _CardVariant.elevated;
+    } else if (borderWidth > 0) {
+      _variant = _CardVariant.outlined;
+    }
+    if (Theme.of(context).useMaterial3) {
+      defaults = switch (_variant) {
+        _CardVariant.elevated => _CardDefaultsM3(context),
+        _CardVariant.filled => _FilledCardDefaultsM3(context),
+        _CardVariant.outlined => _OutlinedCardDefaultsM3(context),
+      };
+    } else {
+      defaults = _CardDefaultsM2(context);
+    }
+
+    //  = Theme.of(context).useMaterial3
+    //     ? _CardDefaultsM3(context)
+    //     : _CardDefaultsM2(context);
+
     final Color targetLeadingColor =
         leadingColor ?? Theme.of(context).dividerColor;
     final InteractiveInkFeatureFactory splashFactory = this.splashFactory ??
         (!kIsWeb && Platform.isIOS
             ? NoSplash.splashFactory
             : CouverTheme.of(context).splashFactory);
-    final Color cardColor = color ?? Theme.of(context).cardColor;
     final Color targetSplashColor = splashColor ??
         (color == null
             ? Theme.of(context).splashColor
@@ -136,8 +155,8 @@ class CCard extends StatelessWidget {
     final Color? targetShadowColor =
         shadowColor ?? cardTheme.shadowColor ?? defaults.shadowColor;
 
-    final Color? finalShadowColor = targetShadowColor?.alpha == 0xFF
-        ? targetShadowColor?.withOpacity(0.1)
+    final Color? finalShadowColor = targetShadowColor?.a == 0xFF
+        ? targetShadowColor?.withAlpha(25)
         : targetShadowColor;
 
     final List<BoxShadow>? targetBoxShadow = boxShadow ??
@@ -225,33 +244,33 @@ class CCard extends StatelessWidget {
   }
 }
 
-class _CardDefaultsM3 extends CardTheme {
-  const _CardDefaultsM3(this.context)
-      : super(
-          clipBehavior: Clip.none,
-          elevation: 1.0,
-          margin: const EdgeInsets.all(4.0),
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12.0),
-                  topRight: Radius.circular(12.0),
-                  bottomLeft: Radius.circular(12.0),
-                  bottomRight: Radius.circular(12.0))),
-        );
+// class _CardDefaultsM3 extends CardThemeData {
+//   const _CardDefaultsM3(this.context)
+//       : super(
+//           clipBehavior: Clip.none,
+//           elevation: 1.0,
+//           margin: const EdgeInsets.all(4.0),
+//           shape: const RoundedRectangleBorder(
+//               borderRadius: BorderRadius.only(
+//                   topLeft: Radius.circular(12.0),
+//                   topRight: Radius.circular(12.0),
+//                   bottomLeft: Radius.circular(12.0),
+//                   bottomRight: Radius.circular(12.0))),
+//         );
 
-  final BuildContext context;
+//   final BuildContext context;
 
-  @override
-  Color? get color => Theme.of(context).colorScheme.surface;
+//   @override
+//   Color? get color => Theme.of(context).colorScheme.surface;
 
-  @override
-  Color? get shadowColor => Theme.of(context).colorScheme.shadow;
+//   @override
+//   Color? get shadowColor => Theme.of(context).colorScheme.shadow;
 
-  @override
-  Color? get surfaceTintColor => Theme.of(context).colorScheme.surfaceTint;
-}
+//   @override
+//   Color? get surfaceTintColor => Theme.of(context).colorScheme.surfaceTint;
+// }
 
-class _CardDefaultsM2 extends CardTheme {
+class _CardDefaultsM2 extends CardThemeData {
   const _CardDefaultsM2(this.context)
       : super(
             clipBehavior: Clip.none,
@@ -269,3 +288,106 @@ class _CardDefaultsM2 extends CardTheme {
   @override
   Color? get shadowColor => Theme.of(context).shadowColor;
 }
+
+// BEGIN GENERATED TOKEN PROPERTIES - Card
+
+// Do not edit by hand. The code between the "BEGIN GENERATED" and
+// "END GENERATED" comments are generated from data in the Material
+// Design token database by the script:
+//   dev/tools/gen_defaults/bin/gen_defaults.dart.
+
+class _CardDefaultsM3 extends CardThemeData {
+  _CardDefaultsM3(this.context)
+      : super(
+          clipBehavior: Clip.none,
+          elevation: 1.0,
+          margin: const EdgeInsets.all(4.0),
+        );
+
+  final BuildContext context;
+  late final ColorScheme _colors = Theme.of(context).colorScheme;
+
+  @override
+  Color? get color => _colors.surfaceContainerLow;
+
+  @override
+  Color? get shadowColor => _colors.shadow;
+
+  @override
+  Color? get surfaceTintColor => Colors.transparent;
+
+  @override
+  ShapeBorder? get shape => const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(12.0)));
+}
+
+// END GENERATED TOKEN PROPERTIES - Card
+
+// BEGIN GENERATED TOKEN PROPERTIES - FilledCard
+
+// Do not edit by hand. The code between the "BEGIN GENERATED" and
+// "END GENERATED" comments are generated from data in the Material
+// Design token database by the script:
+//   dev/tools/gen_defaults/bin/gen_defaults.dart.
+
+class _FilledCardDefaultsM3 extends CardThemeData {
+  _FilledCardDefaultsM3(this.context)
+      : super(
+          clipBehavior: Clip.none,
+          elevation: 0.0,
+          margin: const EdgeInsets.all(4.0),
+        );
+
+  final BuildContext context;
+  late final ColorScheme _colors = Theme.of(context).colorScheme;
+
+  @override
+  Color? get color => _colors.surfaceContainerHighest;
+
+  @override
+  Color? get shadowColor => _colors.shadow;
+
+  @override
+  Color? get surfaceTintColor => Colors.transparent;
+
+  @override
+  ShapeBorder? get shape => const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(12.0)));
+}
+
+// END GENERATED TOKEN PROPERTIES - FilledCard
+
+// BEGIN GENERATED TOKEN PROPERTIES - OutlinedCard
+
+// Do not edit by hand. The code between the "BEGIN GENERATED" and
+// "END GENERATED" comments are generated from data in the Material
+// Design token database by the script:
+//   dev/tools/gen_defaults/bin/gen_defaults.dart.
+
+class _OutlinedCardDefaultsM3 extends CardThemeData {
+  _OutlinedCardDefaultsM3(this.context)
+      : super(
+          clipBehavior: Clip.none,
+          elevation: 0.0,
+          margin: const EdgeInsets.all(4.0),
+        );
+
+  final BuildContext context;
+  late final ColorScheme _colors = Theme.of(context).colorScheme;
+
+  @override
+  Color? get color => _colors.surface;
+
+  @override
+  Color? get shadowColor => _colors.shadow;
+
+  @override
+  Color? get surfaceTintColor => Colors.transparent;
+
+  @override
+  ShapeBorder? get shape => const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0)))
+      .copyWith(side: BorderSide(color: _colors.outlineVariant));
+}
+
+// END GENERATED TOKEN PROPERTIES - OutlinedCard

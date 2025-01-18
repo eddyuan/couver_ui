@@ -477,35 +477,35 @@ class CListTile extends StatelessWidget {
     return dense ?? tileTheme.dense ?? theme.listTileTheme.dense ?? false;
   }
 
-  TextStyle _titleTextStyle(ThemeData theme, ListTileThemeData tileTheme) {
+  TextStyle? _titleTextStyle(ThemeData theme, ListTileThemeData tileTheme) {
     if (titleTextStyle != null) {
       return titleTextStyle!;
     }
-    final TextStyle textStyle;
+    final TextStyle? textStyle;
     switch (style ??
         tileTheme.style ??
         theme.listTileTheme.style ??
         ListTileStyle.list) {
       case ListTileStyle.drawer:
-        textStyle = theme.textTheme.bodyLarge!;
+        textStyle = theme.textTheme.bodyLarge;
         break;
       case ListTileStyle.list:
-        textStyle = theme.textTheme.titleMedium!;
+        textStyle = theme.textTheme.titleMedium;
         break;
     }
-    final Color? color = _textColor(theme, tileTheme, textStyle.color);
-    return textStyle.copyWith(
+    final Color? color = _textColor(theme, tileTheme, textStyle?.color);
+    return textStyle?.copyWith(
       color: color,
       fontWeight: titleBold ? FontWeight.w600 : null,
       fontSize: _isDenseLayout(theme, tileTheme) ? 14.0 : 16.0,
     );
   }
 
-  TextStyle _subtitleTextStyle(ThemeData theme, ListTileThemeData tileTheme) {
-    final TextStyle textStyle = theme.textTheme.bodyMedium!;
+  TextStyle? _subtitleTextStyle(ThemeData theme, ListTileThemeData tileTheme) {
+    final TextStyle? textStyle = theme.textTheme.bodyMedium;
     final Color? color =
-        _textColor(theme, tileTheme, theme.textTheme.bodySmall!.color);
-    return textStyle.copyWith(
+        _textColor(theme, tileTheme, theme.textTheme.bodySmall?.color);
+    return textStyle?.copyWith(
       color: color,
       fontSize: _isDenseLayout(theme, tileTheme) ? 12.0 : 13.0,
     );
@@ -694,7 +694,11 @@ class CListTile extends StatelessWidget {
           child: _gradientShader(
             child: AnimatedDefaultTextStyle(
               duration: kThemeChangeDuration,
-              style: _titleTextStyle(theme, tileTheme),
+              style: _titleTextStyle(theme, tileTheme) ??
+                  TextStyle(
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
               child: title ?? Text(titleText ?? ''),
             ),
           ),
@@ -707,7 +711,13 @@ class CListTile extends StatelessWidget {
           child: _gradientShader(
             child: AnimatedDefaultTextStyle(
               duration: kThemeChangeDuration,
-              style: subtitleTextStyle ?? _subtitleTextStyle(theme, tileTheme),
+              style: subtitleTextStyle ??
+                  _subtitleTextStyle(theme, tileTheme) ??
+                  TextStyle(
+                    fontSize: 12,
+                    color:
+                        Theme.of(context).colorScheme.onSurface.withAlpha(100),
+                  ),
               child: subtitle ?? Text(subtitleText ?? ''),
             ),
           ),

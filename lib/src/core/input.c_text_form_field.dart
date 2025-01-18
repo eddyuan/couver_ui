@@ -912,23 +912,17 @@ class _CTextFormFieldState extends State<CTextFormField> {
 
   @override
   Widget build(BuildContext context) {
-    final String obscuringCharacter =
-        widget.obscuringCharacter ?? CouverTheme.of(context).obscuringCharacter;
     return Theme(
       data: Theme.of(context).copyWith(
           colorScheme: Theme.of(context).colorScheme.copyWith(
-              primary: CouverTheme.of(context).colors.inputFocusBorderColor)
-
-          // ColorScheme.fromSwatch(
-          //   primarySwatch: CouverTheme.of(context).colors.inputFocusBorderColor,
-          //   brightness: Theme.of(context).brightness,
-          // ),
-          ),
+              primary: CouverTheme.of(context).colors.inputFocusBorderColor)),
       child: Padding(
         padding: widget.margin ?? EdgeInsets.zero,
         child: TextFormField(
           controller: _controller,
+          // initialValue: widget.initialValue,
           focusNode: _focusNode,
+          decoration: getInputDecoration(context),
           keyboardType: getKeyboardType(),
           textCapitalization: widget.textCapitalization,
           textInputAction: widget.textInputAction,
@@ -940,7 +934,8 @@ class _CTextFormFieldState extends State<CTextFormField> {
           autofocus: widget.autofocus,
           readOnly: widget.readOnly || widget.loading,
           showCursor: widget.showCursor,
-          obscuringCharacter: obscuringCharacter,
+          obscuringCharacter: widget.obscuringCharacter ??
+              CouverTheme.of(context).obscuringCharacter,
           obscureText: widget.obscureText || (widget.password && !passwordV),
           autocorrect: widget.autocorrect,
           smartDashesType: widget.smartDashesType,
@@ -976,7 +971,6 @@ class _CTextFormFieldState extends State<CTextFormField> {
           scrollController: widget.scrollController,
           restorationId: widget.restorationId,
           enableIMEPersonalizedLearning: widget.enableIMEPersonalizedLearning,
-          decoration: getInputDecoration(context),
         ),
       ),
     );

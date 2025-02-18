@@ -39,7 +39,7 @@ abstract class CButtonStyleButton extends ButtonStyleButton {
     super.statesController,
     super.isSemanticButton = true,
     required super.child,
-    super.iconAlignment = IconAlignment.start,
+    // super.iconAlignment = IconAlignment.start,
     this.canRequestFocus,
     this.loading,
   })  : _cStyle = style,
@@ -58,11 +58,9 @@ abstract class CButtonStyleButton extends ButtonStyleButton {
   bool get shrinkWhenLoading => style?.shrinkWhenLoading ?? false;
 
   @override
-  @protected
   CButtonStyle defaultStyleOf(BuildContext context);
 
   @override
-  @protected
   CButtonStyle? themeStyleOf(BuildContext context);
 
   bool get isLoading => loading ?? false;
@@ -84,11 +82,11 @@ abstract class CButtonStyleButton extends ButtonStyleButton {
         defaultValue: null));
   }
 
-  /// Returns null if [value] is null, otherwise `WidgetStateProperty.all<T>(value)`.
+  /// Returns null if [value] is null, otherwise `MaterialStateProperty.all<T>(value)`.
   ///
   /// A convenience method for subclasses.
-  static WidgetStateProperty<T>? allOrNull<T>(T? value) =>
-      value == null ? null : WidgetStatePropertyAll<T>(value);
+  static MaterialStateProperty<T>? allOrNull<T>(T? value) =>
+      value == null ? null : MaterialStatePropertyAll<T>(value);
 
   /// Returns an interpolated value based on the [textScaleFactor] parameter:
   ///
@@ -128,21 +126,21 @@ class _CButtonStyleState extends State<CButtonStyleButton>
   AnimationController? controller;
   double? elevation;
   Color? backgroundColor;
-  WidgetStatesController? internalStatesController;
+  MaterialStatesController? internalStatesController;
 
   void handleStatesControllerChange() {
-    // Force a rebuild to resolve WidgetStateProperty properties
+    // Force a rebuild to resolve MaterialStateProperty properties
     setState(() {});
   }
 
-  WidgetStatesController get statesController =>
+  MaterialStatesController get statesController =>
       widget.statesController ?? internalStatesController!;
 
   void initStatesController() {
     if (widget.statesController == null) {
-      internalStatesController = WidgetStatesController();
+      internalStatesController = MaterialStatesController();
     }
-    statesController.update(WidgetState.disabled, !widget.enabled);
+    statesController.update(MaterialState.disabled, !widget.enabled);
     statesController.addListener(handleStatesControllerChange);
     if (widget.platformStyle.isIos) {
       _initCupertinoAnimation();
@@ -210,10 +208,10 @@ class _CButtonStyleState extends State<CButtonStyleButton>
       initStatesController();
     }
     if (widget.enabled != oldWidget.enabled) {
-      statesController.update(WidgetState.disabled, !widget.enabled);
+      statesController.update(MaterialState.disabled, !widget.enabled);
       if (!widget.enabled) {
         // The button may have been disabled while a press gesture is currently underway.
-        statesController.update(WidgetState.pressed, false);
+        statesController.update(MaterialState.pressed, false);
       }
     }
   }
@@ -288,7 +286,7 @@ class _CButtonStyleState extends State<CButtonStyleButton>
     }
 
     T? resolve<T>(
-        WidgetStateProperty<T>? Function(CButtonStyle? style) getProperty) {
+        MaterialStateProperty<T>? Function(CButtonStyle? style) getProperty) {
       return effectiveValue(
         (CButtonStyle? style) =>
             getProperty(style)?.resolve(statesController.value),
@@ -358,14 +356,14 @@ class _CButtonStyleState extends State<CButtonStyleButton>
     final OutlinedBorder? resolvedShape =
         resolve<OutlinedBorder?>((CButtonStyle? style) => style?.shape);
 
-    final WidgetStateMouseCursor mouseCursor = _MouseCursor(
-      (Set<WidgetState> states) => effectiveValue(
+    final MaterialStateMouseCursor mouseCursor = _MouseCursor(
+      (Set<MaterialState> states) => effectiveValue(
           (CButtonStyle? style) => style?.mouseCursor?.resolve(states)),
     );
 
-    final WidgetStateProperty<Color?> overlayColor =
-        WidgetStateProperty.resolveWith<Color?>(
-      (Set<WidgetState> states) => effectiveValue(
+    final MaterialStateProperty<Color?> overlayColor =
+        MaterialStateProperty.resolveWith<Color?>(
+      (Set<MaterialState> states) => effectiveValue(
           (CButtonStyle? style) => style?.overlayColor?.resolve(states)),
     );
 
@@ -382,14 +380,15 @@ class _CButtonStyleState extends State<CButtonStyleButton>
     final Offset densityAdjustment = resolvedVisualDensity!.baseSizeAdjustment;
     final InteractiveInkFeatureFactory? resolvedSplashFactory =
         effectiveValue((CButtonStyle? style) => style?.splashFactory);
-    final ButtonLayerBuilder? resolvedBackgroundBuilder =
-        effectiveValue((ButtonStyle? style) => style?.backgroundBuilder);
-    final ButtonLayerBuilder? resolvedForegroundBuilder =
-        effectiveValue((ButtonStyle? style) => style?.foregroundBuilder);
-    final Clip effectiveClipBehavior = widget.clipBehavior ??
-        ((resolvedBackgroundBuilder ?? resolvedForegroundBuilder) != null
-            ? Clip.antiAlias
-            : Clip.none);
+    // final ButtonLayerBuilder? resolvedBackgroundBuilder =
+    //     effectiveValue((ButtonStyle? style) => style?.backgroundBuilder);
+    // final ButtonLayerBuilder? resolvedForegroundBuilder =
+    //     effectiveValue((ButtonStyle? style) => style?.foregroundBuilder);
+    final Clip effectiveClipBehavior = widget.clipBehavior;
+    // final Clip effectiveClipBehavior = widget.clipBehavior ??
+    //     ((resolvedBackgroundBuilder ?? resolvedForegroundBuilder) != null
+    //         ? Clip.antiAlias
+    //         : Clip.none);
     BoxConstraints effectiveConstraints =
         resolvedVisualDensity.effectiveConstraints(
       BoxConstraints(
@@ -501,16 +500,17 @@ class _CButtonStyleState extends State<CButtonStyleButton>
         alignment: resolvedAlignment!,
         widthFactor: 1.0,
         heightFactor: 1.0,
-        child: resolvedForegroundBuilder != null
-            ? resolvedForegroundBuilder(
-                context, statesController.value, customChild)
-            : customChild,
+        child: customChild,
+        // child: resolvedForegroundBuilder != null
+        //     ? resolvedForegroundBuilder(
+        //         context, statesController.value, customChild)
+        //     : customChild,
       ),
     );
-    if (resolvedBackgroundBuilder != null) {
-      effectiveChild = resolvedBackgroundBuilder(
-          context, statesController.value, effectiveChild);
-    }
+    // if (resolvedBackgroundBuilder != null) {
+    //   effectiveChild = resolvedBackgroundBuilder(
+    //       context, statesController.value, effectiveChild);
+    // }
 
     final Widget result = ConstrainedBox(
       constraints: effectiveConstraints,
@@ -567,7 +567,7 @@ class _CButtonStyleState extends State<CButtonStyleButton>
                   ? NoSplash.splashFactory
                   : resolvedSplashFactory,
               overlayColor: widget.platformStyle.isIos
-                  ? const WidgetStatePropertyAll(Colors.transparent)
+                  ? const MaterialStatePropertyAll(Colors.transparent)
                   : overlayColor,
               highlightColor: Colors.transparent,
               customBorder: shapeWithBorder,
@@ -610,13 +610,13 @@ class _CButtonStyleState extends State<CButtonStyleButton>
   }
 }
 
-class _MouseCursor extends WidgetStateMouseCursor {
+class _MouseCursor extends MaterialStateMouseCursor {
   const _MouseCursor(this.resolveCallback);
 
-  final WidgetPropertyResolver<MouseCursor?> resolveCallback;
+  final MaterialPropertyResolver<MouseCursor?> resolveCallback;
 
   @override
-  MouseCursor resolve(Set<WidgetState> states) => resolveCallback(states)!;
+  MouseCursor resolve(Set<MaterialState> states) => resolveCallback(states)!;
 
   @override
   String get debugDescription => 'CButtonStyleButton_MouseCursor';

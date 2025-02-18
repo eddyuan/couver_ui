@@ -203,14 +203,15 @@ class CIconButton extends IconButton {
       backgroundColor,
       disabledBackgroundColor,
       backgroundGradient,
+      foregroundGradient?.colors.firstOrNull ?? foregroundColor,
     );
     final MaterialStateProperty<Color?>? buttonForegroundColor =
         CButtonColor.buildForegroundState(
       foregroundColor,
       disabledForegroundColor,
       foregroundGradient,
-      backgroundColor,
-      backgroundGradient,
+      backgroundGradient?.colors.firstOrNull ?? backgroundColor,
+      // backgroundGradient,
     );
     final MaterialStateProperty<Color?>? overlayColor =
         CButtonColor.buildOverlayState(
@@ -758,7 +759,7 @@ class _FilledCIconButtonDefaultsM3 extends CButtonStyle {
         }
         if (toggleable) {
           // toggleable but unselected case
-          return _colors.surfaceContainerHighest;
+          return _colors.surfaceVariant;
         }
         return _colors.primary;
       });
@@ -911,7 +912,7 @@ class _FilledTonalCIconButtonDefaultsM3 extends CButtonStyle {
         }
         if (toggleable) {
           // toggleable but unselected case
-          return _colors.surfaceContainerHighest;
+          return _colors.surfaceVariant;
         }
         return _colors.secondaryContainer;
       });

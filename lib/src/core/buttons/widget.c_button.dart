@@ -9,6 +9,28 @@ import 'widget.c_icon_button.dart';
 import 'widget.c_outlined_button.dart';
 import 'widget.c_text_button.dart';
 
+Color? _getContrastThemeColor(
+  Color color, {
+  required ColorScheme scheme,
+}) {
+  if (color == scheme.primary) return scheme.onPrimary;
+  if (color == scheme.primaryContainer) return scheme.onPrimaryContainer;
+  // if (color == scheme.primaryFixed) return scheme.onPrimaryFixed;
+  // if (color == scheme.primaryFixedDim) return scheme.onPrimaryFixedVariant;
+  if (color == scheme.secondary) return scheme.onSecondary;
+  if (color == scheme.secondaryContainer) return scheme.onSecondaryContainer;
+  // if (color == scheme.secondaryFixed) return scheme.onSecondaryFixed;
+  // if (color == scheme.secondaryFixedDim) return scheme.onSecondaryFixedVariant;
+  if (color == scheme.tertiary) return scheme.onTertiary;
+  if (color == scheme.tertiaryContainer) return scheme.onTertiaryContainer;
+  // if (color == scheme.tertiaryFixed) return scheme.onTertiaryFixed;
+  // if (color == scheme.tertiaryFixedDim) return scheme.onTertiaryFixedVariant;
+  if (color == scheme.error) return scheme.onError;
+  if (color == scheme.errorContainer) return scheme.onErrorContainer;
+  if (color == scheme.surface) return scheme.onSurface;
+  return null;
+}
+
 // enum CButtonType {
 //   text,
 //   filled,
@@ -338,16 +360,30 @@ class CButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
     // final BtnSize targetBtnSize = size ;
     final double targetMinHeight = size.minHeight;
     final double targetMinWidth = size.minWidth;
     final double targetFontSize = size.fontSize;
     final FontWeight targetFontWeight = size.fontWeight;
-    final TextStyle targetTextStyle = TextStyle(
-      fontSize: targetFontSize,
-      fontWeight: targetFontWeight,
-      height: 1.2,
-    );
+
+    TextStyle targetTextStyle = theme.textTheme.bodyMedium?.copyWith(
+          fontSize: targetFontSize,
+          fontWeight: targetFontWeight,
+          height: 1.2,
+        ) ??
+        TextStyle(
+          fontSize: targetFontSize,
+          fontWeight: targetFontWeight,
+          height: 1.2,
+        );
+
+    // switch (_type) {
+    //   case _ButtonType.filled:
+
+    //     break;
+    //   default:
+    // }
 
     final OutlinedBorder? targetShape = borderRadius != null
         ? RoundedRectangleBorder(
@@ -398,53 +434,61 @@ class CButton extends StatelessWidget {
             ? MaterialTapTargetSize.padded
             : MaterialTapTargetSize.shrinkWrap);
 
-    Color? targetBColor = backgroundColor;
-    Color? targetFColor = foregroundColor;
-    Color? targetDColor = disabledColor;
+    Color? bColor = backgroundColor;
+    Color? fColor = foregroundColor;
+    Color? dColor = disabledColor;
 
     if (_type == _ButtonType.filled) {
-      targetBColor ??= color ?? gradient?.colors[0];
+      bColor ??=
+          color ?? gradient?.colors.firstOrNull ?? theme.colorScheme.primary;
     } else {
-      targetFColor ??= color ?? gradient?.colors[0];
+      fColor ??= color ?? gradient?.colors.firstOrNull;
     }
-
-    if (targetBColor != null) {
-      final int alpha = targetBColor.alpha;
-      final bool isBDark = CouverInternal.isDark(targetBColor);
-      if (targetFColor == null) {
-        if (isBDark) {
+    bool? isBDark;
+    bool? isFDark;
+    if (bColor != null) {
+      final int alpha = bColor.alpha;
+      isBDark = CouverInternal.isDark(bColor);
+      fColor ??= _getContrastThemeColor(bColor, scheme: theme.colorScheme);
+      if (fColor == null) {
+        if (bColor == theme.colorScheme.primary) {
+          fColor = theme.colorScheme.onPrimary;
+        } else if (bColor == theme.colorScheme.primaryContainer) {
+          fColor = theme.colorScheme.onPrimaryContainer;
+        } else if (bColor == theme.colorScheme.error) {
+          fColor = theme.colorScheme.onError;
+        } else if (isBDark) {
           if (alpha < 99) {
-            targetFColor = targetBColor.withOpacity(1);
+            fColor = bColor.withOpacity(1);
           }
         } else {
           if (alpha < 99) {
-            targetFColor = targetBColor.withOpacity(1);
+            fColor = bColor.withOpacity(1);
           } else {
-            targetFColor = Colors.black;
+            fColor = Colors.black;
           }
         }
       }
-      if (!isBDark && targetDColor == null) {
-        targetDColor = Colors.white;
-      }
     }
 
-    if (targetFColor != null && targetDColor == null) {
-      final bool isFDark = CouverInternal.isDark(targetFColor);
-      if (!isFDark) {
-        targetDColor ??= Colors.white;
-      }
+    if (fColor != null) {
+      isFDark = CouverInternal.isDark(fColor);
+    }
+    // targetDColor = Colors.black;
+    if (isBDark == false && isFDark == false && dColor == null) {
+      dColor = Colors.white;
+    } else {
+      dColor = Colors.black;
     }
 
-    final double? targetElevation =
-        ((targetBColor?.alpha ?? 255) < 255) ? 0 : null;
+    final double? targetElevation = ((bColor?.alpha ?? 255) < 255) ? 0 : null;
 
     Widget buildIconButton(BuildContext context) {
       return CIconButton(
         loading: loading,
         icon: targetChild,
         onPressed: targetOnPressed,
-        color: targetFColor,
+        color: fColor,
         padding: targetPadding,
         constraints: BoxConstraints(
           minWidth: targetMinWidth,
@@ -458,13 +502,14 @@ class CButton extends StatelessWidget {
           minimumSize: targetMinSize,
           // textStyle: targetTextStyle,
           // backgroundColor: targetBColor,
-          foregroundColor: targetFColor,
+          foregroundColor: fColor,
+          backgroundColor: bColor,
           // disabledBackgroundColor: targetDColor,
           tapTargetSize: targetTapSize,
           platformStyle: platformStyle,
         ),
         splashRadius: splashRadius,
-        disabledColor: targetDColor?.withOpacity(0.7),
+        disabledColor: dColor?.withOpacity(0.7),
         canRequestFocus: canRequestFocus,
       );
     }
@@ -480,14 +525,15 @@ class CButton extends StatelessWidget {
           padding: targetPadding,
           minimumSize: targetMinSize,
           textStyle: targetTextStyle,
-          backgroundColor: targetBColor,
-          foregroundColor: targetFColor,
-          // disabledBackgroundColor: targetDColor,
+          backgroundColor: bColor,
+          foregroundColor: fColor,
+          // disabledBackgroundColor: targetDColor?.withAlpha(20),
+          // disabledForegroundColor: targetDColor?.withAlpha(50),
           tapTargetSize: targetTapSize,
           platformStyle: platformStyle,
         ).copyWith(
           elevation: targetElevation != null
-              ? WidgetStateProperty.all(targetElevation)
+              ? MaterialStatePropertyAll(targetElevation)
               : null,
         ),
         canRequestFocus: canRequestFocus,
@@ -507,9 +553,9 @@ class CButton extends StatelessWidget {
           padding: targetPadding,
           minimumSize: targetMinSize,
           textStyle: targetTextStyle,
-          foregroundColor: targetFColor,
+          foregroundColor: fColor,
           // disabledBackgroundColor: targetDColor,
-          backgroundColor: targetBColor,
+          backgroundColor: bColor,
           side: BorderSide(
             width: borderWidth,
             color: foregroundColor ??
@@ -566,9 +612,9 @@ class CButton extends StatelessWidget {
           padding: targetPadding,
           minimumSize: targetMinSize,
           textStyle: targetTextStyle,
-          foregroundColor: color,
-          backgroundColor: targetBColor,
-          disabledForegroundColor: targetDColor,
+          foregroundColor: fColor,
+          backgroundColor: bColor,
+          // disabledForegroundColor: dColor?.withAlpha(20),
           tapTargetSize: targetTapSize,
           platformStyle: platformStyle,
         ),

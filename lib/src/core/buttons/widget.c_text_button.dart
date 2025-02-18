@@ -167,6 +167,7 @@ class CTextButton extends CButtonStyleButton {
       backgroundColor,
       disabledBackgroundColor,
       backgroundGradient,
+      foregroundGradient?.colors.firstOrNull ?? foregroundColor,
     );
 
     final MaterialStateProperty<Color?>? foregroundColorProp =
@@ -174,8 +175,8 @@ class CTextButton extends CButtonStyleButton {
       foregroundColor,
       disabledForegroundColor,
       foregroundGradient,
-      backgroundColor,
-      backgroundGradient,
+      backgroundGradient?.colors.firstOrNull ?? backgroundColor,
+      // backgroundGradient,
     );
 
     final MaterialStateProperty<BorderSide?>? sideProp =
@@ -190,8 +191,8 @@ class CTextButton extends CButtonStyleButton {
       iconColor ?? foregroundColor,
       disabledIconColor ?? disabledForegroundColor,
       foregroundGradient,
-      backgroundColor,
-      backgroundGradient,
+      backgroundGradient?.colors.firstOrNull ?? backgroundColor,
+      // backgroundGradient,
     );
     // (iconColor == null && disabledIconColor == null)
     //     ? null

@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -20,7 +20,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.18.2 <3.0.0"
+  sdk: '>=2.18.2 <3.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -89,3 +89,24 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  fonts:
+    - family: DMSans
+      fonts:
+        - asset: fonts/DMSans-Thin.ttf
+          weight: 100
+        - asset: fonts/DMSans-ExtraLight.ttf
+          weight: 200
+        - asset: fonts/DMSans-Light.ttf
+          weight: 300
+        - asset: fonts/DMSans-Regular.ttf
+          weight: 400
+        - asset: fonts/DMSans-Medium.ttf
+          weight: 500
+        - asset: fonts/DMSans-SemiBold.ttf
+          weight: 600
+        - asset: fonts/DMSans-Bold.ttf
+          weight: 700
+        - asset: fonts/DMSans-ExtraBold.ttf
+          weight: 800
+        - asset: fonts/DMSans-Black.ttf
+          weight: 900

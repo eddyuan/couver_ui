@@ -7,98 +7,85 @@ bool _isDark(Color color, {double threshold = 0.15}) {
 }
 
 class CButtonColor {
-  static WidgetStateProperty<Color?>? buildForegroundState(
+  static MaterialStateProperty<Color?>? buildForegroundState(
     Color? foregroundColor,
     Color? disabledForegroundColor,
     Gradient? foregroundGradient,
     Color? backgroundColor,
-    Gradient? backgroundGradient,
+    // Gradient? backgroundGradient,
   ) {
     if (foregroundColor == null &&
         backgroundColor == null &&
         disabledForegroundColor == null &&
-        foregroundGradient == null &&
-        backgroundGradient == null) {
+        foregroundGradient == null) {
       return null;
     }
-    final Color? referenceBackgroundColor =
-        backgroundGradient != null && backgroundGradient.colors.isNotEmpty
-            ? backgroundGradient.colors[0]
-            : backgroundColor;
-    final Color targetForegroundColor;
-    if (foregroundGradient != null && foregroundGradient.colors.isNotEmpty) {
-      targetForegroundColor = foregroundGradient.colors[0];
-    } else if (foregroundColor != null) {
-      targetForegroundColor = foregroundColor;
-    } else if (referenceBackgroundColor != null) {
-      if (referenceBackgroundColor.opacity > 0.45) {
-        targetForegroundColor =
-            _isDark(referenceBackgroundColor) ? Colors.white : Colors.black;
+    Color? fColor = foregroundGradient?.colors.firstOrNull ?? foregroundColor;
+    if (fColor == null) {
+      if (backgroundColor != null) {
+        if (backgroundColor.opacity > 0.45) {
+          fColor = _isDark(backgroundColor) ? Colors.white : Colors.black;
+        } else {
+          fColor = backgroundColor.withOpacity(1);
+        }
       } else {
-        targetForegroundColor = referenceBackgroundColor.withOpacity(1);
+        // fColor = Colors.black;
       }
-    } else {
-      targetForegroundColor = Colors.black;
     }
 
-    final Color targetDisabledColor;
-
-    if (referenceBackgroundColor != null &&
-        referenceBackgroundColor.opacity > 0) {
-      targetDisabledColor = _isDark(referenceBackgroundColor)
-          ? Colors.black.withOpacity(0.3)
-          : Colors.white.withOpacity(0.5);
-    } else {
-      targetDisabledColor = disabledForegroundColor ??
-          (_isDark(targetForegroundColor)
-              ? Colors.black.withOpacity(0.3)
-              : Colors.white.withOpacity(0.5));
+    Color? dColor = disabledForegroundColor;
+    if (dColor == null) {
+      final bool? isBDark =
+          backgroundColor != null ? _isDark(backgroundColor) : null;
+      final bool? isFDark = fColor != null ? _isDark(fColor) : null;
+      if (isFDark == true || isBDark == true) {
+        dColor = Colors.black.withOpacity(0.3);
+      } else {
+        dColor = Colors.white.withOpacity(0.5);
+      }
     }
 
-    return _CButtonDefaultColor(targetForegroundColor, targetDisabledColor);
+    return _CButtonDefaultColor(fColor, dColor);
   }
 
-  static WidgetStateProperty<Color?>? buildBackgroundState(
+  static MaterialStateProperty<Color?>? buildBackgroundState(
     Color? backgroundColor,
     Color? disabledBackgroundColor,
     Gradient? backgroundGradient,
+    Color? foregroundColor,
   ) {
     if (backgroundColor == null &&
         disabledBackgroundColor == null &&
-        backgroundGradient == null) {
+        backgroundGradient == null &&
+        foregroundColor == null) {
       return null;
     }
-    final Color? targetBackgroundColor;
-    if (backgroundColor != null) {
-      targetBackgroundColor = backgroundColor;
-    } else if (backgroundGradient != null &&
-        backgroundGradient.colors.isNotEmpty) {
-      targetBackgroundColor = backgroundGradient.colors[0];
-    } else {
-      targetBackgroundColor = null;
-    }
-    final Color? targetDisabledBackgroundColor;
-    if (disabledBackgroundColor != null) {
-      targetDisabledBackgroundColor = disabledBackgroundColor;
-    } else if (targetBackgroundColor != null) {
-      final bool isBackgroundDark = _isDark(targetBackgroundColor);
-      targetDisabledBackgroundColor = isBackgroundDark
-          ? Colors.black.withOpacity(0.1)
-          : Colors.white.withOpacity(0.3);
-    } else {
-      targetDisabledBackgroundColor = null;
+    final Color? bColor =
+        backgroundGradient?.colors.firstOrNull ?? backgroundColor;
+    Color? dColor = disabledBackgroundColor;
+
+    if (dColor == null && bColor != null) {
+      final bool isBDark = _isDark(bColor);
+      final bool? isFDark =
+          foregroundColor != null ? _isDark(foregroundColor) : null;
+      if (isBDark || isFDark == true) {
+        dColor = Colors.black.withOpacity(0.1);
+      } else {
+        dColor = Colors.white.withOpacity(0.3);
+      }
     }
 
-    if (targetBackgroundColor == null &&
-        targetDisabledBackgroundColor == null) {
+    if (bColor == null && dColor == null) {
       return null;
     }
 
     return _CButtonDefaultColor(
-        targetBackgroundColor, targetDisabledBackgroundColor);
+      bColor,
+      dColor,
+    );
   }
 
-  static WidgetStateProperty<BorderSide?>? buildBorderState(
+  static MaterialStateProperty<BorderSide?>? buildBorderState(
     BorderSide? side,
     BorderSide? disabledSide,
     Gradient? borderGradient,
@@ -130,7 +117,7 @@ class CButtonColor {
     );
   }
 
-  static WidgetStateProperty<Color?>? buildOverlayState(
+  static MaterialStateProperty<Color?>? buildOverlayState(
     Color? foregroundColor,
     Gradient? foregroundGradient,
     Color? backgroundColor,
@@ -183,7 +170,7 @@ class CButtonColor {
     return null;
   }
 
-  static WidgetStateProperty<MouseCursor?>? buildMouseCursorState(
+  static MaterialStateProperty<MouseCursor?>? buildMouseCursorState(
     MouseCursor? enabledMouseCursor,
     MouseCursor? disabledMouseCursor,
   ) {
@@ -193,7 +180,7 @@ class CButtonColor {
     return _CButtonDefaultMouseCursor(enabledMouseCursor, disabledMouseCursor);
   }
 
-  static WidgetStateProperty<Gradient?>? buildGradientState(
+  static MaterialStateProperty<Gradient?>? buildGradientState(
       Gradient? gradient) {
     if (gradient != null) {
       return _CButtonDefaultGradient(gradient);
@@ -202,8 +189,7 @@ class CButtonColor {
   }
 }
 
-@immutable
-class _CButtonDefaultColor extends WidgetStateProperty<Color?>
+class _CButtonDefaultColor extends MaterialStateProperty<Color?>
     with Diagnosticable {
   _CButtonDefaultColor(this.color, this.disabled);
 
@@ -211,16 +197,15 @@ class _CButtonDefaultColor extends WidgetStateProperty<Color?>
   final Color? disabled;
 
   @override
-  Color? resolve(Set<WidgetState> states) {
-    if (states.contains(WidgetState.disabled)) {
+  Color? resolve(Set<MaterialState> states) {
+    if (states.contains(MaterialState.disabled)) {
       return disabled;
     }
     return color;
   }
 }
 
-@immutable
-class _CButtonDefaultSide extends WidgetStateProperty<BorderSide?>
+class _CButtonDefaultSide extends MaterialStateProperty<BorderSide?>
     with Diagnosticable {
   _CButtonDefaultSide(this.side, this.disabled);
 
@@ -228,16 +213,15 @@ class _CButtonDefaultSide extends WidgetStateProperty<BorderSide?>
   final BorderSide? disabled;
 
   @override
-  BorderSide? resolve(Set<WidgetState> states) {
-    if (states.contains(WidgetState.disabled)) {
+  BorderSide? resolve(Set<MaterialState> states) {
+    if (states.contains(MaterialState.disabled)) {
       return disabled ?? side?.copyWith(color: Colors.black.withOpacity(0.2));
     }
     return side;
   }
 }
 
-@immutable
-class _CButtonDefaultOverlay extends WidgetStateProperty<Color?>
+class _CButtonDefaultOverlay extends MaterialStateProperty<Color?>
     with Diagnosticable {
   _CButtonDefaultOverlay(
     this.foregroundColor, [
@@ -253,25 +237,25 @@ class _CButtonDefaultOverlay extends WidgetStateProperty<Color?>
   final Color? highlightColor;
 
   @override
-  Color? resolve(Set<WidgetState> states) {
-    if (states.contains(WidgetState.selected)) {
-      if (states.contains(WidgetState.pressed)) {
+  Color? resolve(Set<MaterialState> states) {
+    if (states.contains(MaterialState.selected)) {
+      if (states.contains(MaterialState.pressed)) {
         return highlightColor ?? foregroundColor?.withOpacity(0.12);
       }
-      if (states.contains(WidgetState.hovered)) {
+      if (states.contains(MaterialState.hovered)) {
         return hoverColor ?? foregroundColor?.withOpacity(0.08);
       }
-      if (states.contains(WidgetState.focused)) {
+      if (states.contains(MaterialState.focused)) {
         return focusColor ?? foregroundColor?.withOpacity(0.12);
       }
     }
-    if (states.contains(WidgetState.pressed)) {
+    if (states.contains(MaterialState.pressed)) {
       return highlightColor ?? foregroundColor?.withOpacity(0.12);
     }
-    if (states.contains(WidgetState.hovered)) {
+    if (states.contains(MaterialState.hovered)) {
       return hoverColor ?? foregroundColor?.withOpacity(0.08);
     }
-    if (states.contains(WidgetState.focused)) {
+    if (states.contains(MaterialState.focused)) {
       return focusColor ?? foregroundColor?.withOpacity(0.08);
     }
     return null;
@@ -286,8 +270,7 @@ class _CButtonDefaultOverlay extends WidgetStateProperty<Color?>
   }
 }
 
-@immutable
-class _CButtonDefaultMouseCursor extends WidgetStateProperty<MouseCursor>
+class _CButtonDefaultMouseCursor extends MaterialStateProperty<MouseCursor>
     with Diagnosticable {
   _CButtonDefaultMouseCursor(this.enabledCursor, this.disabledCursor);
 
@@ -295,24 +278,23 @@ class _CButtonDefaultMouseCursor extends WidgetStateProperty<MouseCursor>
   final MouseCursor? disabledCursor;
 
   @override
-  MouseCursor resolve(Set<WidgetState> states) {
-    if (states.contains(WidgetState.disabled)) {
+  MouseCursor resolve(Set<MaterialState> states) {
+    if (states.contains(MaterialState.disabled)) {
       return disabledCursor ?? SystemMouseCursors.forbidden;
     }
     return enabledCursor ?? SystemMouseCursors.click;
   }
 }
 
-@immutable
-class _CButtonDefaultGradient extends WidgetStateProperty<Gradient?>
+class _CButtonDefaultGradient extends MaterialStateProperty<Gradient?>
     with Diagnosticable {
   _CButtonDefaultGradient(this.gradient);
 
   final Gradient? gradient;
 
   @override
-  Gradient? resolve(Set<WidgetState> states) {
-    if (states.contains(WidgetState.disabled)) {
+  Gradient? resolve(Set<MaterialState> states) {
+    if (states.contains(MaterialState.disabled)) {
       return null;
     }
     return gradient;

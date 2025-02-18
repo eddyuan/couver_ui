@@ -172,6 +172,7 @@ class COutlinedButton extends CButtonStyleButton {
       backgroundColor,
       disabledBackgroundColor,
       backgroundGradient,
+      foregroundGradient?.colors.firstOrNull ?? foregroundColor,
     );
 
     final MaterialStateProperty<Color?>? foregroundColorProp =
@@ -179,8 +180,8 @@ class COutlinedButton extends CButtonStyleButton {
       foregroundColor,
       disabledForegroundColor,
       foregroundGradient,
-      backgroundColor,
-      backgroundGradient,
+      backgroundGradient?.colors.firstOrNull ?? backgroundColor,
+      // backgroundGradient,
     );
 
     final MaterialStateProperty<BorderSide?>? sideProp =

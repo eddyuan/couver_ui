@@ -5,6 +5,7 @@ import 'package:example/screens/input_screen.dart';
 import 'package:example/screens/list_tiles_screen.dart';
 import 'package:example/screens/page_view_screen.dart';
 import 'package:example/screens/ribbons_screen.dart';
+import 'package:example/screens/texts_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/buttons_screen.dart';
@@ -55,6 +56,7 @@ class AppRoutes {
     '/expandable': (context) => const ExpandableScreen(),
     '/ink': (context) => const InkScreen(),
     '/ribbons': (context) => const RibbonsScreen(),
+    '/texts': (context) => const TextsScreen(),
   };
 
   static List<RouteButtonConfig> get buttons =>

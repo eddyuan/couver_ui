@@ -39,3 +39,5 @@ export 'widget.c_radio_icon.dart';
 export 'widget.c_ribbon.dart';
 export 'buttons/widget.c_text_button.dart';
 export 'widget.gradient_text.dart';
+
+export 'text/export.dart';

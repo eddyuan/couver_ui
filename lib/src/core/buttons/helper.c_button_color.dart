@@ -10,17 +10,17 @@ class CButtonColor {
   static MaterialStateProperty<Color?>? buildForegroundState(
     Color? foregroundColor,
     Color? disabledForegroundColor,
-    Gradient? foregroundGradient,
+    Color? foregroundGradientColor,
     Color? backgroundColor,
     // Gradient? backgroundGradient,
   ) {
     if (foregroundColor == null &&
         backgroundColor == null &&
         disabledForegroundColor == null &&
-        foregroundGradient == null) {
+        foregroundGradientColor == null) {
       return null;
     }
-    Color? fColor = foregroundGradient?.colors.firstOrNull ?? foregroundColor;
+    Color? fColor = foregroundGradientColor ?? foregroundColor;
     if (fColor == null) {
       if (backgroundColor != null) {
         if (backgroundColor.opacity > 0.45) {

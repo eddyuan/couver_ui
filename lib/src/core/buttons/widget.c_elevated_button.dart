@@ -217,7 +217,7 @@ class CElevatedButton extends CButtonStyleButton {
         CButtonColor.buildForegroundState(
       foregroundColor,
       disabledForegroundColor,
-      foregroundGradient,
+      foregroundGradient?.colors.firstOrNull,
       backgroundGradient?.colors.firstOrNull ?? backgroundColor,
     );
 

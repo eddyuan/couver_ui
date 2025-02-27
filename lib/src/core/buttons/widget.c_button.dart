@@ -474,8 +474,12 @@ class CButton extends StatelessWidget {
     if (fColor != null) {
       isFDark = CouverInternal.isDark(fColor);
     }
-    // targetDColor = Colors.black;
-    if (isBDark == false && isFDark == false && dColor == null) {
+
+    if (color != null &&
+        color != theme.colorScheme.primary &&
+        isBDark == false &&
+        isFDark == false &&
+        dColor == null) {
       dColor = Colors.white;
     } else {
       dColor = Colors.black;
@@ -504,7 +508,7 @@ class CButton extends StatelessWidget {
           // backgroundColor: targetBColor,
           foregroundColor: fColor,
           backgroundColor: bColor,
-          // disabledBackgroundColor: targetDColor,
+          // disabledBackgroundColor: dColor,
           tapTargetSize: targetTapSize,
           platformStyle: platformStyle,
         ),
@@ -527,8 +531,8 @@ class CButton extends StatelessWidget {
           textStyle: targetTextStyle,
           backgroundColor: bColor,
           foregroundColor: fColor,
-          // disabledBackgroundColor: targetDColor?.withAlpha(20),
-          // disabledForegroundColor: targetDColor?.withAlpha(50),
+          disabledBackgroundColor: dColor?.withAlpha(20),
+          disabledForegroundColor: dColor?.withAlpha(80),
           tapTargetSize: targetTapSize,
           platformStyle: platformStyle,
         ).copyWith(
@@ -555,6 +559,7 @@ class CButton extends StatelessWidget {
           textStyle: targetTextStyle,
           foregroundColor: fColor,
           // disabledBackgroundColor: targetDColor,
+          disabledForegroundColor: dColor?.withAlpha(80),
           backgroundColor: bColor,
           side: BorderSide(
             width: borderWidth,
@@ -614,6 +619,7 @@ class CButton extends StatelessWidget {
           textStyle: targetTextStyle,
           foregroundColor: fColor,
           backgroundColor: bColor,
+          disabledForegroundColor: dColor?.withAlpha(80),
           // disabledForegroundColor: dColor?.withAlpha(20),
           tapTargetSize: targetTapSize,
           platformStyle: platformStyle,

@@ -174,7 +174,7 @@ class CTextButton extends CButtonStyleButton {
         CButtonColor.buildForegroundState(
       foregroundColor,
       disabledForegroundColor,
-      foregroundGradient,
+      foregroundGradient?.colors.firstOrNull,
       backgroundGradient?.colors.firstOrNull ?? backgroundColor,
       // backgroundGradient,
     );
@@ -190,7 +190,7 @@ class CTextButton extends CButtonStyleButton {
         CButtonColor.buildForegroundState(
       iconColor ?? foregroundColor,
       disabledIconColor ?? disabledForegroundColor,
-      foregroundGradient,
+      foregroundGradient?.colors.firstOrNull,
       backgroundGradient?.colors.firstOrNull ?? backgroundColor,
       // backgroundGradient,
     );

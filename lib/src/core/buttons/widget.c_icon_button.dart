@@ -209,7 +209,7 @@ class CIconButton extends IconButton {
         CButtonColor.buildForegroundState(
       foregroundColor,
       disabledForegroundColor,
-      foregroundGradient,
+      foregroundGradient?.colors.firstOrNull,
       backgroundGradient?.colors.firstOrNull ?? backgroundColor,
       // backgroundGradient,
     );

@@ -38,10 +38,20 @@ class MyAppState extends State<MyApp> {
       title: 'Couver UI Demo',
       theme: ThemeData(
         useMaterial3: useMaterial3,
-        colorScheme: ColorScheme.light(
-          primary: Color(0xFFFFC931),
-          onPrimary: Color(0xff111111),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Color(0xff04b8c4),
+          primary: Color(0xff04b8c4),
+          onPrimary: Colors.white,
         ),
+        // colorScheme: ColorScheme.light(
+        //   primary: Color(0xFFFFC931),
+        //   onPrimary: Color(0xff111111),
+        // ),
+        // colorScheme: ColorScheme.fromSeed(
+        //   seedColor: Color(0xFFFFC931),
+        //   primary: Color(0xFFFFC931),
+        //   onPrimary: Color(0xff111111),
+        // ),
         fontFamily: "DMSans",
         // platform: TargetPlatform.iOS,
         // elevatedButtonTheme: ElevatedButtonThemeData(

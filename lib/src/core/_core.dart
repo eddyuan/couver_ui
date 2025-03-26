@@ -41,3 +41,4 @@ export 'buttons/widget.c_text_button.dart';
 export 'widget.gradient_text.dart';
 
 export 'text/export.dart';
+export 'skeleton/export.dart';

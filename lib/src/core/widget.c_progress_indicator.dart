@@ -1,13 +1,15 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 import 'dart:math' as math;
 
-import 'package:couver_ui/src/constants/animation_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+import 'package:couver_ui/src/constants/animation_constants.dart';
 
 // import 'color_scheme.dart';
 // import 'material.dart';
@@ -52,9 +54,10 @@ abstract class CProgressIndicator extends StatefulWidget {
     this.semanticsLabel,
     this.semanticsValue,
     // Extra features
-    this.gradient,
-    this.steps,
-    this.gap,
+    // this.gradient,
+    // this.steps,
+    // this.gap,
+    // this.gapShape,
   });
 
   /// If non-null, the value of this progress indicator.
@@ -114,15 +117,6 @@ abstract class CProgressIndicator extends StatefulWidget {
   /// {@endtemplate}
   final String? semanticsValue;
 
-  /// This is the foreground gradient!
-  final Gradient? gradient;
-
-  /// Do we use seperator
-  final int? steps;
-
-  /// Gap size for seperator
-  final double? gap;
-
   Color _getValueColor(BuildContext context) {
     return valueColor?.value ??
         color ??
@@ -161,12 +155,14 @@ class _CLinearProgressIndicatorPainter extends CustomPainter {
     // this.value,
     required this.animationValue,
     required this.textDirection,
-    this.steps,
+    int? steps,
     this.gap,
     this.valueGradient,
     required this.gradientFullWidth,
     this.borderRadius,
-  });
+    this.gapShape,
+    this.gapRadius,
+  }) : steps = steps ?? 0;
 
   final Color backgroundColor;
   final Color valueColor;
@@ -174,11 +170,13 @@ class _CLinearProgressIndicatorPainter extends CustomPainter {
   final bool indeterminate;
   final double animationValue;
   final TextDirection textDirection;
-  final int? steps;
+  final int steps;
   final double? gap;
   final Gradient? valueGradient;
   final bool gradientFullWidth;
   final BorderRadius? borderRadius;
+  final CGapShape? gapShape;
+  final BorderRadius? gapRadius;
 
   // The indeterminate progress animation displays two lines whose leading (head)
   // and trailing (tail) endpoints are defined by the following four curves.
@@ -205,31 +203,73 @@ class _CLinearProgressIndicatorPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final Rect backgroundRect = Offset.zero & size;
-    Path backgroundPath = Path()
-      ..addRRect(
-        RRect.fromRectAndCorners(
-          backgroundRect,
-          topLeft: borderRadius?.topLeft ?? Radius.zero,
-          topRight: borderRadius?.topLeft ?? Radius.zero,
-          bottomRight: borderRadius?.bottomRight ?? Radius.zero,
-          bottomLeft: borderRadius?.bottomLeft ?? Radius.zero,
-        ),
-      );
-
-    if (steps != null && steps! > 0) {
-      final double targetGap = gap ?? size.height;
-      final Path cutOutPath = Path();
-      for (int i = 0; i < (steps! - 1); i++) {
-        cutOutPath.addRect(
-            Offset(size.width / steps! * (i + 1) - (targetGap / 2), 0) &
-                Size(targetGap, size.height));
+    Path backgroundPath = Path();
+    final double targetGap = gap ?? size.height;
+    // final int tSteps = steps ?? 0;
+    if (steps > 1 && gapShape == CGapShape.rounded) {
+      final eachWidth = (size.width - (steps - 1) * targetGap) / steps;
+      for (int i = 0; i < steps; i++) {
+        final rect = Rect.fromLTWH(
+            i * (eachWidth + targetGap), 0, eachWidth, size.height);
+        backgroundPath.addRRect(
+          RRect.fromRectAndCorners(
+            rect,
+            topLeft: i == 0
+                ? (borderRadius?.topLeft ?? Radius.zero)
+                : (gapRadius?.topLeft ?? borderRadius?.topLeft ?? Radius.zero),
+            bottomLeft: i == 0
+                ? (borderRadius?.bottomLeft ?? Radius.zero)
+                : (gapRadius?.bottomLeft ??
+                    borderRadius?.bottomLeft ??
+                    Radius.zero),
+            topRight: i == (steps - 1)
+                ? (borderRadius?.topRight ?? Radius.zero)
+                : (gapRadius?.topRight ??
+                    borderRadius?.topRight ??
+                    Radius.zero),
+            bottomRight: i == (steps - 1)
+                ? (borderRadius?.bottomRight ?? Radius.zero)
+                : (gapRadius?.bottomRight ??
+                    borderRadius?.bottomRight ??
+                    Radius.zero),
+          ),
+        );
       }
-      backgroundPath = Path.combine(
-        PathOperation.difference,
-        backgroundPath,
-        cutOutPath,
+    } else {
+      final Rect backgroundRect = Offset.zero & size;
+      backgroundPath.addRRect(
+        (borderRadius ?? BorderRadius.zero).toRRect(backgroundRect),
       );
+      if (steps > 1) {
+        final Path cutOutPath = Path();
+        for (int i = 0; i < (steps - 1); i++) {
+          switch (gapShape) {
+            case CGapShape.circle:
+              cutOutPath.addOval(
+                Offset(size.width / steps * (i + 1) - (targetGap / 2),
+                        (size.height - targetGap) / 2) &
+                    Size(targetGap, targetGap),
+              );
+              break;
+            case CGapShape.square:
+              cutOutPath.addRRect((gapRadius ?? BorderRadius.zero).toRRect(
+                Offset(size.width / steps * (i + 1) - (targetGap / 2),
+                        (size.height - targetGap) / 2) &
+                    Size(targetGap, targetGap),
+              ));
+              break;
+            default:
+              cutOutPath.addRect(
+                  Offset(size.width / steps * (i + 1) - (targetGap / 2), 0) &
+                      Size(targetGap, size.height));
+          }
+        }
+        backgroundPath = Path.combine(
+          PathOperation.difference,
+          backgroundPath,
+          cutOutPath,
+        );
+      }
     }
 
     final Paint paint = Paint()
@@ -296,29 +336,48 @@ class _CLinearProgressIndicatorPainter extends CustomPainter {
         oldPainter.valueGradient != valueGradient ||
         oldPainter.steps != steps ||
         oldPainter.gradientFullWidth != gradientFullWidth ||
-        oldPainter.borderRadius != borderRadius;
+        oldPainter.borderRadius != borderRadius ||
+        oldPainter.gapShape != gapShape ||
+        oldPainter.gapRadius != gapRadius;
   }
 }
 
-enum IndicatorGapShape { square, circle, rounded, roundedInverted }
+enum CGapShape { square, circle, rounded }
 
-class CProgressIndicatorGapShape {
-  final double? width;
-  final double? borderRadius;
-  final IndicatorGapShape shape;
+// class CGapShapeOption {
+//   final double? width;
+//   final BorderRadius? borderRadius;
+//   final CGapShape shape;
 
-  const CProgressIndicatorGapShape.square([this.width])
-      : borderRadius = null,
-        shape = IndicatorGapShape.square;
+//   const CGapShapeOption.square([this.width])
+//       : borderRadius = null,
+//         shape = CGapShape.square;
 
-  const CProgressIndicatorGapShape.circle([double? diameter])
-      : width = diameter,
-        borderRadius = null,
-        shape = IndicatorGapShape.square;
+//   const CGapShapeOption.circle([double? diameter])
+//       : width = diameter,
+//         borderRadius = null,
+//         shape = CGapShape.circle;
 
-  const CProgressIndicatorGapShape.rounded({this.width, this.borderRadius})
-      : shape = IndicatorGapShape.square;
-}
+//   const CGapShapeOption.rounded({this.width, this.borderRadius})
+//       : shape = CGapShape.rounded;
+
+//   const CGapShapeOption.roundedInverted({
+//     this.width,
+//     this.borderRadius,
+//   }) : shape = CGapShape.roundedInverted;
+
+//   @override
+//   bool operator ==(covariant CGapShapeOption other) {
+//     if (identical(this, other)) return true;
+
+//     return other.width == width &&
+//         other.borderRadius == borderRadius &&
+//         other.shape == shape;
+//   }
+
+//   @override
+//   int get hashCode => width.hashCode ^ borderRadius.hashCode ^ shape.hashCode;
+// }
 
 /// A Material Design linear progress indicator, also known as a progress bar.
 ///
@@ -367,13 +426,17 @@ class CLinearProgressIndicator extends CProgressIndicator {
     this.minHeight,
     super.semanticsLabel,
     super.semanticsValue,
-    super.gradient,
+    this.gradient,
     this.gradientFullWidth = false,
     this.animationDuration = kAnimationProgressDuration,
     this.animationCurve = kAnimationProgressCurve,
     this.animateOnInit = true,
     this.animateOnChange = true,
     this.borderRadius,
+    this.gap,
+    this.gapShape,
+    this.steps,
+    this.gapRadius,
   }) : assert(minHeight == null || minHeight > 0);
 
   const CLinearProgressIndicator.divided({
@@ -385,20 +448,19 @@ class CLinearProgressIndicator extends CProgressIndicator {
     this.minHeight,
     super.semanticsLabel,
     super.semanticsValue,
-    super.gap = 4,
-    super.gradient,
-    required int steps,
+    this.gap = 4,
+    this.gradient,
+    required int this.steps,
     this.gradientFullWidth = false,
     this.animationDuration = kAnimationProgressDuration,
     this.animationCurve = kAnimationProgressCurve,
     this.animateOnInit = true,
     this.animateOnChange = true,
     this.borderRadius,
+    this.gapShape,
+    this.gapRadius,
   })  : assert(minHeight == null || minHeight > 0),
-        super(
-          value: step != null ? step / steps : null,
-          steps: steps,
-        );
+        super(value: step != null ? step / steps : null);
 
   /// {@template flutter.material.CLinearProgressIndicator.trackColor}
   /// Color of the track being filled by the linear indicator.
@@ -425,13 +487,28 @@ class CLinearProgressIndicator extends CProgressIndicator {
   /// Should you animate the value to the target?
   final Duration animationDuration;
 
-  /// Curv for the animation
+  /// Curve for the animation
   final Curve animationCurve;
 
   final bool animateOnInit;
   final bool animateOnChange;
 
   final BorderRadius? borderRadius;
+
+  /// This is the foreground gradient!
+  final Gradient? gradient;
+
+  /// Do we use separator
+  final int? steps;
+
+  /// Gap size for separator
+  final double? gap;
+
+  /// Shape of the gap
+  final CGapShape? gapShape;
+
+  /// BorderRadius of the gap
+  final BorderRadius? gapRadius;
 
   @override
   State<CLinearProgressIndicator> createState() =>
@@ -508,7 +585,7 @@ class _CLinearProgressIndicatorState extends State<CLinearProgressIndicator>
         ProgressIndicatorTheme.of(context);
     final Color trackColor = widget.backgroundColor ??
         indicatorTheme.linearTrackColor ??
-        Theme.of(context).colorScheme.background;
+        Theme.of(context).colorScheme.surfaceVariant;
     final double minHeight =
         widget.minHeight ?? indicatorTheme.linearMinHeight ?? 4.0;
 
@@ -536,6 +613,8 @@ class _CLinearProgressIndicatorState extends State<CLinearProgressIndicator>
                 valueGradient: widget.gradient,
                 gradientFullWidth: widget.gradientFullWidth,
                 borderRadius: widget.borderRadius,
+                gapShape: widget.gapShape,
+                gapRadius: widget.gapRadius,
               ),
             ),
           ),

@@ -41,6 +41,12 @@ class TextsScreen extends StatelessWidget {
               expandable: true,
             ),
             CRichText(
+              "This is a fucking gradient text This is a fucking gradient text This is a fucking gradient text fucking gradient text..",
+              maxLines: 2,
+              expandable: true,
+            ),
+            const SizedBox(height: 24),
+            CRichText(
               "This is a fucking gradient text\nThis is a fucking gradient text\nThis is a fucking gradient text",
               maxLines: 2,
               expandable: true,

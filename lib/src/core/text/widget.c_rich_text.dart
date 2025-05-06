@@ -1,6 +1,9 @@
-import 'package:couver_ui/src/core/skeleton/widget.c_skeleton_text.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
+import 'package:couver_ui/src/core/skeleton/widget.c_skeleton_text.dart';
+
 import '../buttons/widget.c_button.dart';
 
 class CRichTextConfig {
@@ -304,6 +307,7 @@ class _CRichTextState extends State<CRichText> {
       strutStyle: widget.strutStyle,
       textWidthBasis: widget.textWidthBasis ?? TextWidthBasis.parent,
       textHeightBehavior: widget.textHeightBehavior,
+      // ellipsis: "...",
     );
 
     return LayoutBuilder(builder: (ctx, cst) {
@@ -312,7 +316,41 @@ class _CRichTextState extends State<CRichText> {
         final hasOverflow = textPainter.didExceedMaxLines;
         if (!hasOverflow) {
           return finalTextWidget;
+          // return Column(
+          //   crossAxisAlignment: CrossAxisAlignment.stretch,
+          //   children: [
+          //     finalTextWidget,
+          //     Text(maxLinesCurrent.toString()),
+          //     Text(hasOverflow.toString()),
+          //     CustomPaint(
+          //       size: textPainter.size,
+          //       painter: _TestPainter(textPainter: textPainter),
+          //     ),
+          //     Text.rich(
+          //       TextSpan(
+          //         children: [textPainter.text!],
+          //       ),
+          //     ),
+          //   ],
+          // );
         }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AnimatedSize(
+              duration: widget.expandDuration,
+              alignment: widget.expandAlignment,
+              child: finalTextWidget,
+            ),
+            expandButtonBuilder(expanded, onToggle),
+            // Text(hasOverflow.toString()),
+            // Text(maxLinesCurrent.toString()),
+            // CustomPaint(
+            //   painter: _TestPainter(textPainter: textPainter),
+            // ),
+          ],
+        );
       } catch (e) {
         return finalTextWidget;
       }
@@ -325,32 +363,20 @@ class _CRichTextState extends State<CRichText> {
       // if (targetLines <= maxLines) {
       //   return finalTextWidget;
       // }
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          AnimatedSize(
-            duration: widget.expandDuration,
-            alignment: widget.expandAlignment,
-            child: finalTextWidget,
-          ),
-          expandButtonBuilder(expanded, onToggle),
-        ],
-      );
     });
   }
 
   /// 解析带有自定义标签的文本，并根据标签应用样式和点击事件
   InlineSpan _buildTextSpan(String text, BuildContext context) {
-    if (!text.contains("<") || !text.contains(">")) {
-      return TextSpan(text: text);
-    }
     final TextStyle baseStyle = widget.style ??
         Theme.of(context).textTheme.bodyMedium ??
         const TextStyle();
-    final double baseFontSize = widget.style?.fontSize ??
-        Theme.of(context).textTheme.bodyMedium?.fontSize ??
-        14;
+
+    if (!text.contains("<") || !text.contains(">")) {
+      return TextSpan(text: text, style: baseStyle);
+    }
+
+    final double baseFontSize = baseStyle.fontSize ?? 14;
     // 定义默认标签样式
     Map<String, CRichTextConfig> styles = {
       "b": const CRichTextConfig(
@@ -433,4 +459,19 @@ Widget _buildGradient({
     ),
     child: child,
   );
+}
+
+class _TestPainter extends CustomPainter {
+  final TextPainter textPainter;
+  _TestPainter({
+    required this.textPainter,
+  });
+  @override
+  void paint(Canvas canvas, Size size) {
+    // textPainter.layout(maxWidth: size.width);
+    textPainter.paint(canvas, Offset(0, 0));
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }

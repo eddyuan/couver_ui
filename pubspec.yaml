@@ -1,6 +1,6 @@
 name: couver_ui
 description: UI Library for couver
-version: 0.3.7
+version: 0.3.8
 homepage: https://github.com/eddyuan/couver_ui
 
 environment:

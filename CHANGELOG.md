@@ -1,3 +1,7 @@
+## 0.3.8
+
+Breaking: Last version for Flutter v3.19
+
 ## 0.3.2
 
 Breaking: Remove utils to other package

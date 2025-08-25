@@ -7,7 +7,7 @@ bool _isDark(Color color, {double threshold = 0.15}) {
 }
 
 class CButtonColor {
-  static MaterialStateProperty<Color?>? buildForegroundState(
+  static WidgetStateProperty<Color?>? buildForegroundState(
     Color? foregroundColor,
     Color? disabledForegroundColor,
     Color? foregroundGradientColor,
@@ -48,7 +48,7 @@ class CButtonColor {
     return _CButtonDefaultColor(fColor, dColor);
   }
 
-  static MaterialStateProperty<Color?>? buildBackgroundState(
+  static WidgetStateProperty<Color?>? buildBackgroundState(
     Color? backgroundColor,
     Color? disabledBackgroundColor,
     Gradient? backgroundGradient,
@@ -85,7 +85,7 @@ class CButtonColor {
     );
   }
 
-  static MaterialStateProperty<BorderSide?>? buildBorderState(
+  static WidgetStateProperty<BorderSide?>? buildBorderState(
     BorderSide? side,
     BorderSide? disabledSide,
     Gradient? borderGradient,
@@ -117,7 +117,7 @@ class CButtonColor {
     );
   }
 
-  static MaterialStateProperty<Color?>? buildOverlayState(
+  static WidgetStateProperty<Color?>? buildOverlayState(
     Color? foregroundColor,
     Gradient? foregroundGradient,
     Color? backgroundColor,
@@ -170,7 +170,7 @@ class CButtonColor {
     return null;
   }
 
-  static MaterialStateProperty<MouseCursor?>? buildMouseCursorState(
+  static WidgetStateProperty<MouseCursor?>? buildMouseCursorState(
     MouseCursor? enabledMouseCursor,
     MouseCursor? disabledMouseCursor,
   ) {
@@ -180,7 +180,7 @@ class CButtonColor {
     return _CButtonDefaultMouseCursor(enabledMouseCursor, disabledMouseCursor);
   }
 
-  static MaterialStateProperty<Gradient?>? buildGradientState(
+  static WidgetStateProperty<Gradient?>? buildGradientState(
       Gradient? gradient) {
     if (gradient != null) {
       return _CButtonDefaultGradient(gradient);
@@ -189,7 +189,7 @@ class CButtonColor {
   }
 }
 
-class _CButtonDefaultColor extends MaterialStateProperty<Color?>
+class _CButtonDefaultColor extends WidgetStateProperty<Color?>
     with Diagnosticable {
   _CButtonDefaultColor(this.color, this.disabled);
 
@@ -205,7 +205,7 @@ class _CButtonDefaultColor extends MaterialStateProperty<Color?>
   }
 }
 
-class _CButtonDefaultSide extends MaterialStateProperty<BorderSide?>
+class _CButtonDefaultSide extends WidgetStateProperty<BorderSide?>
     with Diagnosticable {
   _CButtonDefaultSide(this.side, this.disabled);
 
@@ -221,7 +221,7 @@ class _CButtonDefaultSide extends MaterialStateProperty<BorderSide?>
   }
 }
 
-class _CButtonDefaultOverlay extends MaterialStateProperty<Color?>
+class _CButtonDefaultOverlay extends WidgetStateProperty<Color?>
     with Diagnosticable {
   _CButtonDefaultOverlay(
     this.foregroundColor, [
@@ -270,7 +270,7 @@ class _CButtonDefaultOverlay extends MaterialStateProperty<Color?>
   }
 }
 
-class _CButtonDefaultMouseCursor extends MaterialStateProperty<MouseCursor>
+class _CButtonDefaultMouseCursor extends WidgetStateProperty<MouseCursor>
     with Diagnosticable {
   _CButtonDefaultMouseCursor(this.enabledCursor, this.disabledCursor);
 
@@ -286,7 +286,7 @@ class _CButtonDefaultMouseCursor extends MaterialStateProperty<MouseCursor>
   }
 }
 
-class _CButtonDefaultGradient extends MaterialStateProperty<Gradient?>
+class _CButtonDefaultGradient extends WidgetStateProperty<Gradient?>
     with Diagnosticable {
   _CButtonDefaultGradient(this.gradient);
 

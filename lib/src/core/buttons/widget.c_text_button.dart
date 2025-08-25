@@ -91,7 +91,7 @@ class CTextButton extends CButtonStyleButton {
     FocusNode? focusNode,
     bool? autofocus,
     Clip? clipBehavior,
-    MaterialStatesController? statesController,
+    WidgetStatesController? statesController,
     required Widget icon,
     required Widget label,
     bool? loading,
@@ -102,7 +102,7 @@ class CTextButton extends CButtonStyleButton {
   /// [CButtonStyle] given simple values.
   ///
   /// The [primary], and [onSurface] colors are used to create a
-  /// [MaterialStateProperty] [CButtonStyle.foregroundColor] value in the same
+  /// [WidgetStateProperty] [CButtonStyle.foregroundColor] value in the same
   /// way that [defaultStyleOf] uses the [ColorScheme] colors with the same
   /// names. Specify a value for [primary] to specify the color of the button's
   /// text and icons as well as the overlay colors used to indicate the hover,
@@ -113,7 +113,7 @@ class CTextButton extends CButtonStyleButton {
   /// parameters are used to construct [CButtonStyle.mouseCursor].
   ///
   /// All of the other parameters are either used directly or used to
-  /// create a [MaterialStateProperty] with a single value for all
+  /// create a [WidgetStateProperty] with a single value for all
   /// states.
   ///
   /// All parameters default to null. By default this method returns
@@ -162,7 +162,7 @@ class CTextButton extends CButtonStyleButton {
     bool? shrinkWhenLoading,
     bool? animateElevation,
   }) {
-    final MaterialStateProperty<Color?>? backgroundColorProp =
+    final WidgetStateProperty<Color?>? backgroundColorProp =
         CButtonColor.buildBackgroundState(
       backgroundColor,
       disabledBackgroundColor,
@@ -170,7 +170,7 @@ class CTextButton extends CButtonStyleButton {
       foregroundGradient?.colors.firstOrNull ?? foregroundColor,
     );
 
-    final MaterialStateProperty<Color?>? foregroundColorProp =
+    final WidgetStateProperty<Color?>? foregroundColorProp =
         CButtonColor.buildForegroundState(
       foregroundColor,
       disabledForegroundColor,
@@ -179,14 +179,14 @@ class CTextButton extends CButtonStyleButton {
       // backgroundGradient,
     );
 
-    final MaterialStateProperty<BorderSide?>? sideProp =
+    final WidgetStateProperty<BorderSide?>? sideProp =
         CButtonColor.buildBorderState(side, null, borderGradient);
 
-    final MaterialStateProperty<Color?>? overlayColor =
+    final WidgetStateProperty<Color?>? overlayColor =
         CButtonColor.buildOverlayState(foregroundColor, foregroundGradient,
             backgroundColor, backgroundGradient);
 
-    final MaterialStateProperty<Color?>? iconColorProp =
+    final WidgetStateProperty<Color?>? iconColorProp =
         CButtonColor.buildForegroundState(
       iconColor ?? foregroundColor,
       disabledIconColor ?? disabledForegroundColor,
@@ -200,17 +200,17 @@ class CTextButton extends CButtonStyleButton {
     //         ? ButtonStyleButton.allOrNull<Color?>(iconColor)
     //         : _CTextButtonDefaultIconColor(iconColor, disabledIconColor);
 
-    final MaterialStateProperty<MouseCursor?>? mouseCursor =
+    final WidgetStateProperty<MouseCursor?>? mouseCursor =
         CButtonColor.buildMouseCursorState(
             enabledMouseCursor, disabledMouseCursor);
 
-    final MaterialStateProperty<Gradient?>? backgroundGradientProp =
+    final WidgetStateProperty<Gradient?>? backgroundGradientProp =
         CButtonColor.buildGradientState(backgroundGradient);
 
-    final MaterialStateProperty<Gradient?>? foregroundGradientProp =
+    final WidgetStateProperty<Gradient?>? foregroundGradientProp =
         CButtonColor.buildGradientState(foregroundGradient);
 
-    final MaterialStateProperty<Gradient?>? borderGradientProp =
+    final WidgetStateProperty<Gradient?>? borderGradientProp =
         CButtonColor.buildGradientState(borderGradient);
 
     return CButtonStyle(
@@ -257,7 +257,7 @@ class CTextButton extends CButtonStyleButton {
   /// In this list "Theme.foo" is shorthand for
   /// `Theme.of(context).foo`. Color scheme values like
   /// "onSurface(0.38)" are shorthand for
-  /// `onSurface.withOpacity(0.38)`. [MaterialStateProperty] valued
+  /// `onSurface.withOpacity(0.38)`. [WidgetStateProperty] valued
   /// properties that are not followed by a sublist have the same
   /// value for all states, otherwise the values are as specified for
   /// each state and "others" means all other states.
@@ -396,7 +396,7 @@ class _CTextButtonWithIcon extends CTextButton {
       MediaQuery.textScaleFactorOf(context),
     );
     return super.defaultStyleOf(context).copyWith(
-          padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(scaledPadding),
+          padding: WidgetStatePropertyAll<EdgeInsetsGeometry>(scaledPadding),
         );
   }
 }
@@ -434,17 +434,17 @@ class _CTextButtonDefaultsM3 extends CButtonStyle {
   late final ColorScheme _colors = Theme.of(context).colorScheme;
 
   @override
-  MaterialStateProperty<TextStyle?> get textStyle =>
-      MaterialStatePropertyAll<TextStyle?>(
+  WidgetStateProperty<TextStyle?> get textStyle =>
+      WidgetStatePropertyAll<TextStyle?>(
           Theme.of(context).textTheme.labelLarge);
 
   @override
-  MaterialStateProperty<Color?>? get backgroundColor =>
-      const MaterialStatePropertyAll<Color>(Colors.transparent);
+  WidgetStateProperty<Color?>? get backgroundColor =>
+      const WidgetStatePropertyAll<Color>(Colors.transparent);
 
   @override
-  MaterialStateProperty<Color?>? get foregroundColor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<Color?>? get foregroundColor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           return _colors.onSurface.withOpacity(0.38);
         }
@@ -452,8 +452,8 @@ class _CTextButtonDefaultsM3 extends CButtonStyle {
       });
 
   @override
-  MaterialStateProperty<Color?>? get overlayColor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<Color?>? get overlayColor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.hovered)) {
           return _colors.primary.withOpacity(0.08);
         }
@@ -467,40 +467,40 @@ class _CTextButtonDefaultsM3 extends CButtonStyle {
       });
 
   @override
-  MaterialStateProperty<Color>? get shadowColor =>
-      const MaterialStatePropertyAll<Color>(Colors.transparent);
+  WidgetStateProperty<Color>? get shadowColor =>
+      const WidgetStatePropertyAll<Color>(Colors.transparent);
 
   @override
-  MaterialStateProperty<Color>? get surfaceTintColor =>
-      const MaterialStatePropertyAll<Color>(Colors.transparent);
+  WidgetStateProperty<Color>? get surfaceTintColor =>
+      const WidgetStatePropertyAll<Color>(Colors.transparent);
 
   @override
-  MaterialStateProperty<double>? get elevation =>
-      const MaterialStatePropertyAll<double>(0.0);
+  WidgetStateProperty<double>? get elevation =>
+      const WidgetStatePropertyAll<double>(0.0);
 
   @override
-  MaterialStateProperty<EdgeInsetsGeometry>? get padding =>
-      MaterialStatePropertyAll<EdgeInsetsGeometry>(_scaledPadding(context));
+  WidgetStateProperty<EdgeInsetsGeometry>? get padding =>
+      WidgetStatePropertyAll<EdgeInsetsGeometry>(_scaledPadding(context));
 
   @override
-  MaterialStateProperty<Size>? get minimumSize =>
-      const MaterialStatePropertyAll<Size>(Size(64.0, 40.0));
+  WidgetStateProperty<Size>? get minimumSize =>
+      const WidgetStatePropertyAll<Size>(Size(64.0, 40.0));
 
   // No default fixedSize
 
   @override
-  MaterialStateProperty<Size>? get maximumSize =>
-      const MaterialStatePropertyAll<Size>(Size.infinite);
+  WidgetStateProperty<Size>? get maximumSize =>
+      const WidgetStatePropertyAll<Size>(Size.infinite);
 
   // No default side
 
   @override
-  MaterialStateProperty<OutlinedBorder>? get shape =>
-      const MaterialStatePropertyAll<OutlinedBorder>(StadiumBorder());
+  WidgetStateProperty<OutlinedBorder>? get shape =>
+      const WidgetStatePropertyAll<OutlinedBorder>(StadiumBorder());
 
   @override
-  MaterialStateProperty<MouseCursor?>? get mouseCursor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<MouseCursor?>? get mouseCursor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           return SystemMouseCursors.basic;
         }

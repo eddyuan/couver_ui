@@ -110,8 +110,8 @@ class CCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CardTheme cardTheme = CardTheme.of(context);
-    final CardTheme defaults = Theme.of(context).useMaterial3
+    final CardThemeData cardTheme = CardTheme.of(context);
+    final CardThemeData defaults = Theme.of(context).useMaterial3
         ? _CardDefaultsM3(context)
         : _CardDefaultsM2(context);
 
@@ -225,7 +225,7 @@ class CCard extends StatelessWidget {
   }
 }
 
-class _CardDefaultsM3 extends CardTheme {
+class _CardDefaultsM3 extends CardThemeData {
   const _CardDefaultsM3(this.context)
       : super(
           clipBehavior: Clip.none,
@@ -251,7 +251,7 @@ class _CardDefaultsM3 extends CardTheme {
   Color? get surfaceTintColor => Theme.of(context).colorScheme.surfaceTint;
 }
 
-class _CardDefaultsM2 extends CardTheme {
+class _CardDefaultsM2 extends CardThemeData {
   const _CardDefaultsM2(this.context)
       : super(
             clipBehavior: Clip.none,

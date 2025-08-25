@@ -107,7 +107,7 @@ class COutlinedButton extends CButtonStyleButton {
   /// [CButtonStyle] given simple values.
   ///
   /// The [primary], and [onSurface] colors are used to create a
-  /// [MaterialStateProperty] [CButtonStyle.foregroundColor] value in the same
+  /// [WidgetStateProperty] [CButtonStyle.foregroundColor] value in the same
   /// way that [defaultStyleOf] uses the [ColorScheme] colors with the same
   /// names. Specify a value for [primary] to specify the color of the button's
   /// text and icons as well as the overlay colors used to indicate the hover,
@@ -118,7 +118,7 @@ class COutlinedButton extends CButtonStyleButton {
   /// parameters are used to construct [CButtonStyle.mouseCursor].
   ///
   /// All of the other parameters are either used directly or used to
-  /// create a [MaterialStateProperty] with a single value for all
+  /// create a [WidgetStateProperty] with a single value for all
   /// states.
   ///
   /// All parameters default to null, by default this method returns
@@ -167,7 +167,7 @@ class COutlinedButton extends CButtonStyleButton {
   }) {
     // Calculate disabled color based on provided color
 
-    final MaterialStateProperty<Color?>? backgroundColorProp =
+    final WidgetStateProperty<Color?>? backgroundColorProp =
         CButtonColor.buildBackgroundState(
       backgroundColor,
       disabledBackgroundColor,
@@ -175,7 +175,7 @@ class COutlinedButton extends CButtonStyleButton {
       foregroundGradient?.colors.firstOrNull ?? foregroundColor,
     );
 
-    final MaterialStateProperty<Color?>? foregroundColorProp =
+    final WidgetStateProperty<Color?>? foregroundColorProp =
         CButtonColor.buildForegroundState(
       foregroundColor,
       disabledForegroundColor,
@@ -184,28 +184,28 @@ class COutlinedButton extends CButtonStyleButton {
       // backgroundGradient,
     );
 
-    final MaterialStateProperty<BorderSide?>? sideProp =
+    final WidgetStateProperty<BorderSide?>? sideProp =
         CButtonColor.buildBorderState(side, null, borderGradient);
 
-    final MaterialStateProperty<Color?>? overlayColor =
+    final WidgetStateProperty<Color?>? overlayColor =
         CButtonColor.buildOverlayState(foregroundColor, foregroundGradient,
             backgroundColor, backgroundGradient);
 
-    final MaterialStateProperty<MouseCursor?>? mouseCursor =
+    final WidgetStateProperty<MouseCursor?>? mouseCursor =
         CButtonColor.buildMouseCursorState(
             enabledMouseCursor, disabledMouseCursor);
 
-    final MaterialStateProperty<Gradient?>? backgroundGradientProp =
+    final WidgetStateProperty<Gradient?>? backgroundGradientProp =
         CButtonColor.buildGradientState(backgroundGradient);
 
-    final MaterialStateProperty<Gradient?>? foregroundGradientProp =
+    final WidgetStateProperty<Gradient?>? foregroundGradientProp =
         CButtonColor.buildGradientState(foregroundGradient);
 
-    final MaterialStateProperty<Gradient?>? borderGradientProp =
+    final WidgetStateProperty<Gradient?>? borderGradientProp =
         CButtonColor.buildGradientState(borderGradient);
 
     return CButtonStyle(
-      textStyle: MaterialStatePropertyAll<TextStyle?>(textStyle),
+      textStyle: WidgetStatePropertyAll<TextStyle?>(textStyle),
       backgroundColor: backgroundColorProp,
       foregroundColor: foregroundColorProp,
       overlayColor: overlayColor,
@@ -249,7 +249,7 @@ class COutlinedButton extends CButtonStyleButton {
   /// All of the CButtonStyle's defaults appear below. In this list
   /// "Theme.foo" is shorthand for `Theme.of(context).foo`. Color
   /// scheme values like "onSurface(0.38)" are shorthand for
-  /// `onSurface.withOpacity(0.38)`. [MaterialStateProperty] valued
+  /// `onSurface.withOpacity(0.38)`. [WidgetStateProperty] valued
   /// properties that are not followed by a sublist have the same
   /// value for all states, otherwise the values are as specified for
   /// each state and "others" means all other states.
@@ -339,7 +339,7 @@ EdgeInsetsGeometry _scaledPadding(BuildContext context) {
 }
 
 // @immutable
-// class _COutlinedButtonDefaultGradient extends MaterialStateProperty<Gradient?>
+// class _COutlinedButtonDefaultGradient extends WidgetStateProperty<Gradient?>
 //     with Diagnosticable {
 //   _COutlinedButtonDefaultGradient(this.gradient);
 
@@ -355,7 +355,7 @@ EdgeInsetsGeometry _scaledPadding(BuildContext context) {
 // }
 
 // @immutable
-// class _COutlinedButtonDefaultColor extends MaterialStateProperty<Color?>
+// class _COutlinedButtonDefaultColor extends WidgetStateProperty<Color?>
 //     with Diagnosticable {
 //   _COutlinedButtonDefaultColor(this.color, this.disabled);
 
@@ -372,7 +372,7 @@ EdgeInsetsGeometry _scaledPadding(BuildContext context) {
 // }
 
 // @immutable
-// class _COutlinedButtonDefaultOverlay extends MaterialStateProperty<Color?>
+// class _COutlinedButtonDefaultOverlay extends WidgetStateProperty<Color?>
 //     with Diagnosticable {
 //   _COutlinedButtonDefaultOverlay(this.foreground);
 
@@ -393,7 +393,7 @@ EdgeInsetsGeometry _scaledPadding(BuildContext context) {
 
 // @immutable
 // class _COutlinedButtonDefaultMouseCursor
-//     extends MaterialStateProperty<MouseCursor> with Diagnosticable {
+//     extends WidgetStateProperty<MouseCursor> with Diagnosticable {
 //   _COutlinedButtonDefaultMouseCursor(this.enabledCursor, this.disabledCursor);
 
 //   final MouseCursor enabledCursor;
@@ -441,7 +441,7 @@ class _COutlinedButtonWithIcon extends COutlinedButton {
       MediaQuery.textScaleFactorOf(context),
     );
     return super.defaultStyleOf(context).copyWith(
-          padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(scaledPadding),
+          padding: WidgetStatePropertyAll<EdgeInsetsGeometry>(scaledPadding),
         );
   }
 }
@@ -488,17 +488,17 @@ class _COutlinedButtonDefaultsM3 extends CButtonStyle {
   late final ColorScheme _colors = Theme.of(context).colorScheme;
 
   @override
-  MaterialStateProperty<TextStyle?> get textStyle =>
-      MaterialStatePropertyAll<TextStyle?>(
+  WidgetStateProperty<TextStyle?> get textStyle =>
+      WidgetStatePropertyAll<TextStyle?>(
           Theme.of(context).textTheme.labelLarge);
 
   @override
-  MaterialStateProperty<Color?>? get backgroundColor =>
-      const MaterialStatePropertyAll<Color>(Colors.transparent);
+  WidgetStateProperty<Color?>? get backgroundColor =>
+      const WidgetStatePropertyAll<Color>(Colors.transparent);
 
   @override
-  MaterialStateProperty<Color?>? get foregroundColor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<Color?>? get foregroundColor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           return _colors.onSurface.withOpacity(0.38);
         }
@@ -506,8 +506,8 @@ class _COutlinedButtonDefaultsM3 extends CButtonStyle {
       });
 
   @override
-  MaterialStateProperty<Color?>? get overlayColor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<Color?>? get overlayColor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.hovered)) {
           return _colors.primary.withOpacity(0.08);
         }
@@ -521,34 +521,34 @@ class _COutlinedButtonDefaultsM3 extends CButtonStyle {
       });
 
   @override
-  MaterialStateProperty<Color>? get shadowColor =>
-      const MaterialStatePropertyAll<Color>(Colors.transparent);
+  WidgetStateProperty<Color>? get shadowColor =>
+      const WidgetStatePropertyAll<Color>(Colors.transparent);
 
   @override
-  MaterialStateProperty<Color>? get surfaceTintColor =>
-      const MaterialStatePropertyAll<Color>(Colors.transparent);
+  WidgetStateProperty<Color>? get surfaceTintColor =>
+      const WidgetStatePropertyAll<Color>(Colors.transparent);
 
   @override
-  MaterialStateProperty<double>? get elevation =>
-      const MaterialStatePropertyAll<double>(0.0);
+  WidgetStateProperty<double>? get elevation =>
+      const WidgetStatePropertyAll<double>(0.0);
 
   @override
-  MaterialStateProperty<EdgeInsetsGeometry>? get padding =>
-      MaterialStatePropertyAll<EdgeInsetsGeometry>(_scaledPadding(context));
+  WidgetStateProperty<EdgeInsetsGeometry>? get padding =>
+      WidgetStatePropertyAll<EdgeInsetsGeometry>(_scaledPadding(context));
 
   @override
-  MaterialStateProperty<Size>? get minimumSize =>
-      const MaterialStatePropertyAll<Size>(Size(64.0, 40.0));
+  WidgetStateProperty<Size>? get minimumSize =>
+      const WidgetStatePropertyAll<Size>(Size(64.0, 40.0));
 
   // No default fixedSize
 
   @override
-  MaterialStateProperty<Size>? get maximumSize =>
-      const MaterialStatePropertyAll<Size>(Size.infinite);
+  WidgetStateProperty<Size>? get maximumSize =>
+      const WidgetStatePropertyAll<Size>(Size.infinite);
 
   @override
-  MaterialStateProperty<BorderSide>? get side =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<BorderSide>? get side =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           return BorderSide(color: _colors.onSurface.withOpacity(0.12));
         }
@@ -556,12 +556,12 @@ class _COutlinedButtonDefaultsM3 extends CButtonStyle {
       });
 
   @override
-  MaterialStateProperty<OutlinedBorder>? get shape =>
-      const MaterialStatePropertyAll<OutlinedBorder>(StadiumBorder());
+  WidgetStateProperty<OutlinedBorder>? get shape =>
+      const WidgetStatePropertyAll<OutlinedBorder>(StadiumBorder());
 
   @override
-  MaterialStateProperty<MouseCursor?>? get mouseCursor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<MouseCursor?>? get mouseCursor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           return SystemMouseCursors.basic;
         }

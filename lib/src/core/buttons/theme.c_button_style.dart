@@ -24,9 +24,9 @@ extension CouverButtonStyleExtension on ButtonStyle {
 ///
 /// All of the ButtonStyle properties are null by default.
 ///
-/// Many of the ButtonStyle properties are [MaterialStateProperty] objects which
+/// Many of the ButtonStyle properties are [WidgetStateProperty] objects which
 /// resolve to different values depending on the button's state. For example
-/// the [Color] properties are defined with `MaterialStateProperty<Color>` and
+/// the [Color] properties are defined with `WidgetStateProperty<Color>` and
 /// can resolve to different colors depending on if the button is pressed,
 /// hovered, focused, disabled, etc.
 ///
@@ -38,7 +38,7 @@ extension CouverButtonStyleExtension on ButtonStyle {
 /// ```dart
 /// ElevatedButton(
 ///   style: ButtonStyle(
-///     backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+///     backgroundColor: WidgetStateProperty.resolveWith<Color?>(
 ///       (Set<WidgetState> states) {
 ///         if (states.contains(WidgetState.pressed)) {
 ///           return Theme.of(context).colorScheme.primary.withOpacity(0.5);
@@ -61,7 +61,7 @@ extension CouverButtonStyleExtension on ButtonStyle {
 /// ```dart
 /// ElevatedButton(
 ///   style: const ButtonStyle(
-///     backgroundColor: MaterialStatePropertyAll<Color>(Colors.green),
+///     backgroundColor: WidgetStatePropertyAll<Color>(Colors.green),
 ///   ),
 ///   child: const Text('Let me play among the stars'),
 ///   onPressed: () {
@@ -150,6 +150,7 @@ class CButtonStyle extends ButtonStyle {
     super.maximumSize,
     super.iconColor,
     super.iconSize,
+    super.iconAlignment,
     super.side,
     super.shape,
     super.mouseCursor,
@@ -159,8 +160,8 @@ class CButtonStyle extends ButtonStyle {
     super.enableFeedback,
     super.alignment,
     super.splashFactory,
-    // super.backgroundBuilder,
-    // super.foregroundBuilder,
+    super.backgroundBuilder,
+    super.foregroundBuilder,
     // Extra params
     this.backgroundGradient,
     this.foregroundGradient,
@@ -169,9 +170,9 @@ class CButtonStyle extends ButtonStyle {
     this.shrinkWhenLoading = false,
   });
 
-  final MaterialStateProperty<Gradient?>? foregroundGradient;
-  final MaterialStateProperty<Gradient?>? backgroundGradient;
-  final MaterialStateProperty<Gradient?>? borderGradient;
+  final WidgetStateProperty<Gradient?>? foregroundGradient;
+  final WidgetStateProperty<Gradient?>? backgroundGradient;
+  final WidgetStateProperty<Gradient?>? borderGradient;
   final PlatformStyle platformStyle;
   final bool shrinkWhenLoading;
 
@@ -202,41 +203,42 @@ class CButtonStyle extends ButtonStyle {
       enableFeedback: style.enableFeedback,
       alignment: style.alignment,
       splashFactory: style.splashFactory,
-      // foregroundBuilder: style.foregroundBuilder,
-      // backgroundBuilder: style.backgroundBuilder,
+      foregroundBuilder: style.foregroundBuilder,
+      backgroundBuilder: style.backgroundBuilder,
     );
   }
 
   @override
   CButtonStyle copyWith({
-    MaterialStateProperty<TextStyle?>? textStyle,
-    MaterialStateProperty<Color?>? backgroundColor,
-    MaterialStateProperty<Color?>? foregroundColor,
-    MaterialStateProperty<Color?>? overlayColor,
-    MaterialStateProperty<Color?>? shadowColor,
-    MaterialStateProperty<Color?>? surfaceTintColor,
-    MaterialStateProperty<double?>? elevation,
-    MaterialStateProperty<EdgeInsetsGeometry?>? padding,
-    MaterialStateProperty<Size?>? minimumSize,
-    MaterialStateProperty<Size?>? fixedSize,
-    MaterialStateProperty<Size?>? maximumSize,
-    MaterialStateProperty<Color?>? iconColor,
-    MaterialStateProperty<double?>? iconSize,
-    MaterialStateProperty<BorderSide?>? side,
-    MaterialStateProperty<OutlinedBorder?>? shape,
-    MaterialStateProperty<MouseCursor?>? mouseCursor,
+    WidgetStateProperty<TextStyle?>? textStyle,
+    WidgetStateProperty<Color?>? backgroundColor,
+    WidgetStateProperty<Color?>? foregroundColor,
+    WidgetStateProperty<Color?>? overlayColor,
+    WidgetStateProperty<Color?>? shadowColor,
+    WidgetStateProperty<Color?>? surfaceTintColor,
+    WidgetStateProperty<double?>? elevation,
+    WidgetStateProperty<EdgeInsetsGeometry?>? padding,
+    WidgetStateProperty<Size?>? minimumSize,
+    WidgetStateProperty<Size?>? fixedSize,
+    WidgetStateProperty<Size?>? maximumSize,
+    WidgetStateProperty<Color?>? iconColor,
+    WidgetStateProperty<double?>? iconSize,
+    IconAlignment? iconAlignment,
+    WidgetStateProperty<BorderSide?>? side,
+    WidgetStateProperty<OutlinedBorder?>? shape,
+    WidgetStateProperty<MouseCursor?>? mouseCursor,
     VisualDensity? visualDensity,
     MaterialTapTargetSize? tapTargetSize,
     Duration? animationDuration,
     bool? enableFeedback,
     AlignmentGeometry? alignment,
     InteractiveInkFeatureFactory? splashFactory,
-    // ButtonLayerBuilder? backgroundBuilder,
-    // ButtonLayerBuilder? foregroundBuilder,
+    ButtonLayerBuilder? backgroundBuilder,
+    ButtonLayerBuilder? foregroundBuilder,
     // Extra props
-    MaterialStateProperty<Gradient?>? backgroundGradient,
-    MaterialStateProperty<Gradient?>? foregroundGradient,
-    MaterialStateProperty<Gradient?>? borderGradient,
+    WidgetStateProperty<Gradient?>? backgroundGradient,
+    WidgetStateProperty<Gradient?>? foregroundGradient,
+    WidgetStateProperty<Gradient?>? borderGradient,
     PlatformStyle? platformStyle,
   }) {
     return CButtonStyle(
@@ -253,6 +255,7 @@ class CButtonStyle extends ButtonStyle {
       maximumSize: maximumSize ?? this.maximumSize,
       iconColor: iconColor ?? this.iconColor,
       iconSize: iconSize ?? this.iconSize,
+      iconAlignment: iconAlignment ?? this.iconAlignment,
       side: side ?? this.side,
       shape: shape ?? this.shape,
       mouseCursor: mouseCursor ?? this.mouseCursor,
@@ -262,8 +265,8 @@ class CButtonStyle extends ButtonStyle {
       enableFeedback: enableFeedback ?? this.enableFeedback,
       alignment: alignment ?? this.alignment,
       splashFactory: splashFactory ?? this.splashFactory,
-      // backgroundBuilder: backgroundBuilder ?? this.backgroundBuilder,
-      // foregroundBuilder: foregroundBuilder ?? this.foregroundBuilder,
+      backgroundBuilder: backgroundBuilder ?? this.backgroundBuilder,
+      foregroundBuilder: foregroundBuilder ?? this.foregroundBuilder,
       // Extra params
       backgroundGradient: backgroundGradient ?? this.backgroundGradient,
       foregroundGradient: foregroundGradient ?? this.foregroundGradient,
@@ -393,34 +396,34 @@ class CButtonStyle extends ButtonStyle {
       return a;
     }
     return CButtonStyle(
-      textStyle: MaterialStateProperty.lerp<TextStyle?>(
+      textStyle: WidgetStateProperty.lerp<TextStyle?>(
           a?.textStyle, b?.textStyle, t, TextStyle.lerp),
-      backgroundColor: MaterialStateProperty.lerp<Color?>(
+      backgroundColor: WidgetStateProperty.lerp<Color?>(
           a?.backgroundColor, b?.backgroundColor, t, Color.lerp),
-      foregroundColor: MaterialStateProperty.lerp<Color?>(
+      foregroundColor: WidgetStateProperty.lerp<Color?>(
           a?.foregroundColor, b?.foregroundColor, t, Color.lerp),
-      overlayColor: MaterialStateProperty.lerp<Color?>(
+      overlayColor: WidgetStateProperty.lerp<Color?>(
           a?.overlayColor, b?.overlayColor, t, Color.lerp),
-      shadowColor: MaterialStateProperty.lerp<Color?>(
+      shadowColor: WidgetStateProperty.lerp<Color?>(
           a?.shadowColor, b?.shadowColor, t, Color.lerp),
-      surfaceTintColor: MaterialStateProperty.lerp<Color?>(
+      surfaceTintColor: WidgetStateProperty.lerp<Color?>(
           a?.surfaceTintColor, b?.surfaceTintColor, t, Color.lerp),
-      elevation: MaterialStateProperty.lerp<double?>(
+      elevation: WidgetStateProperty.lerp<double?>(
           a?.elevation, b?.elevation, t, lerpDouble),
-      padding: MaterialStateProperty.lerp<EdgeInsetsGeometry?>(
+      padding: WidgetStateProperty.lerp<EdgeInsetsGeometry?>(
           a?.padding, b?.padding, t, EdgeInsetsGeometry.lerp),
-      minimumSize: MaterialStateProperty.lerp<Size?>(
+      minimumSize: WidgetStateProperty.lerp<Size?>(
           a?.minimumSize, b?.minimumSize, t, Size.lerp),
-      fixedSize: MaterialStateProperty.lerp<Size?>(
+      fixedSize: WidgetStateProperty.lerp<Size?>(
           a?.fixedSize, b?.fixedSize, t, Size.lerp),
-      maximumSize: MaterialStateProperty.lerp<Size?>(
+      maximumSize: WidgetStateProperty.lerp<Size?>(
           a?.maximumSize, b?.maximumSize, t, Size.lerp),
-      iconColor: MaterialStateProperty.lerp<Color?>(
+      iconColor: WidgetStateProperty.lerp<Color?>(
           a?.iconColor, b?.iconColor, t, Color.lerp),
-      iconSize: MaterialStateProperty.lerp<double?>(
+      iconSize: WidgetStateProperty.lerp<double?>(
           a?.iconSize, b?.iconSize, t, lerpDouble),
       side: _lerpSides(a?.side, b?.side, t),
-      shape: MaterialStateProperty.lerp<OutlinedBorder?>(
+      shape: WidgetStateProperty.lerp<OutlinedBorder?>(
           a?.shape, b?.shape, t, OutlinedBorder.lerp),
       mouseCursor: t < 0.5 ? a?.mouseCursor : b?.mouseCursor,
       visualDensity: t < 0.5 ? a?.visualDensity : b?.visualDensity,
@@ -432,19 +435,19 @@ class CButtonStyle extends ButtonStyle {
       // backgroundBuilder: t < 0.5 ? a?.backgroundBuilder : b?.backgroundBuilder,
       // foregroundBuilder: t < 0.5 ? a?.foregroundBuilder : b?.foregroundBuilder,
       // Extra params
-      foregroundGradient: MaterialStateProperty.lerp<Gradient?>(
+      foregroundGradient: WidgetStateProperty.lerp<Gradient?>(
           a?.foregroundGradient, b?.foregroundGradient, t, Gradient.lerp),
-      backgroundGradient: MaterialStateProperty.lerp<Gradient?>(
+      backgroundGradient: WidgetStateProperty.lerp<Gradient?>(
           a?.backgroundGradient, b?.backgroundGradient, t, Gradient.lerp),
-      borderGradient: MaterialStateProperty.lerp<Gradient?>(
+      borderGradient: WidgetStateProperty.lerp<Gradient?>(
           a?.borderGradient, b?.borderGradient, t, Gradient.lerp),
     );
   }
 
   // Special case because BorderSide.lerp() doesn't support null arguments
-  static MaterialStateProperty<BorderSide?>? _lerpSides(
-      MaterialStateProperty<BorderSide?>? a,
-      MaterialStateProperty<BorderSide?>? b,
+  static WidgetStateProperty<BorderSide?>? _lerpSides(
+      WidgetStateProperty<BorderSide?>? a,
+      WidgetStateProperty<BorderSide?>? b,
       double t) {
     if (a == null && b == null) {
       return null;
@@ -453,11 +456,11 @@ class CButtonStyle extends ButtonStyle {
   }
 }
 
-class _LerpSides implements MaterialStateProperty<BorderSide?> {
+class _LerpSides implements WidgetStateProperty<BorderSide?> {
   const _LerpSides(this.a, this.b, this.t);
 
-  final MaterialStateProperty<BorderSide?>? a;
-  final MaterialStateProperty<BorderSide?>? b;
+  final WidgetStateProperty<BorderSide?>? a;
+  final WidgetStateProperty<BorderSide?>? b;
   final double t;
 
   @override
@@ -514,13 +517,13 @@ class _LerpSides implements MaterialStateProperty<BorderSide?> {
 //   ///
 //   /// The color of the [textStyle] is typically not used directly, the
 //   /// [foregroundColor] is used instead.
-//   final MaterialStateProperty<TextStyle?>? textStyle;
+//   final WidgetStateProperty<TextStyle?>? textStyle;
 
 //   /// The button's background fill color.
-//   final MaterialStateProperty<Color?>? backgroundColor;
+//   final WidgetStateProperty<Color?>? backgroundColor;
 
 //   /// The button's background fill gradient.
-//   final MaterialStateProperty<Gradient?>? backgroundGradient;
+//   final WidgetStateProperty<Gradient?>? backgroundGradient;
 
 //   /// The color for the button's [Text] and [Icon] widget descendants.
 //   ///
@@ -528,17 +531,17 @@ class _LerpSides implements MaterialStateProperty<BorderSide?> {
 //   /// of the components that compute defaults from [CButtonStyle] values
 //   /// compute a default [foregroundColor] and use that instead of the
 //   /// [textStyle]'s color.
-//   final MaterialStateProperty<Color?>? foregroundColor;
+//   final WidgetStateProperty<Color?>? foregroundColor;
 
 //   /// The gradient shader for all the foreground.
-//   final MaterialStateProperty<Gradient?>? foregroundGradient;
+//   final WidgetStateProperty<Gradient?>? foregroundGradient;
 
 //   /// The gradient for the border
-//   final MaterialStateProperty<Gradient?>? borderGradient;
+//   final WidgetStateProperty<Gradient?>? borderGradient;
 
 //   /// The highlight color that's typically used to indicate that
 //   /// the button is focused, hovered, or pressed.
-//   final MaterialStateProperty<Color?>? overlayColor;
+//   final WidgetStateProperty<Color?>? overlayColor;
 
 //   /// The shadow color of the button's [Material].
 //   ///
@@ -546,18 +549,18 @@ class _LerpSides implements MaterialStateProperty<BorderSide?> {
 //   /// dark themes, so by default the button classes add a
 //   /// semi-transparent overlay to indicate elevation. See
 //   /// [ThemeData.applyElevationOverlayColor].
-//   final MaterialStateProperty<Color?>? shadowColor;
+//   final WidgetStateProperty<Color?>? shadowColor;
 
 //   /// The surface tint color of the button's [Material].
 //   ///
 //   /// See [Material.surfaceTintColor] for more details.
-//   final MaterialStateProperty<Color?>? surfaceTintColor;
+//   final WidgetStateProperty<Color?>? surfaceTintColor;
 
 //   /// The elevation of the button's [Material].
-//   final MaterialStateProperty<double?>? elevation;
+//   final WidgetStateProperty<double?>? elevation;
 
 //   /// The padding between the button's boundary and its child.
-//   final MaterialStateProperty<EdgeInsetsGeometry?>? padding;
+//   final WidgetStateProperty<EdgeInsetsGeometry?>? padding;
 
 //   /// The minimum size of the button itself.
 //   ///
@@ -565,7 +568,7 @@ class _LerpSides implements MaterialStateProperty<BorderSide?> {
 //   /// per [tapTargetSize].
 //   ///
 //   /// This value must be less than or equal to [maximumSize].
-//   final MaterialStateProperty<Size?>? minimumSize;
+//   final WidgetStateProperty<Size?>? minimumSize;
 
 //   /// The button's size.
 //   ///
@@ -576,7 +579,7 @@ class _LerpSides implements MaterialStateProperty<BorderSide?> {
 //   /// To specify buttons with a fixed width and the default height use
 //   /// `fixedSize: Size.fromWidth(320)`. Similarly, to specify a fixed
 //   /// height and the default width use `fixedSize: Size.fromHeight(100)`.
-//   final MaterialStateProperty<Size?>? fixedSize;
+//   final WidgetStateProperty<Size?>? fixedSize;
 
 //   /// The maximum size of the button itself.
 //   ///
@@ -584,23 +587,23 @@ class _LerpSides implements MaterialStateProperty<BorderSide?> {
 //   /// the button's maximum size is not constrained.
 //   ///
 //   /// This value must be greater than or equal to [minimumSize].
-//   final MaterialStateProperty<Size?>? maximumSize;
+//   final WidgetStateProperty<Size?>? maximumSize;
 
 //   /// The color and weight of the button's outline.
 //   ///
 //   /// This value is combined with [shape] to create a shape decorated
 //   /// with an outline.
-//   final MaterialStateProperty<BorderSide?>? side;
+//   final WidgetStateProperty<BorderSide?>? side;
 
 //   /// The shape of the button's underlying [Material].
 //   ///
 //   /// This shape is combined with [side] to create a shape decorated
 //   /// with an outline.
-//   final MaterialStateProperty<OutlinedBorder?>? shape;
+//   final WidgetStateProperty<OutlinedBorder?>? shape;
 
 //   /// The cursor for a mouse pointer when it enters or is hovering over
 //   /// this button's [InkWell].
-//   final MaterialStateProperty<MouseCursor?>? mouseCursor;
+//   final WidgetStateProperty<MouseCursor?>? mouseCursor;
 
 //   /// Defines how compact the button's layout will be.
 //   ///
@@ -665,23 +668,23 @@ class _LerpSides implements MaterialStateProperty<BorderSide?> {
 //   /// Returns a copy of this CButtonStyle with the given fields replaced with
 //   /// the new values.
 //   CButtonStyle copyWith({
-//     MaterialStateProperty<TextStyle?>? textStyle,
-//     MaterialStateProperty<Color?>? backgroundColor,
-//     MaterialStateProperty<Gradient?>? backgroundGradient,
-//     MaterialStateProperty<Color?>? foregroundColor,
-//     MaterialStateProperty<Gradient?>? foregroundGradient,
-//     MaterialStateProperty<Gradient?>? borderGradient,
-//     MaterialStateProperty<Color?>? overlayColor,
-//     MaterialStateProperty<Color?>? shadowColor,
-//     MaterialStateProperty<Color?>? surfaceTintColor,
-//     MaterialStateProperty<double?>? elevation,
-//     MaterialStateProperty<EdgeInsetsGeometry?>? padding,
-//     MaterialStateProperty<Size?>? minimumSize,
-//     MaterialStateProperty<Size?>? fixedSize,
-//     MaterialStateProperty<Size?>? maximumSize,
-//     MaterialStateProperty<BorderSide?>? side,
-//     MaterialStateProperty<OutlinedBorder?>? shape,
-//     MaterialStateProperty<MouseCursor?>? mouseCursor,
+//     WidgetStateProperty<TextStyle?>? textStyle,
+//     WidgetStateProperty<Color?>? backgroundColor,
+//     WidgetStateProperty<Gradient?>? backgroundGradient,
+//     WidgetStateProperty<Color?>? foregroundColor,
+//     WidgetStateProperty<Gradient?>? foregroundGradient,
+//     WidgetStateProperty<Gradient?>? borderGradient,
+//     WidgetStateProperty<Color?>? overlayColor,
+//     WidgetStateProperty<Color?>? shadowColor,
+//     WidgetStateProperty<Color?>? surfaceTintColor,
+//     WidgetStateProperty<double?>? elevation,
+//     WidgetStateProperty<EdgeInsetsGeometry?>? padding,
+//     WidgetStateProperty<Size?>? minimumSize,
+//     WidgetStateProperty<Size?>? fixedSize,
+//     WidgetStateProperty<Size?>? maximumSize,
+//     WidgetStateProperty<BorderSide?>? side,
+//     WidgetStateProperty<OutlinedBorder?>? shape,
+//     WidgetStateProperty<MouseCursor?>? mouseCursor,
 //     VisualDensity? visualDensity,
 //     MaterialTapTargetSize? tapTargetSize,
 //     Duration? animationDuration,
@@ -844,47 +847,47 @@ class _LerpSides implements MaterialStateProperty<BorderSide?> {
 //   @override
 //   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
 //     super.debugFillProperties(properties);
-//     properties.add(DiagnosticsProperty<MaterialStateProperty<TextStyle?>>(
+//     properties.add(DiagnosticsProperty<WidgetStateProperty<TextStyle?>>(
 //         'textStyle', textStyle,
 //         defaultValue: null));
-//     properties.add(DiagnosticsProperty<MaterialStateProperty<Color?>>(
+//     properties.add(DiagnosticsProperty<WidgetStateProperty<Color?>>(
 //         'backgroundColor', backgroundColor,
 //         defaultValue: null));
-//     properties.add(DiagnosticsProperty<MaterialStateProperty<Color?>>(
+//     properties.add(DiagnosticsProperty<WidgetStateProperty<Color?>>(
 //         'foregroundColor', foregroundColor,
 //         defaultValue: null));
-//     properties.add(DiagnosticsProperty<MaterialStateProperty<Color?>>(
+//     properties.add(DiagnosticsProperty<WidgetStateProperty<Color?>>(
 //         'overlayColor', overlayColor,
 //         defaultValue: null));
-//     properties.add(DiagnosticsProperty<MaterialStateProperty<Color?>>(
+//     properties.add(DiagnosticsProperty<WidgetStateProperty<Color?>>(
 //         'shadowColor', shadowColor,
 //         defaultValue: null));
-//     properties.add(DiagnosticsProperty<MaterialStateProperty<Color?>>(
+//     properties.add(DiagnosticsProperty<WidgetStateProperty<Color?>>(
 //         'surfaceTintColor', surfaceTintColor,
 //         defaultValue: null));
-//     properties.add(DiagnosticsProperty<MaterialStateProperty<double?>>(
+//     properties.add(DiagnosticsProperty<WidgetStateProperty<double?>>(
 //         'elevation', elevation,
 //         defaultValue: null));
 //     properties.add(
-//         DiagnosticsProperty<MaterialStateProperty<EdgeInsetsGeometry?>>(
+//         DiagnosticsProperty<WidgetStateProperty<EdgeInsetsGeometry?>>(
 //             'padding', padding,
 //             defaultValue: null));
-//     properties.add(DiagnosticsProperty<MaterialStateProperty<Size?>>(
+//     properties.add(DiagnosticsProperty<WidgetStateProperty<Size?>>(
 //         'minimumSize', minimumSize,
 //         defaultValue: null));
-//     properties.add(DiagnosticsProperty<MaterialStateProperty<Size?>>(
+//     properties.add(DiagnosticsProperty<WidgetStateProperty<Size?>>(
 //         'fixedSize', fixedSize,
 //         defaultValue: null));
-//     properties.add(DiagnosticsProperty<MaterialStateProperty<Size?>>(
+//     properties.add(DiagnosticsProperty<WidgetStateProperty<Size?>>(
 //         'maximumSize', maximumSize,
 //         defaultValue: null));
-//     properties.add(DiagnosticsProperty<MaterialStateProperty<BorderSide?>>(
+//     properties.add(DiagnosticsProperty<WidgetStateProperty<BorderSide?>>(
 //         'side', side,
 //         defaultValue: null));
-//     properties.add(DiagnosticsProperty<MaterialStateProperty<OutlinedBorder?>>(
+//     properties.add(DiagnosticsProperty<WidgetStateProperty<OutlinedBorder?>>(
 //         'shape', shape,
 //         defaultValue: null));
-//     properties.add(DiagnosticsProperty<MaterialStateProperty<MouseCursor?>>(
+//     properties.add(DiagnosticsProperty<WidgetStateProperty<MouseCursor?>>(
 //         'mouseCursor', mouseCursor,
 //         defaultValue: null));
 //     properties.add(DiagnosticsProperty<VisualDensity>(
@@ -938,7 +941,7 @@ class _LerpSides implements MaterialStateProperty<BorderSide?> {
 //       maximumSize:
 //           _lerpProperties<Size?>(a?.maximumSize, b?.maximumSize, t, Size.lerp),
 //       side: _lerpSides(a?.side, b?.side, t),
-//       shape: MaterialStateProperty.lerp<OutlinedBorder?>(
+//       shape: WidgetStateProperty.lerp<OutlinedBorder?>(
 //           a?.shape, b?.shape, t, OutlinedBorder.lerp),
 //       mouseCursor: t < 0.5 ? a?.mouseCursor : b?.mouseCursor,
 //       visualDensity: t < 0.5 ? a?.visualDensity : b?.visualDensity,
@@ -950,9 +953,9 @@ class _LerpSides implements MaterialStateProperty<BorderSide?> {
 //     );
 //   }
 
-//   static MaterialStateProperty<T?>? _lerpProperties<T>(
-//       MaterialStateProperty<T>? a,
-//       MaterialStateProperty<T>? b,
+//   static WidgetStateProperty<T?>? _lerpProperties<T>(
+//       WidgetStateProperty<T>? a,
+//       WidgetStateProperty<T>? b,
 //       double t,
 //       T? Function(T?, T?, double) lerpFunction) {
 //     // Avoid creating a _LerpProperties object for a common case.
@@ -963,9 +966,9 @@ class _LerpSides implements MaterialStateProperty<BorderSide?> {
 //   }
 
 //   // Special case because BorderSide.lerp() doesn't support null arguments
-//   static MaterialStateProperty<BorderSide?>? _lerpSides(
-//       MaterialStateProperty<BorderSide?>? a,
-//       MaterialStateProperty<BorderSide?>? b,
+//   static WidgetStateProperty<BorderSide?>? _lerpSides(
+//       WidgetStateProperty<BorderSide?>? a,
+//       WidgetStateProperty<BorderSide?>? b,
 //       double t) {
 //     if (a == null && b == null) {
 //       return null;
@@ -974,11 +977,11 @@ class _LerpSides implements MaterialStateProperty<BorderSide?> {
 //   }
 // }
 
-// class _LerpProperties<T> implements MaterialStateProperty<T?> {
+// class _LerpProperties<T> implements WidgetStateProperty<T?> {
 //   const _LerpProperties(this.a, this.b, this.t, this.lerpFunction);
 
-//   final MaterialStateProperty<T>? a;
-//   final MaterialStateProperty<T>? b;
+//   final WidgetStateProperty<T>? a;
+//   final WidgetStateProperty<T>? b;
 //   final double t;
 //   final T? Function(T?, T?, double) lerpFunction;
 
@@ -990,11 +993,11 @@ class _LerpSides implements MaterialStateProperty<BorderSide?> {
 //   }
 // }
 
-// class _LerpSides implements MaterialStateProperty<BorderSide?> {
+// class _LerpSides implements WidgetStateProperty<BorderSide?> {
 //   const _LerpSides(this.a, this.b, this.t);
 
-//   final MaterialStateProperty<BorderSide?>? a;
-//   final MaterialStateProperty<BorderSide?>? b;
+//   final WidgetStateProperty<BorderSide?>? a;
+//   final WidgetStateProperty<BorderSide?>? b;
 //   final double t;
 
 //   @override

@@ -1,3 +1,7 @@
+## 0.4.0
+
+Upgraded to Flutter 3.32.8
+
 ## 0.3.8
 
 Breaking: Last version for Flutter v3.19

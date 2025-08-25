@@ -777,9 +777,9 @@ class _CAppBarState extends State<CAppBar> {
 
   Color _resolveColor(Set<MaterialState> states, Color? widgetColor,
       Color? themeColor, Color defaultColor) {
-    return MaterialStateProperty.resolveAs<Color?>(widgetColor, states) ??
-        MaterialStateProperty.resolveAs<Color?>(themeColor, states) ??
-        MaterialStateProperty.resolveAs<Color>(defaultColor, states);
+    return WidgetStateProperty.resolveAs<Color?>(widgetColor, states) ??
+        WidgetStateProperty.resolveAs<Color?>(themeColor, states) ??
+        WidgetStateProperty.resolveAs<Color>(defaultColor, states);
   }
 
   SystemUiOverlayStyle _systemOverlayStyleForBrightness(Brightness brightness,
@@ -802,7 +802,7 @@ class _CAppBarState extends State<CAppBar> {
     assert(debugCheckHasMaterialLocalizations(context));
     final ThemeData theme = Theme.of(context);
     final IconButtonThemeData iconButtonTheme = IconButtonTheme.of(context);
-    final AppBarTheme appBarTheme = AppBarTheme.of(context);
+    final AppBarThemeData appBarTheme = AppBarTheme.of(context);
     final AppBarTheme defaults = theme.useMaterial3
         ? _AppBarDefaultsM3(context)
         : _AppBarDefaultsM2(context);
@@ -2163,7 +2163,7 @@ class _ScrollUnderFlexibleSpace extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     late final ThemeData theme = Theme.of(context);
-    late final AppBarTheme appBarTheme = AppBarTheme.of(context);
+    late final AppBarThemeData appBarTheme = AppBarTheme.of(context);
     final FlexibleSpaceBarSettings settings =
         context.dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>()!;
     final double topPadding =

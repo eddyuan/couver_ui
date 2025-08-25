@@ -198,14 +198,14 @@ class CIconButton extends IconButton {
     PlatformStyle? platformStyle,
     bool? animateElevation,
   }) {
-    final MaterialStateProperty<Color?>? buttonBackgroundColor =
+    final WidgetStateProperty<Color?>? buttonBackgroundColor =
         CButtonColor.buildBackgroundState(
       backgroundColor,
       disabledBackgroundColor,
       backgroundGradient,
       foregroundGradient?.colors.firstOrNull ?? foregroundColor,
     );
-    final MaterialStateProperty<Color?>? buttonForegroundColor =
+    final WidgetStateProperty<Color?>? buttonForegroundColor =
         CButtonColor.buildForegroundState(
       foregroundColor,
       disabledForegroundColor,
@@ -213,7 +213,7 @@ class CIconButton extends IconButton {
       backgroundGradient?.colors.firstOrNull ?? backgroundColor,
       // backgroundGradient,
     );
-    final MaterialStateProperty<Color?>? overlayColor =
+    final WidgetStateProperty<Color?>? overlayColor =
         CButtonColor.buildOverlayState(
       foregroundColor,
       foregroundGradient,
@@ -223,17 +223,17 @@ class CIconButton extends IconButton {
       hoverColor: hoverColor,
       highlightColor: highlightColor,
     );
-    final MaterialStateProperty<MouseCursor?>? mouseCursor =
+    final WidgetStateProperty<MouseCursor?>? mouseCursor =
         CButtonColor.buildMouseCursorState(
             enabledMouseCursor, disabledMouseCursor);
 
-    final MaterialStateProperty<Gradient?>? backgroundGradientProp =
+    final WidgetStateProperty<Gradient?>? backgroundGradientProp =
         CButtonColor.buildGradientState(backgroundGradient);
 
-    final MaterialStateProperty<Gradient?>? foregroundGradientProp =
+    final WidgetStateProperty<Gradient?>? foregroundGradientProp =
         CButtonColor.buildGradientState(foregroundGradient);
 
-    final MaterialStateProperty<Gradient?>? borderGradientProp =
+    final WidgetStateProperty<Gradient?>? borderGradientProp =
         CButtonColor.buildGradientState(borderGradient);
 
     return CButtonStyle(
@@ -461,15 +461,15 @@ class _SelectableCIconButton extends StatefulWidget {
 }
 
 class _SelectableCIconButtonState extends State<_SelectableCIconButton> {
-  late final MaterialStatesController statesController;
+  late final WidgetStatesController statesController;
 
   @override
   void initState() {
     super.initState();
     if (widget.isSelected == null) {
-      statesController = MaterialStatesController();
+      statesController = WidgetStatesController();
     } else {
-      statesController = MaterialStatesController(
+      statesController = WidgetStatesController(
           <MaterialState>{if (widget.isSelected!) MaterialState.selected});
     }
   }
@@ -624,12 +624,12 @@ class _CIconButtonDefaultsM3 extends CButtonStyle {
   // No default text style
 
   @override
-  MaterialStateProperty<Color?>? get backgroundColor =>
-      const MaterialStatePropertyAll<Color?>(Colors.transparent);
+  WidgetStateProperty<Color?>? get backgroundColor =>
+      const WidgetStatePropertyAll<Color?>(Colors.transparent);
 
   @override
-  MaterialStateProperty<Color?>? get foregroundColor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<Color?>? get foregroundColor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           return _colors.onSurface.withOpacity(0.38);
         }
@@ -640,8 +640,8 @@ class _CIconButtonDefaultsM3 extends CButtonStyle {
       });
 
   @override
-  MaterialStateProperty<Color?>? get overlayColor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<Color?>? get overlayColor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.selected)) {
           if (states.contains(MaterialState.hovered)) {
             return _colors.primary.withOpacity(0.08);
@@ -666,45 +666,45 @@ class _CIconButtonDefaultsM3 extends CButtonStyle {
       });
 
   @override
-  MaterialStateProperty<double>? get elevation =>
-      const MaterialStatePropertyAll<double>(0.0);
+  WidgetStateProperty<double>? get elevation =>
+      const WidgetStatePropertyAll<double>(0.0);
 
   @override
-  MaterialStateProperty<Color>? get shadowColor =>
-      const MaterialStatePropertyAll<Color>(Colors.transparent);
+  WidgetStateProperty<Color>? get shadowColor =>
+      const WidgetStatePropertyAll<Color>(Colors.transparent);
 
   @override
-  MaterialStateProperty<Color>? get surfaceTintColor =>
-      const MaterialStatePropertyAll<Color>(Colors.transparent);
+  WidgetStateProperty<Color>? get surfaceTintColor =>
+      const WidgetStatePropertyAll<Color>(Colors.transparent);
 
   @override
-  MaterialStateProperty<EdgeInsetsGeometry>? get padding =>
-      const MaterialStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.all(8.0));
+  WidgetStateProperty<EdgeInsetsGeometry>? get padding =>
+      const WidgetStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.all(8.0));
 
   @override
-  MaterialStateProperty<Size>? get minimumSize =>
-      const MaterialStatePropertyAll<Size>(Size(40.0, 40.0));
+  WidgetStateProperty<Size>? get minimumSize =>
+      const WidgetStatePropertyAll<Size>(Size(40.0, 40.0));
 
   // No default fixedSize
 
   @override
-  MaterialStateProperty<Size>? get maximumSize =>
-      const MaterialStatePropertyAll<Size>(Size.infinite);
+  WidgetStateProperty<Size>? get maximumSize =>
+      const WidgetStatePropertyAll<Size>(Size.infinite);
 
   @override
-  MaterialStateProperty<double>? get iconSize =>
-      const MaterialStatePropertyAll<double>(24.0);
+  WidgetStateProperty<double>? get iconSize =>
+      const WidgetStatePropertyAll<double>(24.0);
 
   @override
-  MaterialStateProperty<BorderSide?>? get side => null;
+  WidgetStateProperty<BorderSide?>? get side => null;
 
   @override
-  MaterialStateProperty<OutlinedBorder>? get shape =>
-      const MaterialStatePropertyAll<OutlinedBorder>(StadiumBorder());
+  WidgetStateProperty<OutlinedBorder>? get shape =>
+      const WidgetStatePropertyAll<OutlinedBorder>(StadiumBorder());
 
   @override
-  MaterialStateProperty<MouseCursor?>? get mouseCursor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<MouseCursor?>? get mouseCursor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           return SystemMouseCursors.basic;
         }
@@ -749,8 +749,8 @@ class _FilledCIconButtonDefaultsM3 extends CButtonStyle {
   // No default text style
 
   @override
-  MaterialStateProperty<Color?>? get backgroundColor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<Color?>? get backgroundColor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           return _colors.onSurface.withOpacity(0.12);
         }
@@ -765,8 +765,8 @@ class _FilledCIconButtonDefaultsM3 extends CButtonStyle {
       });
 
   @override
-  MaterialStateProperty<Color?>? get foregroundColor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<Color?>? get foregroundColor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           return _colors.onSurface.withOpacity(0.38);
         }
@@ -781,8 +781,8 @@ class _FilledCIconButtonDefaultsM3 extends CButtonStyle {
       });
 
   @override
-  MaterialStateProperty<Color?>? get overlayColor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<Color?>? get overlayColor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.selected)) {
           if (states.contains(MaterialState.hovered)) {
             return _colors.onPrimary.withOpacity(0.08);
@@ -819,45 +819,45 @@ class _FilledCIconButtonDefaultsM3 extends CButtonStyle {
       });
 
   @override
-  MaterialStateProperty<double>? get elevation =>
-      const MaterialStatePropertyAll<double>(0.0);
+  WidgetStateProperty<double>? get elevation =>
+      const WidgetStatePropertyAll<double>(0.0);
 
   @override
-  MaterialStateProperty<Color>? get shadowColor =>
-      const MaterialStatePropertyAll<Color>(Colors.transparent);
+  WidgetStateProperty<Color>? get shadowColor =>
+      const WidgetStatePropertyAll<Color>(Colors.transparent);
 
   @override
-  MaterialStateProperty<Color>? get surfaceTintColor =>
-      const MaterialStatePropertyAll<Color>(Colors.transparent);
+  WidgetStateProperty<Color>? get surfaceTintColor =>
+      const WidgetStatePropertyAll<Color>(Colors.transparent);
 
   @override
-  MaterialStateProperty<EdgeInsetsGeometry>? get padding =>
-      const MaterialStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.all(8.0));
+  WidgetStateProperty<EdgeInsetsGeometry>? get padding =>
+      const WidgetStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.all(8.0));
 
   @override
-  MaterialStateProperty<Size>? get minimumSize =>
-      const MaterialStatePropertyAll<Size>(Size(40.0, 40.0));
+  WidgetStateProperty<Size>? get minimumSize =>
+      const WidgetStatePropertyAll<Size>(Size(40.0, 40.0));
 
   // No default fixedSize
 
   @override
-  MaterialStateProperty<Size>? get maximumSize =>
-      const MaterialStatePropertyAll<Size>(Size.infinite);
+  WidgetStateProperty<Size>? get maximumSize =>
+      const WidgetStatePropertyAll<Size>(Size.infinite);
 
   @override
-  MaterialStateProperty<double>? get iconSize =>
-      const MaterialStatePropertyAll<double>(24.0);
+  WidgetStateProperty<double>? get iconSize =>
+      const WidgetStatePropertyAll<double>(24.0);
 
   @override
-  MaterialStateProperty<BorderSide?>? get side => null;
+  WidgetStateProperty<BorderSide?>? get side => null;
 
   @override
-  MaterialStateProperty<OutlinedBorder>? get shape =>
-      const MaterialStatePropertyAll<OutlinedBorder>(StadiumBorder());
+  WidgetStateProperty<OutlinedBorder>? get shape =>
+      const WidgetStatePropertyAll<OutlinedBorder>(StadiumBorder());
 
   @override
-  MaterialStateProperty<MouseCursor?>? get mouseCursor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<MouseCursor?>? get mouseCursor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           return SystemMouseCursors.basic;
         }
@@ -902,8 +902,8 @@ class _FilledTonalCIconButtonDefaultsM3 extends CButtonStyle {
   // No default text style
 
   @override
-  MaterialStateProperty<Color?>? get backgroundColor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<Color?>? get backgroundColor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           return _colors.onSurface.withOpacity(0.12);
         }
@@ -918,8 +918,8 @@ class _FilledTonalCIconButtonDefaultsM3 extends CButtonStyle {
       });
 
   @override
-  MaterialStateProperty<Color?>? get foregroundColor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<Color?>? get foregroundColor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           return _colors.onSurface.withOpacity(0.38);
         }
@@ -934,8 +934,8 @@ class _FilledTonalCIconButtonDefaultsM3 extends CButtonStyle {
       });
 
   @override
-  MaterialStateProperty<Color?>? get overlayColor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<Color?>? get overlayColor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.selected)) {
           if (states.contains(MaterialState.hovered)) {
             return _colors.onSecondaryContainer.withOpacity(0.08);
@@ -972,45 +972,45 @@ class _FilledTonalCIconButtonDefaultsM3 extends CButtonStyle {
       });
 
   @override
-  MaterialStateProperty<double>? get elevation =>
-      const MaterialStatePropertyAll<double>(0.0);
+  WidgetStateProperty<double>? get elevation =>
+      const WidgetStatePropertyAll<double>(0.0);
 
   @override
-  MaterialStateProperty<Color>? get shadowColor =>
-      const MaterialStatePropertyAll<Color>(Colors.transparent);
+  WidgetStateProperty<Color>? get shadowColor =>
+      const WidgetStatePropertyAll<Color>(Colors.transparent);
 
   @override
-  MaterialStateProperty<Color>? get surfaceTintColor =>
-      const MaterialStatePropertyAll<Color>(Colors.transparent);
+  WidgetStateProperty<Color>? get surfaceTintColor =>
+      const WidgetStatePropertyAll<Color>(Colors.transparent);
 
   @override
-  MaterialStateProperty<EdgeInsetsGeometry>? get padding =>
-      const MaterialStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.all(8.0));
+  WidgetStateProperty<EdgeInsetsGeometry>? get padding =>
+      const WidgetStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.all(8.0));
 
   @override
-  MaterialStateProperty<Size>? get minimumSize =>
-      const MaterialStatePropertyAll<Size>(Size(40.0, 40.0));
+  WidgetStateProperty<Size>? get minimumSize =>
+      const WidgetStatePropertyAll<Size>(Size(40.0, 40.0));
 
   // No default fixedSize
 
   @override
-  MaterialStateProperty<Size>? get maximumSize =>
-      const MaterialStatePropertyAll<Size>(Size.infinite);
+  WidgetStateProperty<Size>? get maximumSize =>
+      const WidgetStatePropertyAll<Size>(Size.infinite);
 
   @override
-  MaterialStateProperty<double>? get iconSize =>
-      const MaterialStatePropertyAll<double>(24.0);
+  WidgetStateProperty<double>? get iconSize =>
+      const WidgetStatePropertyAll<double>(24.0);
 
   @override
-  MaterialStateProperty<BorderSide?>? get side => null;
+  WidgetStateProperty<BorderSide?>? get side => null;
 
   @override
-  MaterialStateProperty<OutlinedBorder>? get shape =>
-      const MaterialStatePropertyAll<OutlinedBorder>(StadiumBorder());
+  WidgetStateProperty<OutlinedBorder>? get shape =>
+      const WidgetStatePropertyAll<OutlinedBorder>(StadiumBorder());
 
   @override
-  MaterialStateProperty<MouseCursor?>? get mouseCursor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<MouseCursor?>? get mouseCursor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           return SystemMouseCursors.basic;
         }
@@ -1055,8 +1055,8 @@ class _OutlinedCIconButtonDefaultsM3 extends CButtonStyle {
   // No default text style
 
   @override
-  MaterialStateProperty<Color?>? get backgroundColor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<Color?>? get backgroundColor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           if (states.contains(MaterialState.selected)) {
             return _colors.onSurface.withOpacity(0.12);
@@ -1070,8 +1070,8 @@ class _OutlinedCIconButtonDefaultsM3 extends CButtonStyle {
       });
 
   @override
-  MaterialStateProperty<Color?>? get foregroundColor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<Color?>? get foregroundColor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           return _colors.onSurface.withOpacity(0.38);
         }
@@ -1082,8 +1082,8 @@ class _OutlinedCIconButtonDefaultsM3 extends CButtonStyle {
       });
 
   @override
-  MaterialStateProperty<Color?>? get overlayColor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<Color?>? get overlayColor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.selected)) {
           if (states.contains(MaterialState.hovered)) {
             return _colors.onInverseSurface.withOpacity(0.08);
@@ -1108,38 +1108,38 @@ class _OutlinedCIconButtonDefaultsM3 extends CButtonStyle {
       });
 
   @override
-  MaterialStateProperty<double>? get elevation =>
-      const MaterialStatePropertyAll<double>(0.0);
+  WidgetStateProperty<double>? get elevation =>
+      const WidgetStatePropertyAll<double>(0.0);
 
   @override
-  MaterialStateProperty<Color>? get shadowColor =>
-      const MaterialStatePropertyAll<Color>(Colors.transparent);
+  WidgetStateProperty<Color>? get shadowColor =>
+      const WidgetStatePropertyAll<Color>(Colors.transparent);
 
   @override
-  MaterialStateProperty<Color>? get surfaceTintColor =>
-      const MaterialStatePropertyAll<Color>(Colors.transparent);
+  WidgetStateProperty<Color>? get surfaceTintColor =>
+      const WidgetStatePropertyAll<Color>(Colors.transparent);
 
   @override
-  MaterialStateProperty<EdgeInsetsGeometry>? get padding =>
-      const MaterialStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.all(8.0));
+  WidgetStateProperty<EdgeInsetsGeometry>? get padding =>
+      const WidgetStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.all(8.0));
 
   @override
-  MaterialStateProperty<Size>? get minimumSize =>
-      const MaterialStatePropertyAll<Size>(Size(40.0, 40.0));
+  WidgetStateProperty<Size>? get minimumSize =>
+      const WidgetStatePropertyAll<Size>(Size(40.0, 40.0));
 
   // No default fixedSize
 
   @override
-  MaterialStateProperty<Size>? get maximumSize =>
-      const MaterialStatePropertyAll<Size>(Size.infinite);
+  WidgetStateProperty<Size>? get maximumSize =>
+      const WidgetStatePropertyAll<Size>(Size.infinite);
 
   @override
-  MaterialStateProperty<double>? get iconSize =>
-      const MaterialStatePropertyAll<double>(24.0);
+  WidgetStateProperty<double>? get iconSize =>
+      const WidgetStatePropertyAll<double>(24.0);
 
   @override
-  MaterialStateProperty<BorderSide?>? get side =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<BorderSide?>? get side =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.selected)) {
           return null;
         } else {
@@ -1151,12 +1151,12 @@ class _OutlinedCIconButtonDefaultsM3 extends CButtonStyle {
       });
 
   @override
-  MaterialStateProperty<OutlinedBorder>? get shape =>
-      const MaterialStatePropertyAll<OutlinedBorder>(StadiumBorder());
+  WidgetStateProperty<OutlinedBorder>? get shape =>
+      const WidgetStatePropertyAll<OutlinedBorder>(StadiumBorder());
 
   @override
-  MaterialStateProperty<MouseCursor?>? get mouseCursor =>
-      MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+  WidgetStateProperty<MouseCursor?>? get mouseCursor =>
+      WidgetStateProperty.resolveWith((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
           return SystemMouseCursors.basic;
         }

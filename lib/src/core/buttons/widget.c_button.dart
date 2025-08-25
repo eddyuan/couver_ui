@@ -537,7 +537,7 @@ class CButton extends StatelessWidget {
           platformStyle: platformStyle,
         ).copyWith(
           elevation: targetElevation != null
-              ? MaterialStatePropertyAll(targetElevation)
+              ? WidgetStatePropertyAll(targetElevation)
               : null,
         ),
         canRequestFocus: canRequestFocus,

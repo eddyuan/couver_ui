@@ -121,9 +121,9 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                 onPressed: () {},
                 child: Text('elevated button'),
                 style: ButtonStyle(
-                  elevation: MaterialStatePropertyAll(0),
+                  elevation: WidgetStatePropertyAll(0),
                   animationDuration: Durations.short1,
-                  shape: MaterialStateProperty.resolveWith(
+                  shape: WidgetStateProperty.resolveWith(
                     (states) {
                       if (states.contains(MaterialState.pressed)) {
                         return GradientRoundedRectangleBorder(
@@ -169,7 +169,7 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                   //   ),
                   // ),
                   // side: WidgetStatePropertyAll(BorderSide(color: Colors.red)),
-                  backgroundColor: MaterialStatePropertyAll(Colors.transparent),
+                  backgroundColor: WidgetStatePropertyAll(Colors.transparent),
                   // backgroundBuilder: (context, states, child) {
                   //   return Container(
                   //     decoration: BoxDecoration(

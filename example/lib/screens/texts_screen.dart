@@ -13,7 +13,7 @@ class TextsScreen extends StatelessWidget {
     const t =
         "data <b>bold</b> <small>small</small> <u>UnderLine</u> <sp>Special</sp> dwoando awjod jawpjd pawjdp awjpdjawpijd pawjdp aiwjpdj awpjd piawjdp ajwpdj pawjdp japwdj ";
     return Scaffold(
-      appBar: CAppBar(),
+      appBar: AppBar(),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: Column(

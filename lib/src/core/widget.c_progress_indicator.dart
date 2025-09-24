@@ -121,7 +121,7 @@ abstract class CProgressIndicator extends StatefulWidget {
     return valueColor?.value ??
         color ??
         ProgressIndicatorTheme.of(context).color ??
-        Theme.of(context).colorScheme.primary;
+        ColorScheme.of(context).primary;
   }
 
   @override
@@ -585,7 +585,7 @@ class _CLinearProgressIndicatorState extends State<CLinearProgressIndicator>
         ProgressIndicatorTheme.of(context);
     final Color trackColor = widget.backgroundColor ??
         indicatorTheme.linearTrackColor ??
-        Theme.of(context).colorScheme.surfaceVariant;
+        ColorScheme.of(context).surfaceVariant;
     final double minHeight =
         widget.minHeight ?? indicatorTheme.linearMinHeight ?? 4.0;
 

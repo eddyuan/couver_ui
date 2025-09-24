@@ -697,7 +697,7 @@ class CListTile extends StatelessWidget {
               style: _titleTextStyle(theme, tileTheme) ??
                   TextStyle(
                     fontSize: 16,
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: ColorScheme.of(context).onSurface,
                   ),
               child: title ?? Text(titleText ?? ''),
             ),
@@ -715,8 +715,7 @@ class CListTile extends StatelessWidget {
                   _subtitleTextStyle(theme, tileTheme) ??
                   TextStyle(
                     fontSize: 12,
-                    color:
-                        Theme.of(context).colorScheme.onSurface.withAlpha(100),
+                    color: ColorScheme.of(context).onSurface.withAlpha(100),
                   ),
               child: subtitle ?? Text(subtitleText ?? ''),
             ),

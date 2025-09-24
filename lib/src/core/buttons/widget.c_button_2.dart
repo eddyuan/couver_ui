@@ -10,6 +10,14 @@ enum ButtonType {
   icon,
 }
 
+_buildColors(
+  BuildContext context, {
+  required ButtonType type,
+  Color? color,
+  Color? bColor,
+  Gradient? gradient,
+}) {}
+
 class CButton2 extends StatelessWidget {
   const CButton2({
     super.key,

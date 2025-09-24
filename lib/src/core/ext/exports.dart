@@ -1,1 +1,1 @@
-export 'ext.gradient.dart';
+export 'ext.colors.dart';

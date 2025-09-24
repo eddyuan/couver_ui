@@ -242,13 +242,13 @@ class _CardDefaultsM3 extends CardThemeData {
   final BuildContext context;
 
   @override
-  Color? get color => Theme.of(context).colorScheme.surface;
+  Color? get color => ColorScheme.of(context).surface;
 
   @override
-  Color? get shadowColor => Theme.of(context).colorScheme.shadow;
+  Color? get shadowColor => ColorScheme.of(context).shadow;
 
   @override
-  Color? get surfaceTintColor => Theme.of(context).colorScheme.surfaceTint;
+  Color? get surfaceTintColor => ColorScheme.of(context).surfaceTint;
 }
 
 class _CardDefaultsM2 extends CardThemeData {

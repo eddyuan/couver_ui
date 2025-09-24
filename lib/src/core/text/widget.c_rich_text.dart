@@ -368,9 +368,8 @@ class _CRichTextState extends State<CRichText> {
 
   /// 解析带有自定义标签的文本，并根据标签应用样式和点击事件
   InlineSpan _buildTextSpan(String text, BuildContext context) {
-    final TextStyle baseStyle = widget.style ??
-        Theme.of(context).textTheme.bodyMedium ??
-        const TextStyle();
+    final TextStyle baseStyle =
+        widget.style ?? TextTheme.of(context).bodyMedium ?? const TextStyle();
 
     if (!text.contains("<") || !text.contains(">")) {
       return TextSpan(text: text, style: baseStyle);

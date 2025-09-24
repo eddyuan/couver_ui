@@ -305,7 +305,7 @@ class COutlinedButton extends CButtonStyleButton {
             minimumSize: const Size(64, 36),
             maximumSize: Size.infinite,
             side: BorderSide(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.12),
+              color: ColorScheme.of(context).onSurface.withOpacity(0.12),
             ),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(4)),
@@ -485,12 +485,11 @@ class _COutlinedButtonDefaultsM3 extends CButtonStyle {
         );
 
   final BuildContext context;
-  late final ColorScheme _colors = Theme.of(context).colorScheme;
+  late final ColorScheme _colors = ColorScheme.of(context);
 
   @override
   WidgetStateProperty<TextStyle?> get textStyle =>
-      WidgetStatePropertyAll<TextStyle?>(
-          Theme.of(context).textTheme.labelLarge);
+      WidgetStatePropertyAll<TextStyle?>(TextTheme.of(context).labelLarge);
 
   @override
   WidgetStateProperty<Color?>? get backgroundColor =>

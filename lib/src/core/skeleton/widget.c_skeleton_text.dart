@@ -42,7 +42,7 @@ class CSkeletonText extends StatelessWidget {
             ? lastLineWidth
             : (cst.maxWidth.isFinite
                     ? cst.maxWidth
-                    : (MediaQuery.of(context).size.width - 24)) *
+                    : (MediaQuery.sizeOf(context).width - 24)) *
                 lastLineWidth;
 
         final lastRowWidget = SizedBox(

@@ -28,7 +28,7 @@ class CRadioIcon extends StatelessWidget {
         border: Border.all(
           width: selected ? size / 3.5 : 1,
           color: selected && enabled
-              ? (color ?? Theme.of(context).colorScheme.primary)
+              ? (color ?? ColorScheme.of(context).primary)
               : (disabledColor ??
                   Theme.of(context).disabledColor.withOpacity(0.4)),
         ),

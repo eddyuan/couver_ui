@@ -598,12 +598,11 @@ class _CElevatedButtonDefaultsM3 extends CButtonStyle {
         );
 
   final BuildContext context;
-  late final ColorScheme _colors = Theme.of(context).colorScheme;
+  late final ColorScheme _colors = ColorScheme.of(context);
 
   @override
   WidgetStateProperty<TextStyle?> get textStyle =>
-      WidgetStatePropertyAll<TextStyle?>(
-          Theme.of(context).textTheme.labelLarge);
+      WidgetStatePropertyAll<TextStyle?>(TextTheme.of(context).labelLarge);
 
   @override
   WidgetStateProperty<Color?>? get backgroundColor =>

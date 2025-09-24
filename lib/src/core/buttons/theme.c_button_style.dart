@@ -41,7 +41,7 @@ extension CouverButtonStyleExtension on ButtonStyle {
 ///     backgroundColor: WidgetStateProperty.resolveWith<Color?>(
 ///       (Set<WidgetState> states) {
 ///         if (states.contains(WidgetState.pressed)) {
-///           return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+///           return ColorScheme.of(context).primary.withOpacity(0.5);
 ///         }
 ///         return null; // Use the component's default.
 ///       },

@@ -28,13 +28,13 @@ class _CSkeletonBoxState extends State<CSkeletonBox>
     with SingleTickerProviderStateMixin {
   Color get color {
     if (widget.color != null) return widget.color!;
-    if (Theme.of(context).colorScheme.brightness == Brightness.dark) {
+    if (ColorScheme.of(context).brightness == Brightness.dark) {
       return Colors.blueGrey.shade50.withAlpha(30);
     }
     return Colors.blueGrey.shade800.withAlpha(30);
   }
 
-  // widget.color ?? Theme.of(context).colorScheme.surfaceVariant;
+  // widget.color ?? ColorScheme.of(context).surfaceVariant;
   Color get color2 => widget.color2 ?? color.withAlpha(10);
 
   late final AnimationController _controller = AnimationController(

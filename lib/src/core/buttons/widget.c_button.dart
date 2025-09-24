@@ -168,6 +168,7 @@ class CButton extends StatelessWidget {
     this.iconLeft,
     this.iconRight,
     this.canRequestFocus,
+    this.elevation,
   })  : borderColor = null,
         splashRadius = null,
         _type = _ButtonType.text,
@@ -196,6 +197,7 @@ class CButton extends StatelessWidget {
     this.iconLeft,
     this.iconRight,
     this.canRequestFocus,
+    this.elevation,
   })  : borderColor = null,
         splashRadius = null,
         _type = _ButtonType.filled,
@@ -226,6 +228,7 @@ class CButton extends StatelessWidget {
     this.iconLeft,
     this.iconRight,
     this.canRequestFocus,
+    this.elevation,
   })  : splashRadius = null,
         _type = _ButtonType.outlined;
 
@@ -245,6 +248,7 @@ class CButton extends StatelessWidget {
     this.onPressed,
     this.splashRadius,
     this.canRequestFocus,
+    this.elevation,
     // this.icon,
   })  : borderColor = null,
         _type = _ButtonType.icon,
@@ -282,6 +286,7 @@ class CButton extends StatelessWidget {
     this.tapTargetSize,
     this.borderColor,
     bool isDense = false,
+    this.elevation,
     this.canRequestFocus,
   })  : splashRadius = null,
         size = isDense ? BtnSize.inputDense : BtnSize.input,
@@ -358,6 +363,8 @@ class CButton extends StatelessWidget {
 
   final _ButtonType _type;
 
+  final double? elevation;
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -411,7 +418,10 @@ class CButton extends StatelessWidget {
                           size: targetFontSize + 2,
                         ),
                       ),
-                    Text(text!),
+                    Text(
+                      text!,
+                      strutStyle: const StrutStyle(forceStrutHeight: true),
+                    ),
                     if (iconRight != null)
                       Padding(
                         padding: const EdgeInsets.only(left: 4),
@@ -485,7 +495,8 @@ class CButton extends StatelessWidget {
       dColor = Colors.black;
     }
 
-    final double? targetElevation = ((bColor?.alpha ?? 255) < 255) ? 0 : null;
+    final double? targetElevation =
+        ((bColor?.alpha ?? 255) < 255) ? 0 : elevation;
 
     Widget buildIconButton(BuildContext context) {
       return CIconButton(
@@ -565,7 +576,7 @@ class CButton extends StatelessWidget {
             width: borderWidth,
             color: foregroundColor ??
                 color ??
-                Theme.of(context).colorScheme.primary.withOpacity(0.9),
+                ColorScheme.of(context).primary.withOpacity(0.9),
           ),
           tapTargetSize: targetTapSize,
           platformStyle: platformStyle,
@@ -592,7 +603,7 @@ class CButton extends StatelessWidget {
             vertical: CouverTheme.of(context).gutter * 2,
           ),
           minimumSize: Size(targetMinWidth, targetMinHeight),
-          textStyle: Theme.of(context).textTheme.bodyLarge!,
+          textStyle: TextTheme.of(context).bodyLarge!,
           foregroundColor: gradient?.colors[0] ?? foregroundColor ?? color,
           backgroundColor: backgroundColor,
           side: BorderSide(

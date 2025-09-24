@@ -2,6 +2,7 @@ import 'package:couver_ui/couver_ui.dart';
 import 'package:example/constants/c_gradient.dart';
 import 'package:example/constants/c_theme.dart';
 import 'package:example/screens/screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ButtonDemoConfig {
@@ -96,7 +97,7 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
         CListTile(
           dense: true,
           title: const Text("Loading"),
-          tileColor: Theme.of(context).colorScheme.surface,
+          tileColor: ColorScheme.of(context).surface,
           trailing: Switch.adaptive(
             value: loading,
             onChanged: (val) {
@@ -113,10 +114,78 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
           width: double.infinity,
           child: Column(
             children: [
-              // CButton2(
-              //   text: "CButton2",
-              //   onPressed: () {},
-              // ),
+              CupertinoTextField(),
+              CupertinoListTile(
+                title: Text("title"),
+                onTap: () {},
+              ),
+              CupertinoButton.tinted(
+                child: Text("Cuper"),
+                onPressed: () {},
+              ),
+              CupertinoButton(
+                padding: EdgeInsets.zero,
+                minimumSize: Size.zero,
+                borderRadius: BorderRadius.circular(0),
+                onPressed: () {},
+                foregroundColor: Colors.red,
+                color: Colors.transparent,
+                pressedOpacity: 0.7,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Text("Cuper"),
+                ),
+              ),
+              CupertinoButton.filled(
+                child: Text("Cuper Fill"),
+                onPressed: () {},
+              ),
+              TextButton(
+                onPressed: () {},
+                child: Text("Test"),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.red,
+                  backgroundColor: Colors.white,
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                child: Text("Test"),
+                style: ButtonStyle(
+                  splashFactory: NoSplash.splashFactory,
+                  overlayColor: WidgetStatePropertyAll(Colors.white24),
+                  surfaceTintColor: WidgetStatePropertyAll(Colors.white),
+                  elevation: WidgetStatePropertyAll(0),
+                  backgroundColor: WidgetStateProperty.resolveWith((state) {
+                    if (state.contains(WidgetState.pressed)) {
+                      return Colors.red.darkenOrLightenByContrast();
+                    }
+                    return Colors.red;
+                  }),
+                  foregroundColor: WidgetStatePropertyAll(Colors.white),
+                  foregroundBuilder: (context, states, child) {
+                    return child ?? const SizedBox.shrink();
+                  },
+                  backgroundBuilder: (context, states, child) {
+                    return child ?? SizedBox.shrink();
+                    return Ink(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF6D0EB5), Color(0xFF4059F1)],
+                        ),
+                      ),
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: child,
+                      ),
+                    );
+                  },
+                ),
+              ),
               ElevatedButton(
                 onPressed: () {},
                 child: Text('elevated button'),
@@ -214,7 +283,7 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                     vertical: CouverTheme.of(context).pagePadding),
                 child: Text(
                   "Circle (Icon)",
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: TextTheme.of(context).titleLarge,
                 ),
               ),
               IconButton(onPressed: () {}, icon: const Icon(Icons.abc)),
@@ -241,7 +310,7 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
                   "Filled",
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: TextTheme.of(context).titleLarge,
                 ),
               ),
               ElevatedButton(
@@ -270,7 +339,7 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                 padding: const EdgeInsets.only(bottom: 16, top: 32),
                 child: Text(
                   "Text",
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: TextTheme.of(context).titleLarge,
                 ),
               ),
               TextButton(
@@ -299,7 +368,7 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                 padding: const EdgeInsets.only(bottom: 16, top: 32),
                 child: Text(
                   "Outlined",
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: TextTheme.of(context).titleLarge,
                 ),
               ),
               OutlinedButton(

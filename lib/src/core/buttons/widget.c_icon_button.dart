@@ -619,7 +619,7 @@ class _CIconButtonDefaultsM3 extends CButtonStyle {
 
   final BuildContext context;
   final bool toggleable;
-  late final ColorScheme _colors = Theme.of(context).colorScheme;
+  late final ColorScheme _colors = ColorScheme.of(context);
 
   // No default text style
 
@@ -744,7 +744,7 @@ class _FilledCIconButtonDefaultsM3 extends CButtonStyle {
 
   final BuildContext context;
   final bool toggleable;
-  late final ColorScheme _colors = Theme.of(context).colorScheme;
+  late final ColorScheme _colors = ColorScheme.of(context);
 
   // No default text style
 
@@ -897,7 +897,7 @@ class _FilledTonalCIconButtonDefaultsM3 extends CButtonStyle {
 
   final BuildContext context;
   final bool toggleable;
-  late final ColorScheme _colors = Theme.of(context).colorScheme;
+  late final ColorScheme _colors = ColorScheme.of(context);
 
   // No default text style
 
@@ -1050,7 +1050,7 @@ class _OutlinedCIconButtonDefaultsM3 extends CButtonStyle {
 
   final BuildContext context;
   final bool toggleable;
-  late final ColorScheme _colors = Theme.of(context).colorScheme;
+  late final ColorScheme _colors = ColorScheme.of(context);
 
   // No default text style
 

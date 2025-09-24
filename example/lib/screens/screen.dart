@@ -24,7 +24,7 @@ class Screen extends StatelessWidget {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final bool isMaterial3 = Theme.of(context).useMaterial3;
     return Scaffold(
-      appBar: CAppBar(
+      appBar: AppBar(
         title: pageName != null ? Text(pageName) : null,
         actions: [
           CButton.circle(

@@ -17,8 +17,7 @@ class CouverTheme extends InheritedWidget {
   static CouverThemeData of(BuildContext context) {
     final CouverTheme? result =
         context.dependOnInheritedWidgetOfExactType<CouverTheme>();
-    final bool isDark =
-        Theme.of(context).colorScheme.brightness == Brightness.dark;
+    final bool isDark = ColorScheme.of(context).brightness == Brightness.dark;
     return isDark
         ? (result?.darkTheme ?? const CouverThemeData.dark())
         : (result?.theme ?? const CouverThemeData());

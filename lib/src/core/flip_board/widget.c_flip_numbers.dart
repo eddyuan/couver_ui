@@ -94,7 +94,7 @@ class CFlipNumbers extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: Theme.of(context).colorScheme.surface,
+        color: ColorScheme.of(context).surface,
       ),
       child: Center(child: child),
     );

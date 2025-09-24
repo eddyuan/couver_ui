@@ -165,7 +165,7 @@ abstract class _CFlipBoard extends StatefulWidget {
     return Container(
       width: 40,
       height: 60,
-      color: Theme.of(context).colorScheme.surface,
+      color: ColorScheme.of(context).surface,
       child: Center(child: child),
     );
   }

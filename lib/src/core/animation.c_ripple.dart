@@ -70,7 +70,7 @@ class _CRippleAnimationState extends State<CRippleAnimation>
     return CustomPaint(
       painter: CirclePainter(
         _controller,
-        color: widget.color ?? Theme.of(context).colorScheme.primary,
+        color: widget.color ?? ColorScheme.of(context).primary,
         minRadius: widget.minRadius,
         wavesCount: widget.ripplesCount,
       ),

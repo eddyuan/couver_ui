@@ -914,8 +914,9 @@ class _CTextFormFieldState extends State<CTextFormField> {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
-          colorScheme: Theme.of(context).colorScheme.copyWith(
-              primary: CouverTheme.of(context).colors.inputFocusBorderColor)),
+        colorScheme: ColorScheme.of(context).copyWith(
+            primary: CouverTheme.of(context).colors.inputFocusBorderColor),
+      ),
       child: Padding(
         padding: widget.margin ?? EdgeInsets.zero,
         child: TextFormField(

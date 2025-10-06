@@ -16,6 +16,7 @@ _buildColors(
   Color? color,
   Color? bColor,
   Gradient? gradient,
+  Color? disabledBackgroundColor,
 }) {}
 
 class CButton2 extends StatelessWidget {

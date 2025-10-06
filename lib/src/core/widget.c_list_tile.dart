@@ -78,6 +78,8 @@ class CListTile extends StatelessWidget {
     this.isRadio = false,
     this.radioSize = 20,
     this.radioInactiveColor,
+    this.titlePadding,
+    this.subtitlePadding,
   });
 
   const CListTile.radio({
@@ -130,6 +132,8 @@ class CListTile extends StatelessWidget {
     this.skeletonOption = const CListTileSkeletonOption(),
     this.skeleton = false,
     this.rowAlignment = CrossAxisAlignment.center,
+    this.titlePadding,
+    this.subtitlePadding,
   })  : isRadio = true,
         trailingIconColor = radioColor,
         arrow = false,
@@ -404,6 +408,9 @@ class CListTile extends StatelessWidget {
   /// Color of the radio icon, default to theme disabled color
   final Color? radioInactiveColor;
 
+  final EdgeInsets? titlePadding;
+  final EdgeInsets? subtitlePadding;
+
   // End Radio related options ==================================
 
   bool get _enabled => enabled && !loading && !skeleton;
@@ -477,10 +484,11 @@ class CListTile extends StatelessWidget {
     return dense ?? tileTheme.dense ?? theme.listTileTheme.dense ?? false;
   }
 
-  TextStyle? _titleTextStyle(ThemeData theme, ListTileThemeData tileTheme) {
-    if (titleTextStyle != null) {
-      return titleTextStyle!;
-    }
+  TextStyle? _themeTitleTextStyle(
+      ThemeData theme, ListTileThemeData tileTheme) {
+    // if (titleTextStyle != null) {
+    //   return titleTextStyle!;
+    // }
     final TextStyle? textStyle;
     switch (style ??
         tileTheme.style ??
@@ -501,7 +509,8 @@ class CListTile extends StatelessWidget {
     );
   }
 
-  TextStyle? _subtitleTextStyle(ThemeData theme, ListTileThemeData tileTheme) {
+  TextStyle? _themeSubtitleTextStyle(
+      ThemeData theme, ListTileThemeData tileTheme) {
     final TextStyle? textStyle = theme.textTheme.bodyMedium;
     final Color? color =
         _textColor(theme, tileTheme, theme.textTheme.bodySmall?.color);
@@ -690,11 +699,12 @@ class CListTile extends StatelessWidget {
 
       if (title != null || titleText != null) {
         titleWidget = Padding(
-          padding: const EdgeInsets.symmetric(vertical: 1),
+          padding: titlePadding ?? const EdgeInsets.symmetric(vertical: 1),
           child: _gradientShader(
             child: AnimatedDefaultTextStyle(
               duration: kThemeChangeDuration,
-              style: _titleTextStyle(theme, tileTheme) ??
+              style: titleTextStyle ??
+                  _themeTitleTextStyle(theme, tileTheme) ??
                   TextStyle(
                     fontSize: 16,
                     color: ColorScheme.of(context).onSurface,
@@ -707,12 +717,12 @@ class CListTile extends StatelessWidget {
 
       if (subtitle != null || subtitleText != null) {
         subtitleWidget = Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2),
+          padding: subtitlePadding ?? const EdgeInsets.symmetric(vertical: 2),
           child: _gradientShader(
             child: AnimatedDefaultTextStyle(
               duration: kThemeChangeDuration,
               style: subtitleTextStyle ??
-                  _subtitleTextStyle(theme, tileTheme) ??
+                  _themeSubtitleTextStyle(theme, tileTheme) ??
                   TextStyle(
                     fontSize: 12,
                     color: ColorScheme.of(context).onSurface.withAlpha(100),

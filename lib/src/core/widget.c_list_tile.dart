@@ -1,8 +1,13 @@
-// import 'package:couver_app/utils/helpers.dart';
-// import 'package:couver_app/widgets/widgets.dart';
 import 'package:couver_ui/couver_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+
+extension _DisabledColor on ColorScheme {
+  Color get disabledColor {
+    final alpha = brightness == Brightness.dark ? 0x4D : 0x61;
+    return onSurface.withAlpha(alpha);
+  }
+}
 
 class CListTileSkeletonOption {
   const CListTileSkeletonOption({
@@ -431,116 +436,119 @@ class CListTile extends StatelessWidget {
     return child;
   }
 
-  Color? _leadingIconColor(ThemeData theme, ListTileThemeData tileTheme) {
-    if (!_enabled) return theme.disabledColor;
+  Color? _leadingIconColor(
+    ColorScheme colorScheme,
+    ListTileThemeData tileTheme,
+  ) {
+    if (!_enabled) return colorScheme.disabledColor;
 
     if (selected) {
-      return selectedColor ??
-          tileTheme.selectedColor ??
-          theme.listTileTheme.selectedColor ??
-          theme.colorScheme.primary;
+      return selectedColor ?? tileTheme.selectedColor ?? colorScheme.primary;
     }
 
-    final Color? color = leadingIconColor ??
-        tileTheme.iconColor ??
-        theme.listTileTheme.iconColor;
-    return color ?? theme.colorScheme.onSurface;
+    final Color? color = leadingIconColor ?? tileTheme.iconColor;
+    return color ?? colorScheme.onSurface;
   }
 
-  Color? _trailingIconColor(ThemeData theme, ListTileThemeData tileTheme) {
-    if (!_enabled) return theme.disabledColor;
+  Color? _trailingIconColor(
+      ColorScheme colorScheme, ListTileThemeData tileTheme) {
+    if (!_enabled) return colorScheme.disabledColor;
 
     if (selected) {
-      return selectedColor ??
-          tileTheme.selectedColor ??
-          theme.listTileTheme.selectedColor ??
-          theme.colorScheme.primary;
+      return selectedColor ?? tileTheme.selectedColor ?? colorScheme.primary;
     }
 
-    final Color? color = trailingIconColor ??
-        tileTheme.iconColor ??
-        theme.listTileTheme.iconColor;
-    return color ?? theme.disabledColor;
+    final Color? color = trailingIconColor ?? tileTheme.iconColor;
+    return color ?? colorScheme.disabledColor;
   }
 
   Color? _textColor(
-      ThemeData theme, ListTileThemeData tileTheme, Color? defaultColor) {
+    ColorScheme theme,
+    ListTileThemeData tileTheme,
+    Color? defaultColor,
+  ) {
     if (!_enabled) return theme.disabledColor;
 
     if (selected) {
-      return selectedColor ??
-          tileTheme.selectedColor ??
-          theme.listTileTheme.selectedColor ??
-          theme.colorScheme.primary;
+      return selectedColor ?? tileTheme.selectedColor ?? theme.primary;
     }
 
-    return textColor ??
-        tileTheme.textColor ??
-        theme.listTileTheme.textColor ??
-        defaultColor;
+    return textColor ?? tileTheme.textColor ?? defaultColor;
   }
 
-  bool _isDenseLayout(ThemeData theme, ListTileThemeData tileTheme) {
-    return dense ?? tileTheme.dense ?? theme.listTileTheme.dense ?? false;
+  bool _isDenseLayout(ListTileThemeData tileTheme) {
+    return dense ?? tileTheme.dense ?? false;
   }
 
   TextStyle? _themeTitleTextStyle(
-      ThemeData theme, ListTileThemeData tileTheme) {
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+    ListTileThemeData tileTheme,
+  ) {
     // if (titleTextStyle != null) {
     //   return titleTextStyle!;
     // }
     final TextStyle? textStyle;
-    switch (style ??
-        tileTheme.style ??
-        theme.listTileTheme.style ??
-        ListTileStyle.list) {
+    switch (style ?? tileTheme.style ?? ListTileStyle.list) {
       case ListTileStyle.drawer:
-        textStyle = theme.textTheme.bodyLarge;
+        textStyle = textTheme.bodyLarge;
         break;
       case ListTileStyle.list:
-        textStyle = theme.textTheme.titleMedium;
+        textStyle = textTheme.titleMedium;
         break;
     }
-    final Color? color = _textColor(theme, tileTheme, textStyle?.color);
+    final Color? color = _textColor(colorScheme, tileTheme, textStyle?.color);
     return textStyle?.copyWith(
       color: color,
       fontWeight: titleBold ? FontWeight.w600 : null,
-      fontSize: _isDenseLayout(theme, tileTheme) ? 14.0 : 16.0,
+      fontSize: _isDenseLayout(tileTheme) ? 14.0 : 16.0,
     );
   }
 
   TextStyle? _themeSubtitleTextStyle(
-      ThemeData theme, ListTileThemeData tileTheme) {
-    final TextStyle? textStyle = theme.textTheme.bodyMedium;
+    ColorScheme theme,
+    TextTheme textTheme,
+    ListTileThemeData tileTheme,
+  ) {
+    final TextStyle? textStyle = textTheme.bodyMedium;
     final Color? color =
-        _textColor(theme, tileTheme, theme.textTheme.bodySmall?.color);
+        _textColor(theme, tileTheme, textTheme.bodySmall?.color);
     return textStyle?.copyWith(
       color: color,
-      fontSize: _isDenseLayout(theme, tileTheme) ? 12.0 : 13.0,
+      fontSize: _isDenseLayout(tileTheme) ? 12.0 : 13.0,
     );
   }
 
-  TextStyle _leadingTextStyle(ThemeData theme, ListTileThemeData tileTheme) {
-    final TextStyle textStyle = theme.textTheme.bodyMedium!;
-    final Color? color = _textColor(theme, tileTheme, textStyle.color);
+  TextStyle _leadingTextStyle(
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+    ListTileThemeData tileTheme,
+  ) {
+    final TextStyle textStyle = textTheme.bodyMedium!;
+    final Color? color = _textColor(colorScheme, tileTheme, textStyle.color);
     return textStyle.copyWith(color: color);
   }
 
-  TextStyle _trailingTextStyle(ThemeData theme, ListTileThemeData tileTheme) {
-    final TextStyle textStyle = theme.textTheme.bodyMedium!;
-    final Color? color =
-        _textColor(theme, tileTheme, theme.textTheme.bodySmall!.color);
+  TextStyle _trailingTextStyle(
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+    ListTileThemeData tileTheme,
+  ) {
+    final TextStyle textStyle = textTheme.bodyMedium!;
+    final Color? color = _textColor(
+      colorScheme,
+      tileTheme,
+      textTheme.bodySmall!.color,
+    );
     return textStyle.copyWith(color: color);
   }
 
-  Color? _tileBackgroundColor(ThemeData theme, ListTileThemeData tileTheme) {
+  Color? _tileBackgroundColor(ListTileThemeData tileTheme) {
     late final Color? color;
     if (selected) {
-      color = selectedTileColor ??
-          tileTheme.selectedTileColor ??
-          theme.listTileTheme.selectedTileColor;
+      color = selectedTileColor ?? tileTheme.selectedTileColor;
     } else {
-      color = tileColor ?? tileTheme.tileColor ?? theme.listTileTheme.tileColor;
+      color = tileColor ?? tileTheme.tileColor;
     }
 
     return color;
@@ -553,20 +561,20 @@ class CListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final ListTileThemeData tileTheme = Theme.of(context).listTileTheme;
+    final ListTileThemeData tileTheme = ListTileTheme.of(context);
+    final ColorScheme colorScheme = ColorScheme.of(context);
+    final TextTheme textTheme = TextTheme.of(context);
     final double minHeight_ = minHeight ?? ((dense ?? false) ? 42 : 56);
 
     final double horizontalTitleGap_ =
         horizontalTitleGap ?? tileTheme.horizontalTitleGap ?? 16;
 
-    final Color? tileBackgroundColorVal_ =
-        _tileBackgroundColor(theme, tileTheme);
+    final Color? tileBackgroundColorVal_ = _tileBackgroundColor(tileTheme);
 
-    final bool dense_ = _isDenseLayout(theme, tileTheme);
+    final bool dense_ = _isDenseLayout(tileTheme);
 
     final EdgeInsets contentPadding_ = (contentPadding ??
-            theme.listTileTheme.contentPadding ??
+            tileTheme.contentPadding ??
             EdgeInsets.symmetric(
               horizontal: _kDefaultPadding,
               vertical: dense_
@@ -588,8 +596,8 @@ class CListTile extends StatelessWidget {
           ? Theme.of(context).cardColor
           : tileBackgroundColorVal_;
       innerRow_ = Shimmer.fromColors(
-        baseColor: theme.disabledColor.withOpacity(0.1),
-        highlightColor: skeletonBaseColor_.withOpacity(0.1),
+        baseColor: colorScheme.disabledColor.withAlpha(26),
+        highlightColor: skeletonBaseColor_.withAlpha(26),
         child: Row(
           crossAxisAlignment: rowAlignment,
           children: [
@@ -664,10 +672,14 @@ class CListTile extends StatelessWidget {
       Widget? trailingWidget;
       if (leading != null || leadingIcon != null || reserveLeadingSpace) {
         IconThemeData leadingIconThemeData = IconThemeData(
-          color: _leadingIconColor(theme, tileTheme),
+          color: _leadingIconColor(colorScheme, tileTheme),
           size: leadingIconSize ?? 24,
         );
-        TextStyle leadingTextStyle = _leadingTextStyle(theme, tileTheme);
+        TextStyle leadingTextStyle = _leadingTextStyle(
+          colorScheme,
+          textTheme,
+          tileTheme,
+        );
 
         late Widget leadingInner_;
         if (leading != null) {
@@ -704,7 +716,7 @@ class CListTile extends StatelessWidget {
             child: AnimatedDefaultTextStyle(
               duration: kThemeChangeDuration,
               style: titleTextStyle ??
-                  _themeTitleTextStyle(theme, tileTheme) ??
+                  _themeTitleTextStyle(colorScheme, textTheme, tileTheme) ??
                   TextStyle(
                     fontSize: 16,
                     color: ColorScheme.of(context).onSurface,
@@ -722,7 +734,7 @@ class CListTile extends StatelessWidget {
             child: AnimatedDefaultTextStyle(
               duration: kThemeChangeDuration,
               style: subtitleTextStyle ??
-                  _themeSubtitleTextStyle(theme, tileTheme) ??
+                  _themeSubtitleTextStyle(colorScheme, textTheme, tileTheme) ??
                   TextStyle(
                     fontSize: 12,
                     color: ColorScheme.of(context).onSurface.withAlpha(100),
@@ -735,10 +747,11 @@ class CListTile extends StatelessWidget {
 
       if (loading || trailing != null || selected || isRadio) {
         IconThemeData trailingIconThemeData = IconThemeData(
-          color: _trailingIconColor(theme, tileTheme),
+          color: _trailingIconColor(colorScheme, tileTheme),
           size: 22,
         );
-        TextStyle trailingTextStyle = _trailingTextStyle(theme, tileTheme);
+        TextStyle trailingTextStyle =
+            _trailingTextStyle(colorScheme, textTheme, tileTheme);
         late Widget trailingInnerWidget;
         if (loading) {
           final Size loadingSize = Size(
@@ -772,7 +785,7 @@ class CListTile extends StatelessWidget {
                 selected: selected,
                 enabled: onTap != null,
                 size: radioSize,
-                color: _trailingIconColor(theme, tileTheme),
+                color: _trailingIconColor(colorScheme, tileTheme),
               )
             ],
           );
@@ -831,7 +844,7 @@ class CListTile extends StatelessWidget {
               offset: const Offset(6.0, 0.0),
               child: Icon(
                 arrowIcon ?? Icons.chevron_right,
-                color: theme.disabledColor,
+                color: colorScheme.disabledColor,
                 size: 20,
               ),
             ),

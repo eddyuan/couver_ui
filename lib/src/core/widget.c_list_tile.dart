@@ -68,6 +68,7 @@ class CListTile extends StatelessWidget {
     this.gradient,
     this.titleColor,
     this.reserveLeadingSpace = false,
+    this.platformStyle,
     // this.launchUrl,
     // this.fallbackCopyText,
     this.loading = false,
@@ -125,6 +126,7 @@ class CListTile extends StatelessWidget {
     this.gradient,
     this.titleColor,
     this.reserveLeadingSpace = false,
+    this.platformStyle,
     // this.launchUrl,
     // this.fallbackCopyText,
     this.loading = false,
@@ -376,6 +378,8 @@ class CListTile extends StatelessWidget {
 
   // /// The text to copy if the url can not be launched
   // final String? fallbackCopyText;
+
+  final PlatformStyle? platformStyle;
 
   /// show a loading icon to override the trailing and disable the field
   final bool loading;
@@ -853,7 +857,7 @@ class CListTile extends StatelessWidget {
     }
 
     return CInk(
-      // style: PlatformStyle.material,
+      style: platformStyle ?? PlatformStyle.auto,
       color: tileBackgroundColorVal_,
       onTap: _enabled && onTap != null
           ? () {
@@ -862,6 +866,7 @@ class CListTile extends StatelessWidget {
             }
           : null,
       onLongPress: _enabled ? onLongPress : null,
+      materialOption: const CInkMaterialOption(inkOnTop: false),
       cupertinoOption:
           const CInkCupertinoOption(cupertinoInkStyle: CupertinoInkStyle.shade),
       child: Column(
